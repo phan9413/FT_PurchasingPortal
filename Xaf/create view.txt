@@ -1,0 +1,212 @@
+drop table vwAccounts
+go
+create view vwAccounts
+as
+(
+	select '' + AcctCode as BoKey, FormatCode, AcctName, AcctCode, 1 as IsActive, 'HQ' as CompanyCode 
+	from [PUSRAWI_LIVE]..OACT
+	where Postable = 'Y'
+)
+go
+drop table vwBusinessPartners
+go
+create view vwBusinessPartners
+as
+(
+	select '' + CardCode as BoKey, CardCode, CardName, case when frozenFor = 'Y' then 0 else 1 end as IsActive
+	,Currency, CardType
+	,'HQ' as CompanyCode 
+	from [PUSRAWI_LIVE]..OCRD
+	
+)
+go
+drop table vwBillToAddress
+go
+create view vwBillToAddress
+as
+(
+	select '' + CardCode + [Address] as BoKey, [Address] as [Name], [Address] + CHAR(13)+CHAR(10) + isnull(Street,'') as [Address], CardCode
+	,'HQ' as CompanyCode 
+	from [PUSRAWI_LIVE]..CRD1
+	where AdresType = 'B'
+)
+go
+drop table vwShipToAddress
+go
+create view vwShipToAddress
+as
+(
+	select '' + CardCode + [Address] as BoKey, [Address] as [Name], [Address] + CHAR(13)+CHAR(10) + isnull(Street,'') as [Address], CardCode
+	,'HQ' as CompanyCode 
+	from [PUSRAWI_LIVE]..CRD1
+	where AdresType = 'S'
+)
+go
+drop table vwContactPersons
+go
+create view vwContactPersons
+as
+(
+	select '' + CardCode + convert(nvarchar,CntctCode) as BoKey, [Name] as [Name], CntctCode, CardCode
+	, case when Active = 'Y' then 1 else 0 end as IsActive
+	,'HQ' as CompanyCode 
+	from [PUSRAWI_LIVE]..OCPR
+)
+go
+drop table vwCurrency
+go
+create view vwCurrency
+as
+(
+	select '' + CurrCode as BoKey, CurrCode, CurrName
+	, 1 as IsActive, case when CurrCode = 'MYR' then 1 else 0 end as IsLC
+	,'HQ' as CompanyCode 
+	from [PUSRAWI_LIVE]..OCRN
+)
+go
+drop table vwItemMasters	
+go
+create view vwItemMasters
+as
+(
+	select '' + ItemCode as BoKey, ItemCode, ItemName
+	, case when frozenFor = 'Y' then 0 else 1 end as IsActive
+	, InvntItem, SellItem, PrchseItem
+	, NumInSale
+	, NumInBuy
+	, BuyUnitMsr
+	, SalUnitMsr
+	, InvntryUOM
+	,'HQ' as CompanyCode 
+	from [PUSRAWI_LIVE]..OITM
+)
+go
+drop table vwPriceList
+go
+create view vwPriceList
+as
+(
+	select '' + ListNum as BoKey, ListNum, ListName
+	, case when ValidFor = 'Y' then 1 else 0 end as IsActive
+	,'HQ' as CompanyCode 
+	from [PUSRAWI_LIVE]..OPLN
+)
+go
+drop table vwProjects
+go
+create view vwProjects
+as
+(
+	select '' + PrjCode as BoKey, PrjCode, PrjName
+	, case when Active = 'Y' then 1 else 0 end as IsActive
+	,'HQ' as CompanyCode 
+	from [PUSRAWI_LIVE]..OPRJ
+)
+go
+drop table vwSalesPersons
+go
+create view vwSalesPersons
+as
+(
+	select '' + SlpCode as BoKey, SlpCode, SlpName
+	, case when Active = 'Y' then 1 else 0 end as IsActive
+	,'HQ' as CompanyCode 
+	from [PUSRAWI_LIVE]..OSLP
+)
+go
+drop table vwTaxes
+go
+create view vwTaxes
+as
+(
+	select '' + Code as BoKey, Code, [Name] as [Name], Category
+	, case when Inactive = 'Y' then 0 else 1 end as IsActive
+	,'HQ' as CompanyCode 
+	from [PUSRAWI_LIVE]..OVTG
+)
+go
+
+drop table vwWarehouses
+go
+create view vwWarehouses
+as
+(
+	select '' + WhsCode as BoKey, WhsCode, WhsName
+	, case when Inactive = 'Y' then 0 else 1 end as IsActive
+	,'HQ' as CompanyCode 
+	from [PUSRAWI_LIVE]..OWHS
+)
+go
+drop table vwDimension1
+go
+create view vwDimension1
+as
+(
+	select '' + PrcCode as BoKey, PrcCode, PrcName
+	, case when Locked = 'Y' then 0 else 1 end as IsActive
+	,'HQ' as CompanyCode 
+	from [PUSRAWI_LIVE]..OPRC
+	where DimCode = 1
+)
+go
+drop table vwDimension2
+go
+create view vwDimension2
+as
+(
+	select '' + PrcCode as BoKey, PrcCode, PrcName
+	, case when Locked = 'Y' then 0 else 1 end as IsActive
+	,'HQ' as CompanyCode 
+	from [PUSRAWI_LIVE]..OPRC
+	where DimCode = 2
+)
+go
+drop table vwDimension3
+go
+create view vwDimension3
+as
+(
+	select '' + PrcCode as BoKey, PrcCode, PrcName
+	, case when Locked = 'Y' then 0 else 1 end as IsActive
+	,'HQ' as CompanyCode 
+	from [PUSRAWI_LIVE]..OPRC
+	where DimCode = 3
+)
+go
+drop table vwDimension4
+go
+create view vwDimension4
+as
+(
+	select '' + PrcCode as BoKey, PrcCode, PrcName
+	, case when Locked = 'Y' then 0 else 1 end as IsActive
+	,'HQ' as CompanyCode 
+	from [PUSRAWI_LIVE]..OPRC
+	where DimCode = 4
+)
+go
+drop table vwDimension5
+go
+create view vwDimension5
+as
+(
+	select '' + PrcCode as BoKey, PrcCode, PrcName
+	, case when Locked = 'Y' then 0 else 1 end as IsActive
+	,'HQ' as CompanyCode 
+	from [PUSRAWI_LIVE]..OPRC
+	where DimCode = 5
+)
+go
+drop table SAP_ITEM_AVAILABILITY
+go
+create VIEW [dbo].[SAP_ITEM_AVAILABILITY] AS
+SELECT '' + T1.WhsCode + T0.ItemCode as BoKey,T0.ItemCode,T0.ItemName, T2.ItmsGrpNam, T1.WhsCode COLLATE database_default as WhsCode, T1.OnHand, T1.IsCommited, T1.OnOrder, T0.SalUnitMsr, T0.BuyUnitMsr, InvntryUom
+, 'HQ' as CompanyCode
+FROM [PUSRAWI_LIVE]..OITM T0 inner join [PUSRAWI_LIVE]..OITW T1 on t0.ItemCode = t1.ItemCode 
+inner join [PUSRAWI_LIVE]..OITB T2 on T0.ItmsGrpCod = T2.ItmsGrpCod
+WHERE T0.InvntItem = 'Y'
+
+
+
+go
+

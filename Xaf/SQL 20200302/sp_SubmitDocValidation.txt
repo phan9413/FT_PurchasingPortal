@@ -1,0 +1,55 @@
+
+/****** Object:  StoredProcedure [dbo].[sp_SubmitDocValidation]    Script Date: 6/3/2020 5:54:08 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+create procedure
+[dbo].[sp_SubmitDocValidation] 
+@usercode nvarchar(50),
+@docid int,
+@objtype nvarchar(50)
+AS
+begin
+	DECLARE @newtable TABLE
+	(
+		ErrCode int,
+		ErrText nvarchar(1024)
+	)
+
+	declare @ErrCode int
+	declare @ErrText nvarchar(1024)
+
+	select @ErrCode = 0, @ErrText = ''
+	-- @ErrCode = 0 no error found
+	-------------------------------------------
+	declare @useroid uniqueidentifier
+
+	select @useroid = Oid from PermissionPolicyUser where UserName = @usercode
+
+	if @objtype = 'StockTransferRequest' -- OSTF
+	begin
+		select @useroid = Oid from PermissionPolicyUser where UserName = @usercode
+	end
+
+	if @objtype = 'PurchaseOrder' -- OPRQ
+	begin
+		select @useroid = Oid from PermissionPolicyUser where UserName = @usercode
+
+	end
+
+	if @objtype = 'PurchaseRequest' -- OPRE
+	begin
+		select @useroid = Oid from PermissionPolicyUser where UserName = @usercode
+
+	end
+
+	-------------------------------------------
+	insert into @newtable
+	( ErrCode, ErrText )
+	values
+	( @ErrCode, @ErrText )
+
+	select ErrCode, ErrText from @newtable
+end

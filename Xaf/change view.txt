@@ -1,0 +1,194 @@
+
+
+alter view vwAccounts
+as
+(
+	select '' + AcctCode as BoKey, FormatCode, AcctName, AcctCode, 1 as IsActive, 'HQ' as CompanyCode 
+	from [SBODemoGB]..OACT
+	where Postable = 'Y'
+)
+go
+
+alter view vwBusinessPartners
+as
+(
+	select '' + CardCode as BoKey, CardCode, CardName, case when frozenFor = 'Y' then 0 else 1 end as IsActive
+	,Currency, CardType
+	,'HQ' as CompanyCode 
+	from [SBODemoGB]..OCRD
+	
+)
+go
+
+alter view vwBillToAddress
+as
+(
+	select '' + CardCode + [Address] as BoKey, [Address] as [Name], [Address] + CHAR(13)+CHAR(10) + isnull(Street,'') as [Address], CardCode
+	,'HQ' as CompanyCode 
+	from [SBODemoGB]..CRD1
+	where AdresType = 'B'
+)
+go
+
+alter view vwShipToAddress
+as
+(
+	select '' + CardCode + [Address] as BoKey, [Address] as [Name], [Address] + CHAR(13)+CHAR(10) + isnull(Street,'') as [Address], CardCode
+	,'HQ' as CompanyCode 
+	from [SBODemoGB]..CRD1
+	where AdresType = 'S'
+)
+go
+
+alter view vwContactPersons
+as
+(
+	select '' + CardCode + convert(nvarchar,CntctCode) as BoKey, [Name] as [Name], CntctCode, CardCode
+	, case when Active = 'Y' then 1 else 0 end as IsActive
+	,'HQ' as CompanyCode 
+	from [SBODemoGB]..OCPR
+)
+go
+
+alter view vwCurrency
+as
+(
+	select '' + CurrCode as BoKey, CurrCode, CurrName
+	, 1 as IsActive, case when CurrCode = 'MYR' then 1 else 0 end as IsLC
+	,'HQ' as CompanyCode 
+	from [SBODemoGB]..OCRN
+)
+go
+
+alter view vwItemMasters
+as
+(
+	select '' + ItemCode as BoKey, ItemCode, ItemName
+	, case when frozenFor = 'Y' then 0 else 1 end as IsActive
+	, InvntItem, SellItem, PrchseItem
+	, NumInSale
+	, NumInBuy
+	, BuyUnitMsr
+	, SalUnitMsr
+	, InvntryUOM
+	,'HQ' as CompanyCode 
+	from [SBODemoGB]..OITM
+)
+go
+
+alter view vwPriceList
+as
+(
+	select '' + ListNum as BoKey, ListNum, ListName
+	, case when ValidFor = 'Y' then 1 else 0 end as IsActive
+	,'HQ' as CompanyCode 
+	from [SBODemoGB]..OPLN
+)
+go
+
+alter view vwProjects
+as
+(
+	select '' + PrjCode as BoKey, PrjCode, PrjName
+	, case when Active = 'Y' then 1 else 0 end as IsActive
+	,'HQ' as CompanyCode 
+	from [SBODemoGB]..OPRJ
+)
+go
+
+alter view vwSalesPersons
+as
+(
+	select '' + SlpCode as BoKey, SlpCode, SlpName
+	, case when Active = 'Y' then 1 else 0 end as IsActive
+	,'HQ' as CompanyCode 
+	from [SBODemoGB]..OSLP
+)
+go
+
+alter view vwTaxes
+as
+(
+	select '' + Code as BoKey, Code, [Name] as [Name], Category
+	, case when Inactive = 'Y' then 0 else 1 end as IsActive
+	,'HQ' as CompanyCode 
+	from [SBODemoGB]..OVTG
+)
+go
+
+alter view vwWarehouses
+as
+(
+	select '' + WhsCode as BoKey, WhsCode, WhsName
+	, case when Inactive = 'Y' then 0 else 1 end as IsActive
+	,'HQ' as CompanyCode 
+	from [SBODemoGB]..OWHS
+)
+go
+
+alter view vwDimension1
+as
+(
+	select '' + PrcCode as BoKey, PrcCode, PrcName
+	, case when Locked = 'Y' then 0 else 1 end as IsActive
+	,'HQ' as CompanyCode 
+	from [SBODemoGB]..OPRC
+	where DimCode = 1
+)
+go
+
+alter view vwDimension2
+as
+(
+	select '' + PrcCode as BoKey, PrcCode, PrcName
+	, case when Locked = 'Y' then 0 else 1 end as IsActive
+	,'HQ' as CompanyCode 
+	from [SBODemoGB]..OPRC
+	where DimCode = 2
+)
+go
+
+alter view vwDimension3
+as
+(
+	select '' + PrcCode as BoKey, PrcCode, PrcName
+	, case when Locked = 'Y' then 0 else 1 end as IsActive
+	,'HQ' as CompanyCode 
+	from [SBODemoGB]..OPRC
+	where DimCode = 3
+)
+go
+
+alter view vwDimension4
+as
+(
+	select '' + PrcCode as BoKey, PrcCode, PrcName
+	, case when Locked = 'Y' then 0 else 1 end as IsActive
+	,'HQ' as CompanyCode 
+	from [SBODemoGB]..OPRC
+	where DimCode = 4
+)
+go
+
+alter view vwDimension5
+as
+(
+	select '' + PrcCode as BoKey, PrcCode, PrcName
+	, case when Locked = 'Y' then 0 else 1 end as IsActive
+	,'HQ' as CompanyCode 
+	from [SBODemoGB]..OPRC
+	where DimCode = 5
+)
+go
+
+alter VIEW [dbo].[SAP_ITEM_AVAILABILITY] AS
+SELECT '' + T1.WhsCode + T0.ItemCode as BoKey,T0.ItemCode,T0.ItemName, T2.ItmsGrpNam, T1.WhsCode COLLATE database_default as WhsCode, T1.OnHand, T1.IsCommited, T1.OnOrder, T0.SalUnitMsr, T0.BuyUnitMsr, InvntryUom
+, 'HQ' as CompanyCode
+FROM [SBODemoGB]..OITM T0 inner join [SBODemoGB]..OITW T1 on t0.ItemCode = t1.ItemCode 
+inner join [SBODemoGB]..OITB T2 on T0.ItmsGrpCod = T2.ItmsGrpCod
+WHERE T0.InvntItem = 'Y'
+
+
+
+go
+

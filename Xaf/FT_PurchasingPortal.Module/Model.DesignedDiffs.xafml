@@ -1,0 +1,48 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Application Title="FT_PurchasingPortal">
+  <Options DataAccessMode="Server">
+    <LayoutManagerOptions RequiredFieldMark="*" CaptionHorizontalAlignment="Near" CaptionLocation="Left" />
+  </Options>
+  <SchemaModules>
+    <SchemaModule Name="CloneObjectModule" Version="19.2.6.0" IsNewNode="True" />
+    <SchemaModule Name="SchedulerModuleBase" Version="19.2.6.0" IsNewNode="True" />
+    <SchemaModule Name="SystemModule" Version="19.2.6.0" IsNewNode="True" />
+  </SchemaModules>
+  <Views>
+    <ListView Id="Approval_ApprovePosition_ListView" AllowNew="False" AllowLink="True" AllowDelete="False" AllowUnlink="True" />
+    <ListView Id="Approval_ApproveUser_ListView" AllowNew="False" AllowLink="True" AllowDelete="False" AllowUnlink="True" />
+    <ListView Id="Approval_BudgetMaster_ListView" AllowLink="True" AllowNew="False" AllowDelete="False" AllowUnlink="True" />
+    <ListView Id="DocTypeSeries_DetailBO_ListView" AllowDelete="False" AllowNew="False" AllowUnlink="True" AllowLink="True" />
+    <DetailView Id="PermissionPolicyRole_DetailView" AllowDelete="False" />
+    <ListView Id="PermissionPolicyRole_ListView" AllowDelete="False" />
+    <ListView Id="PermissionPolicyRole_Users_ListView" AllowDelete="False" AllowNew="False" AllowLink="True" AllowUnlink="True" />
+    <DetailView Id="PermissionPolicyUser_DetailView" AllowDelete="False" />
+    <ListView Id="PermissionPolicyUser_ListView" AllowDelete="False" />
+    <ListView Id="PermissionPolicyUser_Roles_ListView" AllowDelete="False" AllowNew="False" AllowUnlink="True" AllowLink="True" />
+    <DetailView Id="SystemUsers_DetailView_Copy" ClassName="FT_PurchasingPortal.Module.BusinessObjects.SystemUsers" IsNewNode="True">
+      <Items IsNewNode="True">
+        <PropertyEditor Id="ChangePasswordOnFirstLogon" PropertyName="ChangePasswordOnFirstLogon" IsNewNode="True" />
+        <PropertyEditor Id="Company" PropertyName="Company" IsNewNode="True" />
+        <PropertyEditor Id="Employee" PropertyName="Employee" IsNewNode="True" />
+        <PropertyEditor Id="IsActive" PropertyName="IsActive" IsNewNode="True" />
+        <PropertyEditor Id="Oid" PropertyName="Oid" IsNewNode="True" />
+        <PropertyEditor Id="Roles" PropertyName="Roles" View="PermissionPolicyUser_Roles_ListView" IsNewNode="True" />
+        <PropertyEditor Id="UserName" PropertyName="UserName" IsNewNode="True" />
+      </Items>
+      <Layout IsNewNode="True">
+        <LayoutGroup Id="Main" Index="0" ShowCaption="False" RelativeSize="100" IsNewNode="True">
+          <LayoutGroup Id="SimpleEditors" Index="0" ShowCaption="False" RelativeSize="24.920127795527158" IsNewNode="True">
+            <LayoutGroup Id="SystemUsers" Index="0" ShowCaption="False" RelativeSize="44.871794871794869" IsNewNode="True">
+              <LayoutItem Id="Company" ViewItem="Company" ShowCaption="" Index="0" RelativeSize="51.428571428571431" IsNewNode="True" />
+              <LayoutItem Id="Employee" ViewItem="Employee" ShowCaption="" Index="1" RelativeSize="48.571428571428569" IsNewNode="True" />
+            </LayoutGroup>
+            <LayoutGroup Id="PermissionPolicyUser" Index="1" ShowCaption="False" RelativeSize="55.128205128205131" Caption="PermissionPolicyUser" Direction="Horizontal" IsNewNode="True" />
+          </LayoutGroup>
+          <LayoutGroup Id="Roles_Group" Index="1" Direction="Vertical" ShowCaption="True" RelativeSize="75.079872204472849" IsNewNode="True">
+            <LayoutItem Id="Roles" ViewItem="Roles" ShowCaption="" Index="0" RelativeSize="100" IsNewNode="True" />
+          </LayoutGroup>
+        </LayoutGroup>
+      </Layout>
+    </DetailView>
+  </Views>
+</Application>

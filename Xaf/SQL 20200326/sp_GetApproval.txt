@@ -1,0 +1,517 @@
+
+/****** Object:  StoredProcedure [dbo].[sp_GetApproval]    Script Date: 28/4/2020 3:15:43 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+create procedure
+[dbo].[sp_GetApproval] 
+@usercode nvarchar(50),
+@docid int,
+@objtype nvarchar(50)
+AS
+begin
+	DECLARE @newtable TABLE
+	(
+		UserID uniqueidentifier,
+		Email nvarchar(max),
+		Url nvarchar(max),
+		EmailBody nvarchar(max)
+	)
+	-------------------------------------------
+	declare @url nvarchar(max)
+	declare @body nvarchar(max)
+	declare @cnt int
+	declare @useroid uniqueidentifier
+	declare @cruseroid uniqueidentifier
+	declare @companyoid int
+	declare @appstatusdocoid int
+	declare @isReqApp bit
+	declare @doctypeoid int
+	declare @docdate datetime
+	declare @approvaloid int
+	declare @apptype int
+	declare @appdocamount numeric(19,6)
+	declare @isoverride bit
+	declare @isreject bit
+	declare @approvalby int
+	declare @approvaldivision int
+	declare @approvallevel nvarchar(100)
+	declare @total numeric(19,6)
+	declare @budget numeric(19,6)
+	declare @budgetoid int
+	declare @employeeoid int
+	declare @budgetmasteroid int
+	declare @datefrom datetime
+	declare @dateto datetime
+	declare @newapprovalstatus int
+
+	select @useroid = Oid from PermissionPolicyUser where UserName = @usercode
+	select @cnt = 0
+
+	DROP TABLE IF EXISTS #doctable
+	DROP TABLE IF EXISTS #periodtable
+	DROP TABLE IF EXISTS #appstage
+	
+	CREATE TABLE #doctable
+	(
+		DocDate datetime,
+		Amt numeric(19,6),
+		Employee int,
+		Department int,
+		Position int,
+		Division int,
+		Account nvarchar(100),
+		Project nvarchar(100)
+	)
+
+	CREATE TABLE #periodtable
+	(
+		DocDate datetime,
+		Amt numeric(19,6),
+		Employee int,
+		Department int,
+		Position int,
+		Division int,
+		Account nvarchar(100),
+		Project nvarchar(100)
+
+	)
+
+	create table #appstage
+	(
+		Seq nvarchar(100),
+		ApprovalOID int
+	)
+
+	if @objtype = 'StockTransferRequest' -- OSTF
+	begin
+		select @companyoid = T0.Company, @employeeoid = T0.DocOwner, @cruseroid = T0.CreateUser, @doctypeoid = T0.DocType, @docdate = T0.DocDate 
+		, @isReqApp = T1.IsReqApp, @appstatusdocoid = T2.OID
+		from OSTF T0 inner join ODOC T1 on T0.DocType = T1.OID
+		inner join OSTFA T2 on T0.AppStatus = T2.OID
+		where T0.OID = @docid
+
+		update OSTFA1
+		set appstagedoc = null, gcrecord = 1
+		where appstagedoc = @appstatusdocoid
+		update OSTFA2
+		set appstagedoc = null, gcrecord = 1
+		where appstagedoc = @appstatusdocoid
+	end
+
+	if @objtype = 'PurchaseOrder' -- OPRQ
+	begin
+		select @url = '#ViewID=PurchaseOrder_DetailView&ObjectKey=' + CONVERT(nvarchar, @docid) + '&ObjectClassName=FT_PurchasingPortal.Module.BusinessObjects.PurchaseOrder&mode=View'		
+
+		select @companyoid = T0.Company, @employeeoid = T0.DocOwner, @cruseroid = T0.CreateUser, @doctypeoid = T0.DocType, @docdate = T0.DocDate 
+		, @isReqApp = T1.IsReqApp, @appstatusdocoid = T2.OID
+		from OPRQ T0 inner join ODOC T1 on T0.DocType = T1.OID
+		inner join OPRQA T2 on T0.AppStatus = T2.OID
+		where T0.OID = @docid
+
+		update OPRQA1
+		set appstagedoc = null, gcrecord = 1
+		where appstagedoc = @appstatusdocoid
+		update OPRQA2
+		set appstagedoc = null, gcrecord = 1
+		where appstagedoc = @appstatusdocoid
+
+		if @isReqApp = 1
+		begin
+			insert into #doctable
+			(Amt, DocDate, Employee, Department, Position, Division, Account, Project)
+			select sum(isnull(T1.LineTotal,0)), T0.DocDate, T0.DocOwner, T3.Department, T3.Position, T3.Division, T1.AcctCode, T1.PrjCode
+			from OPRQ T0 inner join OPRQ1 T1 on T0.OID = T1.PurchaseOrder
+			inner join OPRQD T2 on T0.DocStatus = T2.OID
+			inner join OEMP T3 on T0.DocOwner = T3.OID
+			where T0.OID = @docid
+			group by T0.DocDate, T0.DocOwner, T3.Department, T3.Position, T3.Division, T1.AcctCode, T1.PrjCode
+
+			insert into #periodtable
+			(Amt, DocDate, Employee, Department, Position, Division, Account, Project)
+			select sum(isnull(T1.LineTotal,0)), T0.DocDate, T0.DocOwner, T3.Department, T3.Position, T3.Division, T1.AcctCode, T1.PrjCode
+			from OPRQ T0 inner join OPRQ1 T1 on T0.OID = T1.PurchaseOrder
+			inner join OPRQD T2 on T0.DocStatus = T2.OID
+			inner join OEMP T3 on T0.DocOwner = T3.OID
+			where T0.OID <> @docid and T2.CurrDocStatus > 2 --in (3,4,5,6,7)
+			group by T0.DocDate, T0.DocOwner, T3.Department, T3.Position, T3.Division, T1.AcctCode, T1.PrjCode
+
+			insert into #periodtable
+			(Amt, DocDate, Employee, Department, Position, Division, Account, Project)
+			select sum(isnull(T1.LineTotal,0)), T0.DocDate, T0.DocOwner, T3.Department, T3.Position, T3.Division, T1.AcctCode, T1.PrjCode
+			from OPRQ T0 inner join OPRQ1 T1 on T0.OID = T1.PurchaseOrder
+			inner join OPRQD T2 on T0.DocStatus = T2.OID
+			inner join OEMP T3 on T0.DocOwner = T3.OID
+			where T0.OID = @docid
+			group by T0.DocDate, T0.DocOwner, T3.Department, T3.Position, T3.Division, T1.AcctCode, T1.PrjCode
+
+		end
+	end
+
+	if @objtype = 'PurchaseRequest' -- OPRE
+	begin
+		select @url = '#ViewID=PurchaseRequest_DetailView&ObjectKey=' + CONVERT(nvarchar, @docid) + '&ObjectClassName=FT_PurchasingPortal.Module.BusinessObjects.PurchaseRequest&mode=View'		
+
+		select @companyoid = T0.Company, @employeeoid = T0.DocOwner, @cruseroid = T0.CreateUser, @doctypeoid = T0.DocType, @docdate = T0.DocDate 
+		, @isReqApp = T1.IsReqApp, @appstatusdocoid = T2.OID
+		from OPRE T0 inner join ODOC T1 on T0.DocType = T1.OID
+		inner join OPREA T2 on T0.AppStatus = T2.OID
+		where T0.OID = @docid
+
+		update OPREA1
+		set appstagedoc = null, gcrecord = 1
+		where appstagedoc = @appstatusdocoid
+		update OPREA2
+		set appstagedoc = null, gcrecord = 1
+		where appstagedoc = @appstatusdocoid
+
+		if @isReqApp = 1
+		begin
+			insert into #doctable
+			(Amt, DocDate, Employee, Department, Position, Division, Account, Project)
+			select sum(isnull(T1.LineTotal,0)), T0.DocDate, T0.DocOwner, T3.Department, T3.Position, T3.Division, T1.AcctCode, T1.PrjCode
+			from OPRE T0 inner join OPRE1 T1 on T0.OID = T1.PurchaseRequest
+			inner join OPRED T2 on T0.DocStatus = T2.OID
+			inner join OEMP T3 on T0.DocOwner = T3.OID
+			where T0.OID = @docid
+			group by T0.DocDate, T0.DocOwner, T3.Department, T3.Position, T3.Division, T1.AcctCode, T1.PrjCode
+
+			insert into #periodtable
+			(Amt, DocDate, Employee, Department, Position, Division, Account, Project)
+			select sum(isnull(T1.LineTotal,0)), T0.DocDate, T0.DocOwner, T3.Department, T3.Position, T3.Division, T1.AcctCode, T1.PrjCode
+			from OPRE T0 inner join OPRE1 T1 on T0.OID = T1.PurchaseRequest
+			inner join OPRED T2 on T0.DocStatus = T2.OID
+			inner join OEMP T3 on T0.DocOwner = T3.OID
+			where T0.OID <> @docid and T2.CurrDocStatus > 2 --in (3,4,5,6,7)
+			group by T0.DocDate, T0.DocOwner, T3.Department, T3.Position, T3.Division, T1.AcctCode, T1.PrjCode
+
+			insert into #periodtable
+			(Amt, DocDate, Employee, Department, Position, Division, Account, Project)
+			select sum(isnull(T1.LineTotal,0)), T0.DocDate, T0.DocOwner, T3.Department, T3.Position, T3.Division, T1.AcctCode, T1.PrjCode
+			from OPRE T0 inner join OPRE1 T1 on T0.OID = T1.PurchaseRequest
+			inner join OPRED T2 on T0.DocStatus = T2.OID
+			inner join OEMP T3 on T0.DocOwner = T3.OID
+			where T0.OID = @docid
+			group by T0.DocDate, T0.DocOwner, T3.Department, T3.Position, T3.Division, T1.AcctCode, T1.PrjCode
+
+		end
+
+	end
+
+	if @isReqApp = 1
+	begin
+
+		DECLARE db_cursor CURSOR FOR 
+		select OID, AppType, DocAmount, IsOverride, IsReject, ApprovalBy, isnull(Division,0), ApprovalLevel
+		from OAPP where IsActive = 1 and DocType = @doctypeoid and Company = @companyoid
+		order by AppType, ApprovalLevel desc
+
+		OPEN db_cursor  
+		FETCH NEXT FROM db_cursor INTO @approvaloid, @apptype, @appdocamount, @isoverride, @isreject, @approvalby, @approvaldivision, @approvallevel
+
+		WHILE @@FETCH_STATUS = 0  
+		BEGIN
+			select @total = 0
+			select @budget = 0
+		
+			if @apptype = 0 --0 = Budget
+			begin
+				-- budget by period
+				select @budgetoid = 0
+
+				select top 1 @budgetoid = T9.OID
+				from OBUM T8
+				inner join OBUMBudgetMaster_OAPPApproval T7 on T7.Approval = @approvalOid and T7.BudgetMaster = T8.OID
+				inner join OBUD T9 on T8.OID = T9.BudgetMaster and T9.DateFrom <= @docdate and T9.DateTo >= @docdate				
+				inner join #doctable T5 
+				on ((T8.Employee is not null and T8.Employee = T5.Employee) or T8.Employee is null) and 
+				((T8.Account is not null and T8.Account = T5.Account) or T8.Account is null) and 
+				((T8.Department is not null and T8.Department = T5.Department) or T8.Department is null) and 
+				((T8.Project is not null and T8.Project = T5.Project) or T8.Project is null) and 
+				((T8.Position is not null and T8.Position = T5.Position) or T8.Position is null) and
+				((T8.Division is not null and T8.Division = T5.Division) or T8.Division is null)
+				where T8.IsActive = 1
+				and T8.BudgetType = 0 -- 0 = Period
+				order by T9.DateFrom, T9.OID
+
+				if @budgetoid > 0
+				begin
+					select @budget = Amount, @datefrom = DateFrom, @dateto = DateTo, @budgetmasteroid = BudgetMaster from OBUD where OID = @budgetoid
+
+					select @total = sum(T5.Amt)
+					from OBUM T8
+					inner join OBUD T9 on T8.OID = T9.BudgetMaster and T9.OID = @budgetoid and T8.OID = @budgetmasteroid
+					inner join #periodtable T5 
+					on ((T8.Employee is not null and T8.Employee = T5.Employee) or T8.Employee is null) and 
+					((T8.Account is not null and T8.Account = T5.Account) or T8.Account is null) and 
+					((T8.Department is not null and T8.Department = T5.Department) or T8.Department is null) and 
+					((T8.Project is not null and T8.Project = T5.Project) or T8.Project is null) and 
+					((T8.Position is not null and T8.Position = T5.Position) or T8.Position is null) and
+					((T8.Division is not null and T8.Division = T5.Division) or T8.Division is null)
+					where T8.IsActive = 1
+					and T5.DocDate >= @datefrom and 
+						T5.DocDate <= @dateto
+				end
+				else
+				begin
+					-- budget by document
+					select @budgetoid = 0
+
+					select @total = sum(Amt)
+					from
+					#doctable
+
+					select top 1 @budgetoid = T8.OID, @budget = T8.Amount
+					from OBUM T8
+					inner join OBUMBudgetMaster_OAPPApproval T7 on T7.Approval = @approvaloid and T7.BudgetMaster = T8.OID
+					inner join #doctable T5 
+					on ((T8.Employee is not null and T8.Employee = T5.Employee) or T8.Employee is null) and 
+					((T8.Account is not null and T8.Account = T5.Account) or T8.Account is null) and 
+					((T8.Department is not null and T8.Department = T5.Department) or T8.Department is null) and 
+					((T8.Project is not null and T8.Project = T5.Project) or T8.Project is null) and 
+					((T8.Position is not null and T8.Position = T5.Position) or T8.Position is null) and
+					((T8.Division is not null and T8.Division = T5.Division) or T8.Division is null)
+					where T8.IsActive = 1
+					and T8.BudgetType = 1 -- 0 = Document
+					and T8.Amount <= @total
+					order by T8.Amount desc, T8.OID
+
+					select @total = 0
+
+					if @budgetoid > 0
+					begin
+						select @total = sum(Amt)
+						from
+						#doctable
+					end
+				end
+			end
+			else if @apptype = 1 --1 = Document
+			begin
+				select @budget = @appdocamount
+				select @total = sum(Amt)
+				from
+				#doctable
+
+			end
+
+
+			if @total > @budget and @isreject = 1
+			begin
+				delete from @newtable
+				select @cnt = 1
+
+				insert into #appstage
+				( Seq, ApprovalOID )
+				values
+				( @approvallevel, @approvaloid )
+
+				select @body = 'Dear Sir,' + CHAR(13)+CHAR(10) + CHAR(13)+CHAR(10) + 'Please click following link to reject the Claim Document.'
+				
+				if @approvalby = 0 -- 0 = Approve by SystemUser
+				begin
+					insert into @newtable
+					( UserID, Email, Url, EmailBody )
+					select T3.Oid, T6.UserEmail, @url, @body
+					from OAPP T0
+					inner join OEMPApproveUser_OAPPApproveApproval T2 on T0.OID = T2.ApproveApproval
+					inner join OEMP T6 on T2.ApproveUser = T6.OID
+					inner join OSUR T3 on T6.SystemUser = T3.Oid
+					where T0.OID = @approvaloid
+				end
+				if @approvalby = 1
+				begin
+					if @approvaldivision > 0
+					begin
+						insert into @newtable
+						( UserID, Email, Url, EmailBody )
+						select T3.Oid, T6.UserEmail, @url, @body
+						from OAPP T0
+						inner join OPOSApprovePosition_OAPPApproveApproval T2 on T0.OID = T2.ApproveApproval
+						inner join OPOS T5 on T5.OID = T2.ApprovePosition
+						inner join OEMP T6 on T6.Position = T5.OID
+						inner join OSUR T3 on T6.SystemUser = T3.Oid
+						where T0.OID = @approvaloid and
+							T6.Division = @approvaldivision
+					end
+					else
+					begin
+						insert into @newtable
+						( UserID, Email, Url, EmailBody )
+						select T3.Oid, T6.UserEmail, @url, @body
+						from OAPP T0
+						inner join OPOSApprovePosition_OAPPApproveApproval T2 on T0.OID = T2.ApproveApproval
+						inner join OPOS T5 on T5.OID = T2.ApprovePosition
+						inner join OEMP T6 on T6.Position = T5.OID
+						inner join OSUR T3 on T6.SystemUser = T3.Oid
+						where T0.OID = @approvaloid
+					end
+				end
+
+ --       Not_Applicable = 0,
+ --       Approved = 1,
+ --       Required_Approval = 2,
+ --       Rejected = 3
+				select @newapprovalstatus = 3
+
+				break
+			end
+
+
+			if @total > @budget and @isreject = 0
+			begin
+				select @body = 'Dear Sir,' + CHAR(13)+CHAR(10) + CHAR(13)+CHAR(10) + 'Please click following link to approve the Claim Document.'
+
+				insert into #appstage
+				( Seq, ApprovalOID )
+				values
+				( @approvallevel, @approvaloid )
+
+				if @approvalby = 0 -- 0 = Approve by SystemUser
+				begin
+					select @cnt = @cnt + 1
+					if @cnt = 1
+					begin
+						insert into @newtable
+						( UserID, Email, Url, EmailBody )
+						select T3.Oid, T6.UserEmail, @url, @body
+						from OAPP T0
+						inner join OEMPApproveUser_OAPPApproveApproval T2 on T0.OID = T2.ApproveApproval
+						inner join OEMP T6 on T2.ApproveUser = T6.OID
+						inner join OSUR T3 on T6.SystemUser = T3.Oid
+						where T0.OID = @approvaloid
+					end
+				end
+				if @approvalby = 1 -- 0 = Position
+				begin
+
+					select @cnt = @cnt + 1
+					if @cnt = 1
+					begin
+						if @approvaldivision > 0
+						begin
+							insert into @newtable
+							( UserID, Email, Url, EmailBody )
+							select T3.Oid, T6.UserEmail, @url, @body
+							from OAPP T0
+							inner join OPOSApprovePosition_OAPPApproveApproval T2 on T0.OID = T2.ApproveApproval
+							inner join OPOS T5 on T5.OID = T2.ApprovePosition
+							inner join OEMP T6 on T6.Position = T5.OID
+							inner join OSUR T3 on T6.SystemUser = T3.Oid
+							where T0.OID = @approvaloid and
+								T6.Division = @approvaldivision
+						end
+						else
+						begin
+							insert into @newtable
+							( UserID, Email, Url, EmailBody )
+							select T3.Oid, T6.UserEmail, @url, @body
+							from OAPP T0
+							inner join OPOSApprovePosition_OAPPApproveApproval T2 on T0.OID = T2.ApproveApproval
+							inner join OPOS T5 on T5.OID = T2.ApprovePosition
+							inner join OEMP T6 on T6.Position = T5.OID
+							inner join OSUR T3 on T6.SystemUser = T3.Oid
+							where T0.OID = @approvaloid
+						end
+
+					end
+				end
+ --       Not_Applicable = 0,
+ --       Approved = 1,
+ --       Required_Approval = 2,
+ --       Rejected = 3
+				select @newapprovalstatus = 2
+
+				if @isoverride = 1
+				begin
+					break
+				end
+			end
+
+			FETCH NEXT FROM db_cursor INTO @approvaloid, @apptype, @appdocamount, @isoverride, @isreject, @approvalby, @approvaldivision, @approvallevel
+
+		end
+
+		CLOSE db_cursor  
+		DEALLOCATE db_cursor 
+
+		if exists (select top 1 * from #appstage)
+		begin
+
+			if @objtype = 'StockTransferRequest' -- OSTF
+			begin
+				update T1 set T1.ApprovalStatus = @newapprovalstatus 
+				from OSTFA T1 inner join OSTF T0 on T0.AppStatus = T1.OID
+				where T0.OID = @docid
+
+				if @newapprovalstatus = 3
+				begin
+					update T1 set T1.CurrDocStatus = 2 
+					from OSTFD T1 inner join OSTF T0 on T0.AppStatus = T1.OID
+					where T0.OID = @docid
+				end
+
+				insert into OSTFA1
+				( Approval, AppStageDoc, EmailCnt, OptimisticLockField )
+				select ApprovalOID, @appstatusdocoid, 0, 0
+				from #appstage
+				order by seq
+			end
+
+			if @objtype = 'PurchaseOrder' -- OPRQ
+			begin
+				update T1 set T1.ApprovalStatus = @newapprovalstatus 
+				from OPRQA T1 inner join OPRQ T0 on T0.AppStatus = T1.OID
+				where T0.OID = @docid
+
+				if @newapprovalstatus = 3
+				begin
+					update T1 set T1.CurrDocStatus = 2 
+					from OPRQD T1 inner join OPRQ T0 on T0.AppStatus = T1.OID
+					where T0.OID = @docid
+				end
+
+				insert into OPRQA1
+				( Approval, AppStageDoc, EmailCnt, OptimisticLockField )
+				select ApprovalOID, @appstatusdocoid, 0, 0
+				from #appstage
+				order by seq
+			end
+
+			if @objtype = 'PurchaseRequest' -- OPRE
+			begin
+				update T1 set T1.ApprovalStatus = @newapprovalstatus 
+				from OPREA T1 inner join OPRE T0 on T0.AppStatus = T1.OID
+				where T0.OID = @docid
+
+				if @newapprovalstatus = 3
+				begin
+					update T1 set T1.CurrDocStatus = 2 
+					from OPRED T1 inner join OPRE T0 on T0.AppStatus = T1.OID
+					where T0.OID = @docid
+				end
+
+				insert into OPREA1
+				( Approval, AppStageDoc, EmailCnt, OptimisticLockField )
+				select ApprovalOID, @appstatusdocoid, 0, 0
+				from #appstage
+				order by seq
+			end
+		end
+
+	end
+
+	DROP TABLE IF EXISTS #doctable
+	DROP TABLE IF EXISTS #periodtable
+	DROP TABLE IF EXISTS #appstage
+
+
+
+	select UserID, Email, Url, EmailBody from @newtable
+end
+
+
+
+

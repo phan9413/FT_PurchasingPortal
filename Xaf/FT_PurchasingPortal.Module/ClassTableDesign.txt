@@ -1,0 +1,376 @@
+﻿=================================================================
+[YourClass1] (Description...)
+	- YourProperty1 (Description...)
+	- YourProperty2 (Description...)
+	- [YourClass2] (Description...)
+	----- <[YourClass3]> (1 to many / many to many)
+
+[YourTable1] (select from yourtable/yourview/yourclass, Description...)
+	- YourColumn1 (key)
+	- YourColumn2 (Description..., unique = nonkey column but unique)
+	- YourColumn3 (Description...)
+	----- <[YourTable2]> (1 to many / many to many)
+=================================================================
+[TrxDocType] (enum)
+    AP = 0,
+    AR = 1
+	
+[LineStatusEnum] (enum)
+    Open = 0,
+    Close = 1,
+    Cancel = 2,
+    Delete = 3
+
+[DocumentStatus] (enum)
+    Draft = 0, (new create document / doc user press save)
+    Cancelled = 1, (once doc userpress cancel button)
+    Rejected = 2, (once approverejected / or reject user press reject button)
+    Submited = 3, (once doc userpress submit button (trigger approval base on approval condition))
+    Accepted = 4, (once approveuser approval completed / or no approval required after press submit button)
+    Closed = 5, (once closeuser press close button)
+    Posted = 6, (once postuser press post button)
+	PostedCancel = 7 (once sap posting error)
+
+[ApprovalStatus] (enum)
+    Not_Applicable = 0,
+    Approved = 1,
+    Required_Approval = 2,
+    Rejected = 3
+
+[ParamType] (enum)
+    STRING = 0
+    DATE = 1
+
+[PostToDocument] (enum)
+    Draft = 0
+    Document = 1
+
+[ApprovalBy] (enum)
+	User = 0
+	Position = 1
+
+[AppType] (enum)
+    Budget = 0
+    Document = 1
+
+[BudgetType] (enum)
+    Period = 0
+    Document = 1
+
+[DocType] (select from ODOC, system default document type)
+	{
+	SalesQuotation
+	SalesAgreement
+	SalesOrder
+	PurchaseOrder
+	PurchaseOrder
+	StockTransferRequest
+	}
+	- BoCode (doctype code, unique)
+	- BoName (doctype name)
+	- IsActive (active)
+	- IsReqApp (require approval)
+	- IsNoAppReject (reject without approval)
+	----- <[DocTypeSeries]> (1 to many)
+
+[DocTypeSeries] (select from ODTS, document type's series)
+	- [DocType] (document type)
+	- BoCode (document series code, unique)
+	- BoName (document series name)
+	- Prefix (Prefix to shown in document)
+	- [DocType] (document type)
+	- [PostToDocument] (enum)
+	- SAPSeries (sap document series number)
+	- [Company] (belong to which company)
+	----- <[DocTypeSeriesDoc]> (1 to 1)
+
+[DocTypeSeriesDoc] (select from ODTS1, store next number of series)
+	- [DocTypeSeries] (document type's series)
+	- NextDocNo (next number)
+
+
+[FilteringCriterion] (select from OFTC, filtering listview)
+	- Description (description to display)
+	- [ObjectType] (all classes)
+	- Criterion (special filtering criteria)
+	- Remarks (remarks)
+	----- <[FilteringCriterionRole]> (1 to many)
+
+[FilteringCriterionRole] (select from OFTC1, filtering listview role)
+	- [Filtering->FilteringCriterion]
+	- [FilterRole->PermissionPolicyRole]
+	- Description
+
+[CrReport] (select from OCRR, crystal report setup)
+	- [Company] (belong to which company)
+	- ReportName (report name, unique)
+	- ReportPathFile (report path + filename)
+	----- <[CrReportParam]> (1 to many)
+
+[CrReportParam] (select from OCRP, crystal report parameters)
+	- [CrReport] (crystal report setup))
+	- ParamCode (crystal report parameter code)
+	- ParamName (parameter display name)
+	- [ParamType] (enum)
+	- ParamSQL (no function yet)
+
+[Company] (select from OCMP, Company setting - allowed multiple company as per SAP database)
+	- BoCode (sap company databasename, unique)
+	- BoName (company name)
+	- [ApprovalBy] (default approval by)
+	- [AppType] (default approval type)
+	- LocalCurreny (local currency)
+	- WhsCode (default warehouse)
+	- InputTax (default input tax)
+	- OutputTax (default output tax)
+	- DepartmentToDimension (which dimesion to be post to when there is a department, zero value = post nothing)
+	- DivisionToDimension (which dimesion to be post to when there is a division, zero value = post nothing)
+	- [FTModule] (enable portal's module)
+	- [FTSAPConn] (sap DIAPI connection details)
+	- [FTCrystalReportConn] (Crystal Report Webapi connection details)
+
+[FTModule] (select from OMOD, module control)
+	- PurchaseOrder (FT control)
+	- PurchaseOrder (FT control)
+	- SalesQuotation (FT control)
+	- SalesAgreement (FT control)
+	- SalesOrder (FT control)
+	- StockRequest (FT control)
+
+[FTSAPConn] (select from OSAC, SAP diapi connection)
+	- B1Post
+	- B1Server
+	- B1CompanyDB
+	- B1License
+	- B1Language
+	- B1DbServerType
+	- B1DbUserName
+	- B1DbPassword
+	- B1AttachmentPath
+
+[FTCrystalReportConn] (select from OCRC, crystal report connection)
+	- CrServer (crystal report server)
+	- CrDatabase (crystal report database)
+	- CrDBUser (crystal report db user id)
+	- CrDBPwd (crystal report db user password)
+
+
+[Position] (select from OPOS, Only 1 set of Positions is allowed.)
+	* Approval can be done by Position level
+	- BoCode (position code)
+	- BoName (position name)
+	- IsActive (active)
+	----- <[Employee]> (1 to many)
+	----- <[Approval]> (many to many)
+
+[SystemUser] (select from OSUR, Portal Login, *if 1 user want to access multiple company, must create multiple user id as per company.)
+	* Approval can be done by SystemUser level
+	- [Company] (belong to which company)
+	- [Employee] (User Details)
+	- WhsCode (user warehouse)
+
+[Employee] (select from OEMP, User Details)
+	- SAPUserID (sap client login user id)
+	- SAPPassword (sap client login user password)
+	- FullName (full name)
+	- UserEmail (email)
+	- ICNo (IC)
+	- [Department] (For Approval)
+	- [Division] (For Approval)
+	- [Position] (For Approval)
+	- [SystemUser] (portal login)
+
+[vwCurrency] (select from vwCurrency, only 1 set of currency allowed.)
+	- BoKey (currency code from sap)
+	- CurrCode (currency code from sap)
+	- CurrName (currency name from sap)
+	- IsActive (active)
+	- CompanyCode (sap databasename)
+
+[vwAccounts] (select from vwAccounts, use companycode to differenciate multi company)
+	- BoKey (concate CompanyCode + FormatCode)
+	- FormatCode (formatcode from sap)
+	- AcctName (acctname from sap)
+	- AcctCode (acctcode from sap)
+	- IsActive
+	- CompanyCode (sap databasename)
+
+[vwBusinessPartners] (select from vwBusinessPartners, use companycode to differenciate multi company)
+	- BoKey (concate CompanyCode + CardCode)
+	- CardCode (bp code)
+	- CardName (bp name)
+	- Currency (currency)
+	- CardType (bp type)
+	- IsActive 
+	- CompanyCode (sap databasename)
+
+[vwContactPersons] (select from vwContactPersons, use companycode to differenciate multi company)
+	- BoKey (concate CompanyCode + CardCode + CntctCode)
+	- Name (contact Name)
+	- CntctCode (contact code)
+	- CardCode (bp code)
+	- CompanyCode (sap databasename)
+
+[vwBillToAddress] (select from vwBillToAddress, use companycode to differenciate multi company)
+	- BoKey (concate CompanyCode + CardCode + Name)
+	- Name (address name)
+	- Address (full address)
+	- CardCode (bp code)
+	- CompanyCode (sap databasename)
+
+[vwShipToAddress] (select from vwShipToAddress, use companycode to differenciate multi company)
+	- BoKey (concate CompanyCode + CardCode + Name)
+	- Name (address name)
+	- Address (full address)
+	- CardCode (bp code)
+	- CompanyCode (sap databasename)
+
+[vwProjects] (select from vwProjects, use companycode to differenciate multi company)
+	- BoKey (concate CompanyCode + PrjCode)
+	- PrjCode (project code from sap)
+	- PrjName (project name from sap)
+	- IsActive (active)
+	- CompanyCode (sap databasename)
+
+[vwWarehouses] (select from vwWarehouses, use companycode to differenciate multi company)
+	- BoKey (concate CompanyCode + WhsCode)
+	- WhsCode (warehouse code from sap)
+	- WhsName (warehouse name from sap)
+	- IsActive (active)
+	- CompanyCode (sap databasename)
+
+[vwItemMasters] (select from vwItemMasters, use companycode to differenciate multi company)
+	- BoKey (concate CompanyCode + ItemCode)
+	- ItemCode (item code from sap)
+	- ItemName (item name from sap)
+	- IsActive (active)
+	- InvntItem (stock item)
+	- SellItem (sales item)
+	- PrchseItem (purchase item)
+	- NumInSale (item per sales unit)
+	- NumInBuy (item per purchase unit)
+	- BuyUnitMsr (item purchase uom)
+	- SalUnitMsr (item sales uom)
+	- InvntryUOM (item inventory uom)
+	- CompanyCode (sap databasename)
+
+[vwPriceList] (select from vwPriceList, use companycode to differenciate multi company)
+	- BoKey (concate CompanyCode + ListNum)
+	- ListNum (warehouse code from sap)
+	- ListName (warehouse name from sap)
+	- IsActive (active)
+	- CompanyCode (sap databasename)
+
+[vwSalesPersons] (select from vwSalesPersons, use companycode to differenciate multi company)
+	- BoKey (concate CompanyCode + SlpCode)
+	- SlpCode (warehouse code from sap)
+	- SlpName (warehouse name from sap)
+	- IsActive (active)
+	- CompanyCode (sap databasename)
+
+[vwTaxes] (select from vwTaxes, only 1 set of taxcode allowed.)
+	- BoKey (tax code from sap)
+	- Code (tax code from sap)
+	- Name (tax name from sap)
+	- IsActive (active)
+	- Category (input / output tax)
+	- CompanyCode (sap databasename)
+
+[vwDimension1] (select from vwDimension1, use companycode to differenciate multi company)
+	- BoKey (concate CompanyCode + PrcCode)
+	- PrcCode (dimension code from sap)
+	- PrcName (dimension name from sap)
+	- IsActive (active)
+	- CompanyCode (sap databasename)
+
+[vwDimension2] (select from vwDimension2, use companycode to differenciate multi company)
+	- BoKey (concate CompanyCode + PrcCode)
+	- PrcCode (dimension code from sap)
+	- PrcName (dimension name from sap)
+	- IsActive (active)
+	- CompanyCode (sap databasename)
+
+[vwDimension3] (select from vwDimension3, use companycode to differenciate multi company)
+	- BoKey (concate CompanyCode + PrcCode)
+	- PrcCode (dimension code from sap)
+	- PrcName (dimension name from sap)
+	- IsActive (active)
+	- CompanyCode (sap databasename)
+
+[vwDimension4] (select from vwDimension4, use companycode to differenciate multi company)
+	- BoKey (concate CompanyCode + PrcCode)
+	- PrcCode (dimension code from sap)
+	- PrcName (dimension name from sap)
+	- IsActive (active)
+	- CompanyCode (sap databasename)
+
+[vwDimension5] (select from vwDimension5, use companycode to differenciate multi company)
+	- BoKey (concate CompanyCode + PrcCode)
+	- PrcCode (dimension code from sap)
+	- PrcName (dimension name from sap)
+	- IsActive (active)
+	- CompanyCode (sap databasename)
+
+[Department] (select from ODEP, use companycode to differenciate multi company)
+	- BoCode (code)
+	- BoName (name)
+	- IsActive (active)
+	- [Company] (belong to which company)
+
+[Division] (select from ODIV, use companycode to differenciate multi company)
+	- BoCode (code)
+	- BoName (name)
+	- IsActive (active)
+	- [Company] (belong to which company)
+
+[Approval] (select from OAPP, approval stage setup)
+	- [Company] (belong to which company)
+	- BoCode (approval code, unique)
+	- BoName (approval name)
+	- [DocType] (system default)
+	- [AppType] (enum)
+	- ApprovalCnt (number of approval)
+	- ApprovalLevel (approval level, in descending sequence)
+	- DocAmount (minimum doc value to trigger approval, when [AppType] = Document)
+	- IsActive (active)
+	- IsOverride (when true skip lower level approval stage)
+	- IsReject (direct reject document when approval hit )
+	- IsAppReject (direct reject document when approval reject)
+	- [ApprovalBy] (enum)
+	- [Division] (approval by position's division. when [ApprovalBy] = Position)
+	----- <[SystemUser]> (many to many, when [ApprovalBy] = User)
+	----- <[Position]> (many to many, when [ApprovalBy] = Position)
+	----- <[BudgetMaster]> (many to many, when [AppType] = Budget)
+
+[BudgetMaster] (select from OBUM, budget setup for approval)
+	- [Company] (belong to which company)
+	- BoCode (budget master code, unique)
+	- BoName (budget master name)
+	- IsActive (active)
+	- [Employee] (For Approval)
+	- [Department] (For Approval)
+	- [Division] (For Approval)
+	- [Position] (For Approval)
+	- [Account->vwAccounts] (For Approval)
+	- [Project->vwProjects] (For Approval)
+	- [BudgetType] (enum)
+	- Amount (minimum doc value to trigger approval, when [BudgetType] = Document)
+	----- <[Budget]> (1 to many)
+
+[Budget] (select from OBUD, actualy figure setup for each [BudgetMaster])
+	- BudgetYear (year of DateFrom)
+	- DateFrom (budget period from)
+	- DateTo (budget period to)
+	- Amount (budget amount)
+	- AllocatedAmount (budget amount used)
+	- [BudgetMaster] (budget setup for approval)
+
+
+[MyNotification] (select from OMNT, notification module)
+	- Id (key)
+	- Subject (subject)
+	- DueDate (due date)
+	- AssignedTo [SystemUser] (user to assign)
+	- MyTask (task)
+
+[vwSAP_ITEM_AVAILABILITY] (select from SAP_ITEM_AVAILABILITY, sap stock table)

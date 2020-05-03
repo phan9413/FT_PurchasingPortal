@@ -1,0 +1,276 @@
+﻿=================================================================
+[YourClass1] (Description...)
+	- YourProperty1 (Description...)
+	- YourProperty2 (Description...)
+	- [YourClass2] (Description...)
+	----- <[YourClass3]> (1 to many / many to many)
+
+[YourTable1] (select from yourtable/yourview/yourclass, Description...)
+	- YourColumn1 (key)
+	- YourColumn2 (Description..., unique = nonkey column but unique)
+	- YourColumn3 (Description...)
+	----- <[YourTable2]> (1 to many / many to many)
+=================================================================
+#class start
+
+[ClassAppStatusDoc] (class, approval document)
+	- [ApprovalStatus] (enum)
+	- [CurrApproval->Approval] (current document approval)
+	- ApprovedEmailCnt (count of Approved email sent)
+
+[ClassAppStage] (class, approval stage)
+	- [AppStageDoc] (approval document)
+	- [Approval] (approval)
+	- EmailCnt (count of email sent)
+
+[ClassAppStatus] (class, approval status done)
+	- [AppStageDoc] (approval document)
+	- [Approval] (approval)
+	- [CreateUser->SystemUser]
+	- CreateDate
+	- [UpdateUser->SystemUser]
+	- UpdateDate
+	- [ApprovalStatus] (enum)
+	- ApprovalRemarks
+
+[ClassDocStatusDoc] (class, document status document)
+	- [CurrDocStatus->DocStatus] (enum, current document Document Status)
+	- SAPPostCancelRemarks (sap posting failed remarks)
+	- IsSAPPosted (sap post success)
+
+[ClassDocStatus] (class, document status)
+	- [DocStatus] (enum)
+	- DocStatusRemarks
+	- [CreateUser->SystemUser]
+	- CreateDate
+
+[ClassDocument] (class, transaction document)
+	- [Company]
+	- [DocType]
+	- [DocTypeSeries]
+	- DocNum (sequence no of DocNo)
+	- DocNo (actual document number with prefix)
+	- DocDate (posting date)
+	- DocDueDate (due date)
+	- TaxDate (doc date)
+	- CardType (bp type)
+	- [CardCode->vwBusinessPartners]
+	- CardName (bp name)
+	- [CncttCode->vwContactPersons]
+	- NumAtCard (ref no)
+	- [DocCur->vwCurrency]
+	- [ShipToCode->vwShipToAddress]
+	- Address2 (shipt to addrss)
+	- [BillToCode->vwShipToAddress]
+	- Address (bill to addrsss)
+	- [SlpCode->vwSalesPersons]
+	- JrnMemo (journal memo)
+	- Comments (remarks)
+	- DocTotal (doc total)
+	- DocTotalFC (doc total fc)
+	- [DocOwner->Employee]
+	- [CreateUser->SystemUser]
+	- CreateDate
+	- [UpdateUser->SystemUser]
+	- UpdateDate
+
+[ClassDocumentDetail] (class, transaction document detail)
+	- [ObjType->DocType]
+	- [Company]
+	- VisOrder
+	- [ItemCode->vwItemMasters]
+	- Dscription
+	- [WhsCode->vwWarehouses]
+	- [OcrCode1->vwDimension1]
+	- [OcrCode2->vwDimension2]
+	- [OcrCode3->vwDimension3]
+	- [OcrCode4->vwDimension4]
+	- [OcrCode5->vwDimension5]
+	- [PrjCode->vwProjects]
+	- Quantity
+	- UnitMsr
+	- UnitPrice
+	- LineTotal
+	- LineTotalFC
+	- [AcctCode->vwAccounts]
+	- [LineStatus->LineStatusEnum]
+	- [CreateUser->SystemUser]
+	- CreateDate
+	- [UpdateUser->SystemUser]
+	- UpdateDate
+	- CopyQty
+	- CopyCreQty
+	- OpenQty
+	- OpenCreQty
+
+[ClassStockTransferDocument] (class, stock transaction document)
+	- [Company]
+	- [DocType]
+	- [DocTypeSeries]
+	- DocNum (sequence no of DocNo)
+	- DocNo (actual document number with prefix)
+	- DocDate (posting date)
+	- DocDueDate (due date)
+	- TaxDate (doc date)
+	- [CardCode->vwBusinessPartners] (bp)
+	- CardName (bp name)
+	- [CncttCode->vwContactPersons] (contact person)
+	- [ShipToCode->vwShipToAddress] (ship to address)
+	- Address (ship to address) (ship to full address)
+	- [GroupNum->vwPriceList] (price list)
+	- [Filler->vwWarehouses] (from warehouse)
+	- [ToWhsCode->vwWarehouses] (to warehouse)
+	- [SlpCode->vwSalesPersons] (sales person)
+	- JrnMemo (journal memo)
+	- PickRmrk (pick and pack remarks)
+	- Comments (remarks)
+	- [DocOwner->Employee]
+	- [CreateUser->SystemUser]
+	- CreateDate
+	- [UpdateUser->SystemUser]
+	- UpdateDate
+
+[ClassStockTransferDocumentDetail] (class, stock transaction document detail)
+	- [ObjType->DocType]
+	- [Company]
+	- VisOrder
+	- [ItemCode->vwItemMasters] (item)
+	- Dscription (description)
+	- SerialNum (serial no)
+	- [FromWhsCod->vwWarehouses] (from warehouse)
+	- [WhsCode->vwWarehouses] (to warehouse)
+	- [OcrCode->vwDimension1] (dimension 1)
+	- [OcrCode2->vwDimension2] (dimension 2)
+	- [OcrCode3->vwDimension3] (dimension 3)
+	- [OcrCode4->vwDimension4] (dimension 4)
+	- [OcrCode5->vwDimension5] (dimension 5)
+	- [PrjCode->vwProjects] (project)
+	- Quantity (quantity)
+	- UnitMsr (uom)
+	- [CreateUser->SystemUser]
+	- CreateDate
+	- [UpdateUser->SystemUser]
+	- UpdateDate
+
+[ClassUDFHeader] (class for header UDF, all UDF start with 'U_')
+
+[ClassUDFDetail] (class for detail UDF, all UDF start with 'U_')
+
+#class end
+
+=================================================================
+#purchase order start
+
+[PurchaseOrderApp->ClassAppStatusDoc] (select from OPRQA, purchase order approval document)
+	- [CurrAppStage->PurchaseOrderAppStage]
+	---- <[PurchaseOrderAppStage]> (1 to many)
+	---- <[PurchaseOrderAppStatus]> (1 to many)
+
+[PurchaseOrderAppStage->ClassAppStage] (select from OPRQA1, purchase order approval stage)
+	- [AppStageDoc->PurchaseOrderApp] (purchase request approval document)
+
+[PurchaseOrderAppStatus->ClassAppStatus] (select from OPRQA2, purchase order approval status done)
+	- [AppStageDoc->PurchaseOrderApp] (purchase request approval document)
+	- [AppStage->PurchaseOrderAppStage] 
+
+[PurchaseOrderDoc->ClassDocStatusDoc] (select from OPRQD, purchase order doc status document)
+	---- <[PurchaseOrderDocStatus]> (1 to many)
+
+[PurchaseOrderDocStatus->ClassDocStatus] (select from OPRQD1, purchase order doc status)
+	- [DocStatusDoc->PurchaseOrderDoc] (purchase request doc status document)
+
+
+[PurchaseOrder->ClassDocument] (select from OPRQ, purchase order)
+	- [DocStatus->PurchaseOrderDoc] (purchase request doc status document)
+	- [AppStatus->PurchaseOrderApproval] (purchase request approval document)
+	- [UDFs->PurchaseOrderUDF] (purchase request udf)
+	---- <[PurchaseOrderDetail]> (1 to many)
+
+[PurchaseOrderDetail->ClassDocumentDetail] (select from OPRQ1, purchase order detail)
+	- [UDFs->PurchaseOrderDetailUDF] (purchase request detail udf)
+	- [PurchaseOrder] (purchase order)
+
+[PurchaseOrderUDF->ClassUDFHeader] (select from OPRQU, purchase order udf)
+	-
+
+[PurchaseOrderDetailUDF->ClassUDFDetail] (select from OPRQ1U, purchase order detail udf)
+	-
+
+#purchase order end
+=================================================================
+#purchase request start
+
+[PurchaseRequestApp->ClassAppStatusDoc] (select from OPREA, purchase request approval document)
+	- [CurrAppStage->PurchaseRequestAppStage]
+	---- <[PurchaseRequestAppStage]> (1 to many)
+	---- <[PurchaseRequestAppStatus]> (1 to many)
+
+[PurchaseRequestAppStage->ClassAppStage] (select from OPREA1, purchase request approval stage)
+	- [AppStageDoc->PurchaseRequestApp] (purchase request approval document)
+
+[PurchaseRequestAppStatus->ClassAppStatus] (select from OPREA2, purchase request approval status done)
+	- [AppStageDoc->PurchaseRequestApp] (purchase request approval document)
+	- [AppStage->PurchaseRequestAppStage] 
+
+
+[PurchaseRequestDoc->ClassDocStatusDoc] (select from OPRED, purchase request doc status document)
+	---- <[PurchaseRequestDocStatus]> (1 to many)
+
+[PurchaseRequestDocStatus->ClassDocStatus] (select from OPRED1, purchase request doc status)
+	- [DocStatusDoc->PurchaseRequestDoc] (purchase request doc status document)
+
+
+[PurchaseOrder->ClassDocument] (select from OPRE, purchase request)
+	- [DocStatus->PurchaseRequestDoc] (purchase request doc status document)
+	- [AppStatus->PurchaseRequestApproval] (purchase request approval document)
+	- [UDFs->PurchaseRequestUDF] (purchase request udf)
+	---- <[PurchaseRequestDetail]> (1 to many)
+
+[PurchaseRequestDetail->ClassDocumentDetail] (select from OPRE1, purchase request detail)
+	- [UDFs->PurchaseRequestDetailUDF] (purchase request detail udf)
+	- [PurchaseRequest] (purchase request)
+
+[PurchaseRequestUDF->ClassUDFHeader] (select from OPREU, purchase request udf)
+	-
+
+[PurchaseRequestDetailUDF->ClassUDFDetail] (select from OPRE1U, purchase request detail udf)
+	-
+
+#purchase request end
+=================================================================
+#stock transfer request start
+[StockTransferRequestApp->ClassAppStatusDoc] (select from OSTFEA, stock transfer request approval document)
+	- [CurrAppStage->StockTransferRequestAppStage]
+	---- <[StockTransferRequestAppStage]> (1 to many)
+	---- <[StockTransferRequestAppStatus]> (1 to many)
+
+[StockTransferRequestAppStage->ClassAppStage] (select from OSTFA1, stock transfer request approval stage)
+	- [AppStageDoc->StockTransferRequestApp] (purchase request approval document)
+
+[StockTransferRequestAppStatus->ClassAppStatus] (select from OSTFA2, stock transfer request approval status done)
+	- [AppStageDoc->StockTransferRequestApp] (purchase request approval document)
+	- [AppStage->StockTransferRequestAppStage] 
+
+[StockTransferRequestDoc->ClassDocStatusDoc] (select from OSTFD, stock transfer request doc status document)
+	---- <[StockTransferRequestDocStatus]> (1 to many)
+
+[StockTransferRequestDocStatus->ClassDocStatus] (select from OSTFD1, stock transfer request doc status)
+	- [DocStatusDoc->StockTransferRequestDoc] (stock transfer request doc status document)
+
+[StockTransferRequest->ClassStockTransferDocument] (select from OSTF, stock transfer request)
+	- [DocStatus->StockTransferOrderDoc] (stock transfer request doc status document)
+	- [UDFs->StockTransferOrderUDF] (purchase request udf)
+	---- <[StockTransferRequestDetail]> (1 to many)
+
+[StockTransferRequestDetail->ClassStockTransferDocumentDetail] (select from OSTF1, stock transfer request detail)
+	- [UDFs->PurchaseOrderDetailUDF] (stock transfer request detail udf)
+	- [StockTransferRequest] (stock transfer request)
+
+[StockTransferRequestUDF->ClassUDFHeader] (select from OSTFU, stock transfer request udf)
+	-
+
+[StockTransferRequestDetailUDF->ClassUDFDetail] (select from OSTF1U, stock transfer request detail udf)
+	-
+
+
+#stock transfer request end

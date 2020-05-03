@@ -1,0 +1,128 @@
+update OPRE set DocStatus = null, AppStatus = null, UDFs = null
+go
+update OPRE1 set UDFs = null
+go
+update OPREA set CurrAppStage = null
+go
+delete from OPRE1U
+go
+DBCC CHECKIDENT ('OPRE1U', RESEED, 0)
+go
+delete from OPREU
+go
+DBCC CHECKIDENT ('OPREU', RESEED, 0)
+go
+delete from OPRE1
+go
+DBCC CHECKIDENT ('OPRE1', RESEED, 0)
+go
+delete from OPRED1
+go
+DBCC CHECKIDENT ('OPRED1', RESEED, 0)
+go
+delete from OPRED
+go
+DBCC CHECKIDENT ('OPRED', RESEED, 0)
+go
+delete from OPREA2
+go
+DBCC CHECKIDENT ('OPREA2', RESEED, 0)
+go
+delete from OPREA1
+go
+DBCC CHECKIDENT ('OPREA1', RESEED, 0)
+go
+delete from OPREA
+go
+DBCC CHECKIDENT ('OPREA', RESEED, 0)
+go
+delete from OPRE
+go
+DBCC CHECKIDENT ('OPRE', RESEED, 0)
+go
+
+update OPRQ set DocStatus = null, AppStatus = null, UDFs = null
+go
+update OPRQ1 set UDFs = null
+go
+update OPRQA set CurrAppStage = null
+go
+delete from OPRQ1U
+go
+DBCC CHECKIDENT ('OPRQ1U', RESEED, 0)
+go
+delete from OPRQU
+go
+DBCC CHECKIDENT ('OPRQU', RESEED, 0)
+go
+delete from OPRQ1
+go
+DBCC CHECKIDENT ('OPRQ1', RESEED, 0)
+go
+delete from OPRQD1
+go
+DBCC CHECKIDENT ('OPRQD1', RESEED, 0)
+go
+delete from OPRQD
+go
+DBCC CHECKIDENT ('OPRQD', RESEED, 0)
+go
+delete from OPRQA2
+go
+DBCC CHECKIDENT ('OPRQA2', RESEED, 0)
+go
+delete from OPRQA1
+go
+DBCC CHECKIDENT ('OPRQA1', RESEED, 0)
+go
+delete from OPRQA
+go
+DBCC CHECKIDENT ('OPRQA', RESEED, 0)
+go
+delete from OPRQ
+go
+DBCC CHECKIDENT ('OPRQ', RESEED, 0)
+go
+
+update OSTF set DocStatus = null, AppStatus = null, UDFs = null
+go
+update OSTF1 set UDFs = null
+go
+update OSTFA set CurrAppStage = null
+go
+delete from OSTF1U
+go
+DBCC CHECKIDENT ('OSTF1U', RESEED, 0)
+go
+delete from OSTFU
+go
+DBCC CHECKIDENT ('OSTFU', RESEED, 0)
+go
+delete from OSTF1
+go
+DBCC CHECKIDENT ('OSTF1', RESEED, 0)
+go
+delete from OSTFD1
+go
+DBCC CHECKIDENT ('OSTFD1', RESEED, 0)
+go
+delete from OSTFD
+go
+DBCC CHECKIDENT ('OSTFD', RESEED, 0)
+go
+delete from OSTFA2
+go
+DBCC CHECKIDENT ('OSTFA2', RESEED, 0)
+go
+delete from OSTFA1
+go
+DBCC CHECKIDENT ('OSTFA1', RESEED, 0)
+go
+delete from OSTFA
+go
+DBCC CHECKIDENT ('OSTFA', RESEED, 0)
+go
+delete from OSTF
+go
+DBCC CHECKIDENT ('OSTF', RESEED, 0)
+go

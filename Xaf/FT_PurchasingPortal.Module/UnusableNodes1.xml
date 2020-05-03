@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Application>
+  <Views Id="Views">
+    <DetailView Id="SystemUsers_DetailView_Copy">
+      <Items Id="Items">
+        <PropertyEditor Id="WhsCode" PropertyName="WhsCode" />
+        <PropertyEditor Id="MyNotification" PropertyName="MyNotification" View="SystemUsers_MyNotification_ListView" />
+        <PropertyEditor Id="Employee" PropertyName="Employee" />
+      </Items>
+    </DetailView>
+  </Views>
+</Application>

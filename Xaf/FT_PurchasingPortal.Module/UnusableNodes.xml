@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Application>
+  <BOModel Id="BOModel">
+    <Class Name="FT_PurchasingPortal.Module.BusinessObjects.Employees">
+      <OwnMembers Id="OwnMembers">
+        <Member Name="TypePassword" IsPassword="True" />
+      </OwnMembers>
+    </Class>
+    <Class Name="FT_PurchasingPortal.Module.BusinessObjects.FTCrystalReportConns">
+      <OwnMembers Id="OwnMembers">
+        <Member Name="TypePassword" IsPassword="True" />
+      </OwnMembers>
+    </Class>
+    <Class Name="FT_PurchasingPortal.Module.BusinessObjects.FTSAPConns">
+      <OwnMembers Id="OwnMembers">
+        <Member Name="TypePassword" IsPassword="True" />
+      </OwnMembers>
+    </Class>
+  </BOModel>
+  <Views Id="Views">
+    <ListView Id="Approvals_ApprovalPosition_ListView" AllowDelete="False" AllowNew="False" AllowLink="True" AllowUnlink="True" />
+    <ListView Id="Approvals_ApprovalUser_ListView" AllowDelete="False" AllowLink="True" AllowNew="False" AllowUnlink="True" />
+    <ListView Id="Approvals_BudgetMaster_ListView" AllowDelete="False" AllowNew="False" AllowLink="True" AllowUnlink="True" />
+    <ListView Id="Approvals_TriggerPosition_ListView" AllowDelete="False" AllowNew="False" AllowLink="True" AllowUnlink="True" />
+    <ListView Id="Approvals_TriggerUser_ListView" AllowDelete="False" AllowNew="False" AllowLink="True" AllowUnlink="True" />
+    <ListView Id="BudgetMasters_Approval_ListView" AllowDelete="False" AllowNew="False" AllowLink="True" AllowUnlink="True" />
+    <ListView Id="BudgetMasters_Budget_ListView" AllowDelete="False" AllowNew="False" AllowLink="True" AllowUnlink="True" />
+  </Views>
+</Application>

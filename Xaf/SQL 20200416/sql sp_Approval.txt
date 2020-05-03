@@ -1,0 +1,410 @@
+
+/****** Object:  StoredProcedure [dbo].[sp_Approval]    Script Date: 28/4/2020 3:15:14 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+create procedure
+[dbo].[sp_Approval] 
+@usercode nvarchar(50),
+@docid int,
+@objtype nvarchar(50),
+@appstatus int,
+@appremarks nvarchar(100),
+@curappstage int
+
+
+AS
+begin
+	DECLARE @newtable TABLE
+	(
+		UserID uniqueidentifier,
+		Email nvarchar(max),
+		Url nvarchar(max),
+		EmailBody nvarchar(max)
+	)
+
+	--DROP TABLE IF EXISTS #appstage
+	--DROP TABLE IF EXISTS #appstatus
+
+	CREATE TABLE #appstage
+	(
+		Oid int,
+		Approval int,
+		AppCnt int
+	)
+	CREATE TABLE #appstatus
+	(
+		Oid int,
+		Approval int,
+		AppStage int,
+		AppStatus int,
+		CreateUser uniqueidentifier,
+		CreateEmp int,
+		PositionOid int
+	)
+
+ --@appstatus
+ --       Not_Applicable = 0,
+ --       Approved = 1,
+ --       Required_Approval = 2,
+ --       Rejected = 3
+	declare @curapprovaloid int
+ 	declare @appstagedoc int
+ 	declare @approval int
+ 	declare @approvalcnt int
+ 	declare @appstagecnt int
+ 	declare @appdonecnt int
+ 	declare @temp int
+ 	declare @url nvarchar(max)
+	declare @body nvarchar(max)
+	declare @approvalby int
+	declare @approvaldivision int
+	declare @nextapproval int
+	declare @newapprovalstatus int
+	declare @now datetime
+	declare @userid uniqueidentifier
+
+	select @userid = Oid from PermissionPolicyUser where UserName = @usercode
+	select @now = getdate()
+	select @newapprovalstatus = 2
+
+	if @objtype = 'StockTransferRequest' -- OSTF
+	begin
+		select @appstagedoc = T11.OID, @approval = T9.OID, @approvalcnt = T9.ApprovalCnt, @approvalby = T9.ApprovalBy, @approvaldivision = isnull(T9.Division,0)
+		from OSTF T0
+			inner join OSTFA T11 on T0.AppStatus = T11.OID
+			inner join OSTFA1 T1 on T11.OID = T1.AppStageDoc
+			inner join OAPP T9 on T1.Approval = T9.OID and T9.IsActive = 1
+			inner join OCMP T10 on T0.Company = T10.OID
+		where T0.OID = @docid and
+			T1.OID = @curappstage
+
+		insert into OSTFA2
+		(Approval, CreateUser, CreateDate, ApprovalStatus, ApprovalRemarks, AppStageDoc, AppStage, OptimisticLockField)
+		values
+		(@approval, @userid, @now, @appstatus, @appremarks, @appstagedoc, @curappstage, 0)
+	end
+	if @objtype = 'PurchaseOrder' -- OPRQ
+	begin
+		select @url = '#ViewID=PurchaseOrder_DetailView&ObjectKey=' + CONVERT(nvarchar, @docid) + '&ObjectClassName=FT_PurchasingPortal.Module.BusinessObjects.PurchaseOrder&mode=View'
+
+		select @appstagedoc = T11.OID, @approval = T9.OID, @approvalcnt = T9.ApprovalCnt, @approvalby = T9.ApprovalBy, @approvaldivision = isnull(T9.Division,0)
+		from OPRQ T0
+			inner join OPRQA T11 on T0.AppStatus = T11.OID
+			inner join OPRQA1 T1 on T11.OID = T1.AppStageDoc
+			inner join OAPP T9 on T1.Approval = T9.OID and T9.IsActive = 1
+			inner join OCMP T10 on T0.Company = T10.OID
+		where T0.OID = @docid and
+			T1.OID = @curappstage
+
+		insert into OPRQA2
+		(Approval, CreateUser, CreateDate, ApprovalStatus, ApprovalRemarks, AppStageDoc, AppStage, OptimisticLockField)
+		values
+		(@approval, @userid, @now, @appstatus, @appremarks, @appstagedoc, @curappstage, 0)
+
+		insert into #appstage
+		( Oid, Approval, AppCnt )
+		select T1.OID, T1.Approval, T9.ApprovalCnt
+		from OPRQ T0
+			inner join OPRQA T11 on T0.AppStatus = T11.OID
+			inner join OPRQA1 T1 on T11.OID = T1.AppStageDoc
+			inner join OAPP T9 on T1.Approval = T9.OID and T9.IsActive = 1
+		where T0.OID = @docid
+		
+		insert into #appstatus
+		( Oid, Approval, AppStage, AppStatus, CreateUser, CreateEmp, PositionOid )
+		select T1.OID, T2.Approval, T1.AppStage, T1.ApprovalStatus, T1.CreateUser, T6.OID, T6.OID
+		from OPRQ T0
+			inner join OPRQA T11 on T0.AppStatus = T11.OID
+			inner join OPRQA2 T1 on T11.OID = T1.AppStageDoc
+			inner join OPRQA1 T2 on T11.OID = T2.AppStageDoc and T2.OID = T1.AppStage
+			inner join OAPP T9 on T2.Approval = T9.OID and T9.IsActive = 1
+			inner join OSUR T5 on T1.CreateUser = T5.Oid
+			inner join OEMP T6 on T5.Employee = T6.OID
+		where T0.OID = @docid
+
+	end
+	if @objtype = 'PurchaseRequest' -- OPRE
+	begin
+		select @url = '#ViewID=PurchaseRequest_DetailView&ObjectKey=' + CONVERT(nvarchar, @docid) + '&ObjectClassName=FT_PurchasingPortal.Module.BusinessObjects.PurchaseRequest&mode=View'
+		
+
+		select @appstagedoc = T11.OID, @approval = T9.OID, @approvalcnt = T9.ApprovalCnt, @approvalby = T9.ApprovalBy, @approvaldivision = isnull(T9.Division,0)
+		from OPRE T0
+			inner join OPREA T11 on T0.AppStatus = T11.OID
+			inner join OPREA1 T1 on T11.OID = T1.AppStageDoc
+			inner join OAPP T9 on T1.Approval = T9.OID and T9.IsActive = 1
+			inner join OCMP T10 on T0.Company = T10.OID
+		where T0.OID = @docid and
+			T1.OID = @curappstage
+
+		insert into OPREA2
+		(Approval, CreateUser, CreateDate, ApprovalStatus, ApprovalRemarks, AppStageDoc, AppStage, OptimisticLockField)
+		values
+		(@approval, @userid, @now, @appstatus, @appremarks, @appstagedoc, @curappstage, 0)
+
+		insert into #appstage
+		( Oid, Approval, AppCnt )
+		select T1.OID, T1.Approval, T9.ApprovalCnt
+		from OPRE T0
+			inner join OPREA T11 on T0.AppStatus = T11.OID
+			inner join OPREA1 T1 on T11.OID = T1.AppStageDoc
+			inner join OAPP T9 on T1.Approval = T9.OID and T9.IsActive = 1
+		where T0.OID = @docid
+		
+		insert into #appstatus
+		( Oid, Approval, AppStage, AppStatus, CreateUser, CreateEmp, PositionOid )
+		select T1.OID, T2.Approval, T1.AppStage, T1.ApprovalStatus, T1.CreateUser, T6.OID, T6.Position
+		from OPRE T0
+			inner join OPREA T11 on T0.AppStatus = T11.OID
+			inner join OPREA2 T1 on T11.OID = T1.AppStageDoc
+			inner join OPREA1 T2 on T11.OID = T2.AppStageDoc and T2.OID = T1.AppStage
+			inner join OAPP T9 on T2.Approval = T9.OID and T9.IsActive = 1
+			inner join OSUR T5 on T1.CreateUser = T5.Oid
+			inner join OEMP T6 on T5.Employee = T6.OID
+		where T0.OID = @docid
+	end
+
+
+		if @appstatus = 0
+		begin
+			delete from @newtable
+		end
+
+		if @appstatus = 1 or @appstatus = 2
+		begin
+			select @nextapproval = 0
+
+			select top 1 @nextapproval = T1.Approval
+			from #appstage T1
+			where
+				T1.OID > @curappstage
+			order by T1.OID
+			if @nextapproval is null
+			begin
+				select @nextapproval = 0
+			end
+
+			select @appdonecnt = 0
+
+			select @appdonecnt = count(*)
+			from #appstage T1
+			where T1.OID < @curappstage
+					
+			select @appstagecnt = count(*)
+			from #appstage
+
+
+			select @temp = 0
+
+			if @approvalby = 0 -- 0 = SystemUser
+			begin
+				select @temp = count(*) from OAPP T1 
+				inner join OEMPApproveUser_OAPPApproveApproval T2 on T1.OID = T2.ApproveApproval
+				inner join #appstatus T9 on T9.CreateEmp = T2.ApproveUser
+				where T1.OID = @approval and
+					T9.AppStatus = 1 and -- approved
+					T9.AppStage = @curappstage
+			end
+			if @approvalby = 1 -- 1 = Position
+			begin
+				select @temp = count(*) from OAPP T1 
+				inner join OPOSApprovePosition_OAPPApproveApproval T2 on T1.OID = T2.ApproveApproval
+				inner join #appstatus T9 on T9.PositionOid = T2.ApprovePosition
+				where T1.OID = @approval and
+					T9.AppStatus = 1 and -- approved
+					T9.AppStage = @curappstage
+			end
+			if @approvalby = 2 -- 1 = Position
+			begin
+				select @temp = count(*) from OAPP T1 
+				inner join #appstatus T9 on T1.OID = T9.Approval
+				where T1.OID = @approval and
+					T9.AppStatus = 1 and -- approved
+					T9.AppStage = @curappstage
+			end
+			if @temp is null
+			begin
+				select @temp = 0
+			end
+			if @appstatus = 2
+			begin
+				select @newapprovalstatus = 2
+			end
+			else if @temp >= @approvalcnt and @appstatus = 1
+			begin
+				select @appdonecnt = @appdonecnt + 1
+
+				if @appdonecnt >= @appstagecnt
+				begin
+					select @newapprovalstatus = 1
+
+					select @body = 'Dear Sir,' + CHAR(13)+CHAR(10) + CHAR(13)+CHAR(10) + 'Please click following link to close the Claim Document.'
+
+					--if @approvalby = 0
+					--begin
+					--	insert into @newtable
+					--	( UserID, Email, Url, EmailBody )
+					--	select T3.Oid, case when isnull(T3.UserEmail,'') = '' then isnull(T6.UserEmail,'') else T3.UserEmail end, @url, @body
+					--	from Approvals T0
+					--	inner join SystemUsersTriggerUser_ApprovalsTriggerApproval T2 on T2.TriggerApproval = T0.OID
+					--	inner join SystemUsers T3 on T2.TriggerUser = T3.Oid
+					--	left join Employees T6 on T6.SystemUser = T3.OID
+					--	where T0.OID = @approval
+					--end
+					--if @approvalby = 1
+					--begin
+					--	if @approvaldivision > 0
+					--	begin
+					--		insert into @newtable
+					--		( UserID, Email, Url, EmailBody )
+					--		select T3.Oid, case when isnull(T3.UserEmail,'') = '' then T6.UserEmail else T3.UserEmail end, @url, @body
+					--		from Approvals T0
+					--		inner join PositionsTriggerPosition_ApprovalsTriggerApprovalPosition T2 on T0.OID = T2.TriggerApprovalPosition
+					--		inner join Positions T5 on T5.OID = T2.TriggerPosition
+					--		inner join Employees T6 on T6.Position = T5.OID
+					--		inner join SystemUsers T3 on T6.SystemUser = T3.Oid
+					--		where T0.OID = @approval and
+					--			T6.Division = @approvaldivision
+					--	end
+					--	else
+					--	begin
+					--		insert into @newtable
+					--		( UserID, Email, Url, EmailBody )
+					--		select T3.Oid, case when isnull(T3.UserEmail,'') = '' then T6.UserEmail else T3.UserEmail end, @url, @body
+					--		from Approvals T0
+					--		inner join PositionsTriggerPosition_ApprovalsTriggerApprovalPosition T2 on T0.OID = T2.TriggerApprovalPosition
+					--		inner join Positions T5 on T5.OID = T2.TriggerPosition
+					--		inner join Employees T6 on T6.Position = T5.OID
+					--		inner join SystemUsers T3 on T6.SystemUser = T3.Oid
+					--		where T0.OID = @approval
+					--	end
+					--end
+				end
+				else
+				begin
+					select @newapprovalstatus = 2
+
+					--if @approvalby = 0
+					--begin
+					--	insert into @newtable
+					--	( UserID, Email, Url, EmailBody )
+					--	select T3.Oid, case when isnull(T3.UserEmail,'') = '' then isnull(T6.UserEmail,'') else T3.UserEmail end, @url, @body
+					--	from Approvals T0
+					--	inner join SystemUsersTriggerUser_ApprovalsTriggerApproval T2 on T2.TriggerApproval = T0.OID
+					--	inner join SystemUsers T3 on T2.TriggerUser = T3.Oid
+					--	left join Employees T6 on T6.SystemUser = T3.OID
+					--	where T0.OID = @nextapproval
+					--end
+					--if @approvalby = 1
+					--begin
+					--	if @approvaldivision > 0
+					--	begin
+					--		insert into @newtable
+					--		( UserID, Email, Url, EmailBody )
+					--		select T3.Oid, case when isnull(T3.UserEmail,'') = '' then T6.UserEmail else T3.UserEmail end, @url, @body
+					--		from Approvals T0
+					--		inner join PositionsApprovalPosition_ApprovalsUserApprovalPosition T2 on T0.OID = T2.UserApprovalPosition
+					--		inner join Positions T5 on T5.OID = T2.ApprovalPosition
+					--		inner join Employees T6 on T6.Position = T5.OID
+					--		inner join SystemUsers T3 on T6.SystemUser = T3.Oid
+					--		where T0.OID = @nextapproval and
+					--			T6.Division = @approvaldivision
+					--	end
+					--	else
+					--	begin
+					--		insert into @newtable
+					--		( UserID, Email, Url, EmailBody )
+					--		select T3.Oid, case when isnull(T3.UserEmail,'') = '' then T6.UserEmail else T3.UserEmail end, @url, @body
+					--		from Approvals T0
+					--		inner join PositionsApprovalPosition_ApprovalsUserApprovalPosition T2 on T0.OID = T2.UserApprovalPosition
+					--		inner join Positions T5 on T5.OID = T2.ApprovalPosition
+					--		inner join Employees T6 on T6.Position = T5.OID
+					--		inner join SystemUsers T3 on T6.SystemUser = T3.Oid
+					--		where T0.OID = @nextapproval
+					--	end
+					--end
+				end
+
+			end
+		end
+
+		if @appstatus = 3 -- rejected
+		begin
+			select @newapprovalstatus = 3
+
+
+			select @body = 'Dear Sir,' + CHAR(13)+CHAR(10) + CHAR(13)+CHAR(10) + 'Please click following link to reject the Claim Document.'
+
+				--if @approvalby = 0
+				--begin
+				--	insert into @newtable
+				--	( UserID, Email, Url, EmailBody )
+				--	select T3.Oid, case when isnull(T3.UserEmail,'') = '' then isnull(T6.UserEmail,'') else T3.UserEmail end, @url, @body
+				--	from Approvals T9
+				--	inner join SystemUsersTriggerUser_ApprovalsTriggerApproval T5 on T5.TriggerApproval = T9.OID
+				--	inner join SystemUsers T3 on T5.TriggerUser = T3.Oid
+				--	left join Employees T6 on T6.SystemUser = T3.Oid
+				--	where  T9.OID = @approval
+				--end
+				--if @approvalby = 1
+				--begin
+				--	if @approvaldivision > 0
+				--	begin
+				--		insert into @newtable
+				--		( UserID, Email, Url, EmailBody )
+				--		select T3.Oid, case when isnull(T3.UserEmail,'') = '' then isnull(T6.UserEmail,'') else T3.UserEmail end, @url, @body
+				--		from Approvals T0
+				--		inner join PositionsTriggerPosition_ApprovalsTriggerApprovalPosition T2 on T0.OID = T2.TriggerApprovalPosition
+				--		inner join Positions T5 on T5.OID = T2.TriggerPosition
+				--		inner join Employees T6 on T6.Position = T5.OID
+				--		inner join SystemUsers T3 on T6.SystemUser = T3.Oid
+				--		where T0.OID = @approval and
+				--			T6.Division = @approvaldivision
+				--	end
+				--	else
+				--	begin
+				--		insert into @newtable
+				--		( UserID, Email, Url, EmailBody )
+				--		select T3.Oid, case when isnull(T3.UserEmail,'') = '' then isnull(T6.UserEmail,'') else T3.UserEmail end, @url, @body
+				--		from Approvals T0
+				--		inner join PositionsTriggerPosition_ApprovalsTriggerApprovalPosition T2 on T0.OID = T2.TriggerApprovalPosition
+				--		inner join Positions T5 on T5.OID = T2.TriggerPosition
+				--		inner join Employees T6 on T6.Position = T5.OID
+				--		inner join SystemUsers T3 on T6.SystemUser = T3.Oid
+				--		where T0.OID = @approval
+				--	end
+				--end
+
+		end
+
+
+	if @objtype = 'StockTransferRequest' -- OSTF
+	begin
+		update T1 set T1.ApprovalStatus = @newapprovalstatus 
+		from OSTFA T1 inner join OSTF T0 on T0.AppStatus = T1.OID
+		where T0.OID = @docid
+	end
+
+	if @objtype = 'PurchaseOrder' -- OPRQ
+	begin
+		update T1 set T1.ApprovalStatus = @newapprovalstatus 
+		from OPRQA T1 inner join OPRQ T0 on T0.AppStatus = T1.OID
+		where T0.OID = @docid
+	end
+
+	if @objtype = 'PurchaseRequest' -- OPRE
+	begin
+		update T1 set T1.ApprovalStatus = @newapprovalstatus 
+		from OPREA T1 inner join OPRE T0 on T0.AppStatus = T1.OID
+		where T0.OID = @docid
+	end
+
+	DROP TABLE #appstage
+	DROP TABLE #appstatus
+
+	select @newapprovalstatus
+	--select UserID, Email, Url, EmailBody from @newtable
+  
+end

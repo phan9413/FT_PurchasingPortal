@@ -1,0 +1,37 @@
+﻿=================================================================
+[YourController] (Descriptoin...)
+	- YourButton (Purpose/Descriptoin...)
+
+[YourFunctionClass] (Description...)
+	- YourFunction (Purpose/Description...)
+=================================================================
+[CreateObjectController] (controller to handle new object creation)
+	- Controller_ObjectCreated (event to handle new object creation)
+
+[FilteringCriterionController] (controller to handle list view filtering from filtering criterion)
+
+[GenController] (controller to handle general activities)
+	- openNewView (function call new window)
+	- showMsg (function call messagebox)
+
+[vwSAP_ITEM_AVAILABILITYController] (controller to handle vwSAP_ITEM_AVAILABILITY)
+	- CopyToSTR (button selected row to create new stock transfer request)
+
+[DocumentDVController] (controller to handle document transaction and status)
+	- SubmitDoc (button submit document, only available when [CurrDocStatus->DocStatus] in (Draft, Rejected))
+	- PostDoc (button post document, only available when [CurrDocStatus->DocStatus] in (Closed))
+	- CloseDoc (button post document, only available when [CurrDocStatus->DocStatus] in (Accepted, PostedCancel))
+	- CancelDoc (button post document, only available when [CurrDocStatus->DocStatus] in (Draft, Rejected))
+	- RejectDoc (button post document, only available when [CurrDocStatus->DocStatus] in (Submited, Accepted, Closed, PostedCancel))
+	- SwitchView (button switch to viewmode)
+	- ApprovalDoc (button for approval)
+
+[CopyController] (controller to handle copy from & copy to)
+	- CopyFromDocument (function handle copy from)
+	- CopyToDocument (function handle copy to)
+
+[PurchaseOrderController]
+	- CopyFromPR (button copy items from PR)
+
+[PurchaseRequestController]
+	-CopyToPO (button copy items from PO)

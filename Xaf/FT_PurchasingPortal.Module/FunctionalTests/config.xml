@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Options xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" TestRunTimeLimit="3" EnableUpperCase="FT_PurchasingPortal.Web">
+	<Applications>
+		<!-- Win -->
+		<Application
+			Name="FT_PurchasingPortalWin"
+			FileName="[WinAppBin]\FT_PurchasingPortal.Win.exe"
+			AdapterAssemblyName="[WinAdapterAssemblyName]"
+			CommunicationPort="4100"/>
+		<!-- Web -->
+		<Application
+			Name="FT_PurchasingPortalWeb"
+			UseIISExpress="True"
+			Url="http://localhost:4030"
+			PhysicalPath="[WebAppBin]"
+			AdapterAssemblyName="[WebAdapterAssemblyName]"
+			IgnoreCase="true"/>
+		<!-- For IIS -->
+		<!--Application
+			Name="FT_PurchasingPortalWeb"
+			Url="http://localhost/FT_PurchasingPortal.Web/Default.aspx"
+			AdapterAssemblyName="[WebAdapterAssemblyName]"
+			IgnoreCase="true"/-->
+	</Applications>
+	<TestDatabases>
+		<Database xsi:type="TestMSSQLDatabase" Server="(localdb)\mssqllocaldb" DBName="FT_PurchasingPortalEasyTest"/>
+	</TestDatabases>
+
+	<Aliases>
+		<Alias Name="DomainUserName" Value="%USERDOMAIN%\%USERNAME%" />
+		<Alias Name="WinAdapterAssemblyName" Value="DevExpress.ExpressApp.EasyTest.WinAdapter.v19.2, Version=19.2.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
+		<Alias Name="WebAdapterAssemblyName" Value="DevExpress.ExpressApp.EasyTest.WebAdapter.v19.2, Version=19.2.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
+		<Alias Name="WinAppBin" Value="[ConfigPath]\..\..\FT_PurchasingPortal.Win\Bin\EasyTest" />
+		<Alias Name="WebAppBin" Value="[ConfigPath]\..\..\FT_PurchasingPortal.Web" />
+	</Aliases>
+</Options>

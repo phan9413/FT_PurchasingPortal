@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Application CurrentUserDisplayMode="CaptionAndImage">
+  <NavigationItems StartupNavigationItem="MyDetails">
+    <Items>
+      <Item Id="Default">
+        <Items>
+          <Item Id="MyDetails" ViewId="SystemUsers_DetailView_Copy" />
+        </Items>
+      </Item>
+      <Item Id="KPI" Visible="False" />
+      <Item Id="Task" Visible="False" />
+    </Items>
+  </NavigationItems>
+  <SchemaModules>
+    <SchemaModule Name="CloneObjectModule" Version="19.2.6.0" IsNewNode="True" />
+    <SchemaModule Name="SchedulerAspNetModule" Version="19.2.6.0" IsNewNode="True" />
+    <SchemaModule Name="SchedulerModuleBase" Version="19.2.6.0" IsNewNode="True" />
+    <SchemaModule Name="SystemAspNetModule" Version="19.2.6.0" IsNewNode="True" />
+    <SchemaModule Name="SystemModule" Version="19.2.6.0" IsNewNode="True" />
+  </SchemaModules>
+</Application>

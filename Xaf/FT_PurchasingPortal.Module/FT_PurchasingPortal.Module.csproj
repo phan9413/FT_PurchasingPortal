@@ -1,0 +1,368 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="14.0">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{5F15837D-D1E5-44DC-92F0-4F2EBE9C3F8D}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>FT_PurchasingPortal.Module</RootNamespace>
+    <AssemblyName>FT_PurchasingPortal.Module</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'EasyTest|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\EasyTest\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;EASYTEST</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="DevExpress.Sparkline.v19.2.Core">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="DevExpress.Dashboard.v19.2.Core">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="DevExpress.Data.v19.2">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="DevExpress.DataAccess.v19.2">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="DevExpress.ExpressApp.AuditTrail.v19.2">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="DevExpress.ExpressApp.Chart.v19.2">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="DevExpress.ExpressApp.CloneObject.v19.2">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="DevExpress.ExpressApp.ConditionalAppearance.v19.2">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="DevExpress.ExpressApp.Dashboards.v19.2">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="DevExpress.ExpressApp.Kpi.v19.2">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="DevExpress.ExpressApp.Notifications.v19.2">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="DevExpress.ExpressApp.Objects.v19.2">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="DevExpress.ExpressApp.Office.v19.2">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="DevExpress.ExpressApp.PivotChart.v19.2">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="DevExpress.ExpressApp.PivotGrid.v19.2">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="DevExpress.ExpressApp.ReportsV2.v19.2">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="DevExpress.ExpressApp.Scheduler.v19.2">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="DevExpress.ExpressApp.Security.v19.2">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="DevExpress.ExpressApp.Security.Xpo.v19.2">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="DevExpress.ExpressApp.TreeListEditors.v19.2">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="DevExpress.ExpressApp.v19.2">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="DevExpress.ExpressApp.Validation.v19.2">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="DevExpress.ExpressApp.ViewVariantsModule.v19.2">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="DevExpress.ExpressApp.Xpo.v19.2">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="DevExpress.Office.v19.2.Core">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="DevExpress.Persistent.Base.v19.2">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="DevExpress.Persistent.BaseImpl.v19.2">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="DevExpress.PivotGrid.v19.2.Core">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="DevExpress.Printing.v19.2.Core">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="DevExpress.RichEdit.v19.2.Core">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="DevExpress.Spreadsheet.v19.2.Core">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="DevExpress.Utils.v19.2">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="DevExpress.Xpo.v19.2">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="DevExpress.Charts.v19.2.Core">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="DevExpress.XtraCharts.v19.2">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="DevExpress.CodeParser.v19.2">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="DevExpress.XtraReports.v19.2">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="DevExpress.XtraScheduler.v19.2.Core">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="mscorlib">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="System">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="System.Core">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="System.Drawing">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="System.Xml">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="System.Xml.Linq">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="System">
+      <Name>System</Name>
+    </Reference>
+    <Reference Include="System.Data">
+      <Name>System.Data</Name>
+    </Reference>
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Xml">
+      <Name>System.XML</Name>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="BusinessObjects\ClassUDFDetail.cs" />
+    <Compile Include="BusinessObjects\ClassUDFHeader.cs" />
+    <Compile Include="BusinessObjects\NonPersistentObject.cs" />
+    <Compile Include="BusinessObjects\StockTransferRequestApp.cs" />
+    <Compile Include="BusinessObjects\PurchaseRequestUDF.cs" />
+    <Compile Include="BusinessObjects\PurchaseRequestDoc.cs" />
+    <Compile Include="BusinessObjects\PurchaseRequestAttachment.cs" />
+    <Compile Include="BusinessObjects\PurchaseRequestApp.cs" />
+    <Compile Include="BusinessObjects\PurchaseRequest.cs" />
+    <Compile Include="BusinessObjects\PurchaseOrderAttachment.cs" />
+    <Compile Include="BusinessObjects\ClassDocStatus.cs" />
+    <Compile Include="BusinessObjects\ClassDocStatusDoc.cs" />
+    <Compile Include="BusinessObjects\ClassAppStatus.cs" />
+    <Compile Include="BusinessObjects\ClassAppStatusDoc.cs" />
+    <Compile Include="BusinessObjects\ClassAppStage.cs" />
+    <Compile Include="BusinessObjects\ClassStockTransferDocumentDetail.cs" />
+    <Compile Include="BusinessObjects\ClassStockTransferDocument.cs" />
+    <Compile Include="BusinessObjects\CrReportParam.cs" />
+    <Compile Include="BusinessObjects\CrReport.cs" />
+    <Compile Include="BusinessObjects\FilteringCriterion.cs" />
+    <Compile Include="BusinessObjects\StockTransferRequestDoc.cs" />
+    <Compile Include="BusinessObjects\StockTransferRequestUDF.cs" />
+    <Compile Include="BusinessObjects\StockTransferRequest.cs" />
+    <Compile Include="BusinessObjects\PurchaseOrderApp.cs" />
+    <Compile Include="BusinessObjects\PurchaseOrderDoc.cs" />
+    <Compile Include="BusinessObjects\PurchaseOrderUDF.cs" />
+    <Compile Include="BusinessObjects\PurchaseOrder.cs" />
+    <Compile Include="BusinessObjects\ClassDocumentDetail.cs" />
+    <Compile Include="BusinessObjects\ClassDocument.cs" />
+    <Compile Include="BusinessObjects\Vehicle.cs" />
+    <Compile Include="BusinessObjects\vwSalesPersons.cs" />
+    <Compile Include="BusinessObjects\vwDimension5.cs" />
+    <Compile Include="BusinessObjects\vwDimension4.cs" />
+    <Compile Include="BusinessObjects\vwDimension3.cs" />
+    <Compile Include="BusinessObjects\vwDimension2.cs" />
+    <Compile Include="BusinessObjects\vwDimension1.cs" />
+    <Compile Include="BusinessObjects\vwItemMasters.cs" />
+    <Compile Include="BusinessObjects\vwBillToAddress.cs" />
+    <Compile Include="BusinessObjects\vwShipToAddress.cs" />
+    <Compile Include="BusinessObjects\vwContactPersons.cs" />
+    <Compile Include="BusinessObjects\vwBusinessPartners.cs" />
+    <Compile Include="BusinessObjects\vwAccounts.cs" />
+    <Compile Include="BusinessObjects\Approval.cs" />
+    <Compile Include="BusinessObjects\BudgetMaster.cs" />
+    <Compile Include="BusinessObjects\Budget.cs" />
+    <Compile Include="BusinessObjects\Company.cs" />
+    <Compile Include="BusinessObjects\Departments.cs" />
+    <Compile Include="BusinessObjects\Divisions.cs" />
+    <Compile Include="BusinessObjects\DocTypeSeriesDoc.cs" />
+    <Compile Include="BusinessObjects\DocTypeSeries.cs" />
+    <Compile Include="BusinessObjects\DocType.cs" />
+    <Compile Include="BusinessObjects\DocumentEnum.cs" />
+    <Compile Include="BusinessObjects\Employee.cs" />
+    <Compile Include="BusinessObjects\FTModule.cs" />
+    <Compile Include="BusinessObjects\FTCrystalReportConn.cs" />
+    <Compile Include="BusinessObjects\FTSAPConn.cs" />
+    <Compile Include="BusinessObjects\MyNotification.cs" />
+    <Compile Include="BusinessObjects\MyTask.cs" />
+    <Compile Include="BusinessObjects\Positions.cs" />
+    <Compile Include="BusinessObjects\vwCurrency.cs" />
+    <Compile Include="BusinessObjects\vwPriceList.cs" />
+    <Compile Include="BusinessObjects\vwSAP_ITEM_AVAILABILITY.cs" />
+    <Compile Include="BusinessObjects\vwWarehouses.cs" />
+    <Compile Include="BusinessObjects\vwTaxes.cs" />
+    <Compile Include="BusinessObjects\vwProjects.cs" />
+    <Compile Include="BusinessObjects\SystemUsers.cs" />
+    <Compile Include="Controllers\CopyController.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controllers\CopyController.Designer.cs">
+      <DependentUpon>CopyController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controllers\CreateObjectController.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controllers\CreateObjectController.Designer.cs">
+      <DependentUpon>CreateObjectController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controllers\DocumentDVController.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controllers\DocumentDVController.Designer.cs">
+      <DependentUpon>DocumentDVController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controllers\FilteringCriterionController.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controllers\FilteringCriterionController.Designer.cs">
+      <DependentUpon>FilteringCriterionController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controllers\GenController.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controllers\GenController.Designer.cs">
+      <DependentUpon>GenController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controllers\PurchaseOrderController.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controllers\PurchaseOrderController.Designer.cs">
+      <DependentUpon>PurchaseOrderController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controllers\PurchaseRequestController.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controllers\PurchaseRequestController.Designer.cs">
+      <DependentUpon>PurchaseRequestController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controllers\vwSAP_ITEM_AVAILABILITYController.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controllers\vwSAP_ITEM_AVAILABILITYController.Designer.cs">
+      <DependentUpon>vwSAP_ITEM_AVAILABILITYController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DatabaseUpdate\Updater.cs" />
+    <Compile Include="GeneralValues.cs" />
+    <Compile Include="Module.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Module.Designer.cs">
+      <DependentUpon>Module.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Controllers\CopyController.resx">
+      <DependentUpon>CopyController.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controllers\DocumentDVController.resx">
+      <DependentUpon>DocumentDVController.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controllers\PurchaseOrderController.resx">
+      <DependentUpon>PurchaseOrderController.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controllers\PurchaseRequestController.resx">
+      <DependentUpon>PurchaseRequestController.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controllers\vwSAP_ITEM_AVAILABILITYController.resx">
+      <DependentUpon>vwSAP_ITEM_AVAILABILITYController.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Model.DesignedDiffs.xafml" />
+    <EmbeddedResource Include="Properties\licenses.licx" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="BusinessObjects\ReadMe.txt" />
+    <None Include="Controllers\ReadMe.txt" />
+    <None Include="DatabaseUpdate\ReadMe.txt" />
+    <None Include="Images\ReadMe.txt" />
+    <None Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="FunctionalTests\config.xml" />
+    <None Include="FunctionalTests\sample.ets" />
+    <None Include="FunctionalTests\ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Welcome.html" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="ClassTableDesignDocs.txt" />
+    <Content Include="ClassTableDesign.txt" />
+    <Content Include="ControlFunctionDesign.txt" />
+    <None Include="UnusableNodes2.xml">
+      <DependentUpon>Model.DesignedDiffs.xafml</DependentUpon>
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="UnusableNodes1.xml">
+      <DependentUpon>Model.DesignedDiffs.xafml</DependentUpon>
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="UnusableNodes.xml">
+      <DependentUpon>Model.DesignedDiffs.xafml</DependentUpon>
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
