@@ -72,6 +72,9 @@ namespace PRWebApi.Controllers
                 //customer.FullName = values["FullName"].Value<string>();
                 //_uow.CommitChanges();
                 obj = JsonPopulateObjectHelper.PopulateObject<PurchaseRequest>(values.ToString(), _uow);
+
+                addNewDetailsOnly(values, obj, true);
+
                 await _uow.CommitChangesAsync();
                 //obj = JsonConvert.DeserializeObject<PurchaseRequest>(values.ToString());
             }
@@ -82,7 +85,7 @@ namespace PRWebApi.Controllers
             return Ok(obj);
         }
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, [FromBody]JObject value)
+        public async Task<IActionResult> Put(int id, [FromBody]JObject values)
         {
             ////PurchaseRequest customer = _uow.GetObjectByKey<PurchaseRequest>(id);
             ////JToken token;
@@ -100,14 +103,26 @@ namespace PRWebApi.Controllers
 
             //JsonPopulateObjectHelper.PopulateObject(value.ToString(), _uow, customer);
             //_uow.CommitChanges();
-
-            PurchaseRequest obj = await _uow.GetObjectByKeyAsync<PurchaseRequest>(id);
-            if (obj == null)
+            PurchaseRequest obj = null;
+            try
             {
-                return NotFound();
+
+                obj = await _uow.GetObjectByKeyAsync<PurchaseRequest>(id);
+                if (obj == null)
+                {
+                    return NotFound();
+                }
+                JsonPopulateObjectHelper.PopulateObject(values.ToString(), _uow, obj);
+
+                addNewDetailsOnly(values, obj, false);
+                deleteDetails(values, obj);
+
+                await _uow.CommitChangesAsync();
             }
-            JsonPopulateObjectHelper.PopulateObject(value.ToString(), _uow, obj);
-            await _uow.CommitChangesAsync();
+            catch (Exception ex)
+            {
+
+            }
             return Ok(obj);
         }
         [HttpDelete("{id}")]
@@ -135,5 +150,106 @@ namespace PRWebApi.Controllers
 
         //    return result;
         //}
+
+        private void addNewDetailsOnly(JObject value, PurchaseRequest obj, bool IsNewHeader)
+        {
+            #region add details
+            string detalclassname = "PurchaseRequestDetail";
+            bool isnew = false;
+            int intkeyvalue = -1;
+            JArray jarray = (JArray)value[detalclassname];
+            foreach (JObject Jdtl in jarray.Children())
+            {
+                isnew = false;
+                if (IsNewHeader)
+                {
+                    isnew = true;
+                }
+                else
+                {
+                    if (Jdtl.ContainsKey("Oid"))
+                    {
+                        if (Jdtl["Oid"] == null)
+                        {
+                            isnew = true;
+                        }
+                        else
+                        {
+                            if (int.TryParse(Jdtl["Oid"].ToString(), out intkeyvalue))
+                            {
+                                if (intkeyvalue == -1) isnew = true;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        isnew = true;
+                    }
+                }
+                if (isnew)
+                {
+                    if (Jdtl.ContainsKey("IsBeingDelete"))
+                    {
+                        if (Jdtl["IsBeingDelete"].ToString() == "1" || Jdtl["IsBeingDelete"].ToString().ToUpper() == "TRUE")
+                        {
+                            isnew = false;
+                        }
+                    }
+                    if (isnew)
+                    {
+                        PurchaseRequestDetail dtl = JsonPopulateObjectHelper.PopulateObject<PurchaseRequestDetail>(Jdtl.ToString(), _uow);
+                        obj.PurchaseRequestDetail.Add(dtl);
+                    }
+                }
+
+            }
+            #endregion
+        }
+
+        private void deleteDetails(JObject value, PurchaseRequest obj)
+        {
+            #region delete details
+            string detalclassname = "PurchaseRequestDetail";
+            bool isnew = false;
+            int intkeyvalue = -1;
+            JArray jarray = (JArray)value[detalclassname];
+            foreach (JObject Jdtl in jarray.Children())
+            {
+                isnew = false;
+                if (Jdtl.ContainsKey("Oid"))
+                {
+                    if (Jdtl["Oid"] == null)
+                    {
+                        isnew = true;
+                    }
+                    else
+                    {
+                        if (int.TryParse(Jdtl["Oid"].ToString(), out intkeyvalue))
+                        {
+                            if (intkeyvalue == -1) isnew = true;
+                        }
+                    }
+                }
+                else
+                {
+                    isnew = true;
+                }
+                if (!isnew)
+                {
+                    if (Jdtl.ContainsKey("IsBeingDelete"))
+                    {
+                        if (Jdtl["IsBeingDelete"].ToString() == "1" || Jdtl["IsBeingDelete"].ToString().ToUpper() == "TRUE")
+                        {
+                            PurchaseRequestDetail dtl = _uow.GetObjectByKey<PurchaseRequestDetail>(intkeyvalue);
+                            _uow.Delete(dtl);
+
+                        }
+                    }
+                }
+
+            }
+            #endregion
+
+        }
     }
 }

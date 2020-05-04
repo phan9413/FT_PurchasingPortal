@@ -8,6 +8,49 @@ namespace PRWebApi.Helpers
 {
     public static class JsonPopulateObjectHelper
     {
+        static void PopulateCollectionProperty(JObject jObject, object obj, XPMemberInfo memberInfo, Session session)
+        {
+            XPClassInfo classInfo = session.Dictionary.GetClassInfo(PRWebApi.Helpers.HelperXaf.xafAssembly, PRWebApi.Helpers.HelperXaf.xafAssembly + "." + memberInfo.Name);
+            JArray jarray = (JArray)jObject[memberInfo.Name];
+            foreach (JObject Jdtl in jarray.Children())
+            {
+                try
+                {
+
+                    //string keyPropertyName = memberInfo.ReferenceType.KeyProperty.Name;
+                    //JToken keyToken = jObject[memberInfo.Name][keyPropertyName];
+                    int intkeyvalue = -1;
+
+                    object keyValue = null;
+                    if (Jdtl.ContainsKey("Oid"))
+                    {
+                        if (Jdtl["Oid"] != null)
+                        {
+                            if (int.TryParse(Jdtl["Oid"].ToString(), out intkeyvalue))
+                            {
+                                keyValue = intkeyvalue;
+                            }
+                            else
+                            {
+                                Guid guidkeyvalue = new Guid(Jdtl["Oid"].ToString());
+                                keyValue = guidkeyvalue;
+                            }
+                            //object dtlobj = session.GetObjectByKey(memberInfo.MemberType, keyValue);
+                            object dtlobj = session.GetObjectByKey(classInfo, keyValue);
+                            if (dtlobj != null)
+                            {
+                                PopulateObject(Jdtl, session, classInfo, dtlobj);
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+
+                }
+            }
+        }
+
         public static void PopulateObject(string json, Session session, PersistentBase obj)
         {
             PopulateObject(json, session, obj.ClassInfo, obj);
@@ -66,22 +109,6 @@ namespace PRWebApi.Helpers
                 }
             }
         }
-        static void PopulateCollectionProperty(JObject jobject, object obj, XPMemberInfo memberInfo, Session session)
-        {
-            JArray jarray = (JArray)jobject[memberInfo.Name];
-            foreach (JObject dtl in jarray.Children())
-            {
-                try
-                {
-                    XPClassInfo classinfo = session.Dictionary.GetClassInfo(PRWebApi.Helpers.HelperXaf.xafAssembly, PRWebApi.Helpers.HelperXaf.xafAssembly + "." + memberInfo.Name);
-                    PopulateObject(dtl, session, classinfo);
-                }
-                catch (Exception ex)
-                {
-
-                }
-            }
-        }
 
         static void PopulateProperty(JObject jobject, object obj, XPMemberInfo memberInfo)
         {
@@ -99,45 +126,56 @@ namespace PRWebApi.Helpers
 
         static void PopulateReferenceProperty(JObject jobject, object obj, XPMemberInfo memberInfo, Session session)
         {
-            JObject refJObject = null;
-            XPMemberInfo keyMemberInfo = memberInfo.ReferenceType.KeyProperty;
-            if (jobject[memberInfo.Name] is JValue referenceShort)
+            try
             {
-                dynamic nestedJObject = new JObject();
-                nestedJObject[keyMemberInfo.Name] = referenceShort;
-                refJObject = nestedJObject;
-            }
-            else if (jobject[memberInfo.Name] is JObject referenceLong)
-            {
-                refJObject = referenceLong;
-            }
-            else if (refJObject == null)
-            {
-                throw new ArgumentException("Unknown JSON format for reference properties! Short and long formats are supported: '{{ReferenceName: KeyValue}}' or {{ReferenceName: {{KeyName: KeyValue}}}}.", "jobject");
-            }
-            object refObject = memberInfo.GetValue(obj);
-            if (refJObject != null)
-            {
-                JToken keyToken = refJObject[memberInfo.ReferenceType.KeyProperty.Name];
-                object keyValue = ((JValue)keyToken).Value;
-                if (keyValue != null)
+                JObject refJObject = null;
+                XPMemberInfo keyMemberInfo = memberInfo.ReferenceType.KeyProperty;
+                if (jobject[memberInfo.Name] is JValue referenceShort)
                 {
-                    if (keyValue.GetType() != keyMemberInfo.MemberType)
-                    {
-                        keyValue = Convert.ChangeType(keyValue, keyMemberInfo.MemberType, CultureInfo.InvariantCulture);
-                    }
-                    refObject = session.GetObjectByKey(memberInfo.ReferenceType, keyValue);
+                    dynamic nestedJObject = new JObject();
+                    nestedJObject[keyMemberInfo.Name] = referenceShort;
+                    refJObject = nestedJObject;
                 }
+                else if (jobject[memberInfo.Name] is JObject referenceLong)
+                {
+                    refJObject = referenceLong;
+                }
+                else if (refJObject == null)
+                {
+                    throw new ArgumentException("Unknown JSON format for reference properties! Short and long formats are supported: '{{ReferenceName: KeyValue}}' or {{ReferenceName: {{KeyName: KeyValue}}}}.", "jobject");
+                }
+                object refObject = memberInfo.GetValue(obj);
+                if (refJObject != null)
+                {
+                    JToken keyToken = refJObject[memberInfo.ReferenceType.KeyProperty.Name];
+                    object keyValue = ((JValue)keyToken).Value;
+                    if (keyValue != null)
+                    {
+                        if (keyValue.GetType() != keyMemberInfo.MemberType)
+                        {
+                            keyValue = Convert.ChangeType(keyValue, keyMemberInfo.MemberType, CultureInfo.InvariantCulture);
+                        }
+                        refObject = session.GetObjectByKey(memberInfo.ReferenceType, keyValue);
+                    }
+                    else
+                    {
+                        refObject = null;
+                    }
+                }
+                else
+                {
+                    refObject = null;
+                }
+                if (refObject != null)
+                {
+                    PopulateObject(refJObject, session, memberInfo.ReferenceType, refObject);
+                }
+                memberInfo.SetValue(obj, refObject);
             }
-            else
+            catch (Exception ex)
             {
-                refObject = null;
+
             }
-            if (refObject != null)
-            {
-                PopulateObject(refJObject, session, memberInfo.ReferenceType, refObject);
-            }
-            memberInfo.SetValue(obj, refObject);
         }
         private static object ConvertType(JValue jValue, XPMemberInfo memberInfo)
         {
