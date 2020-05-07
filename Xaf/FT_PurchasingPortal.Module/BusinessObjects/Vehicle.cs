@@ -14,7 +14,7 @@ using DevExpress.Persistent.Validation;
 
 namespace FT_PurchasingPortal.Module.BusinessObjects
 {
-    [DefaultClassOptions]
+    //[DefaultClassOptions]
     //[ImageName("BO_Contact")]
     //[DefaultProperty("DisplayMemberNameForLookupEditorsOfThisType")]
     //[DefaultListViewOptions(MasterDetailMode.ListViewOnly, false, NewItemRowPosition.None)]

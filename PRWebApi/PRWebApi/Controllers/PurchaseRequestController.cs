@@ -240,8 +240,10 @@ namespace PRWebApi.Controllers
                     {
                         if (Jdtl["IsBeingDelete"].ToString() == "1" || Jdtl["IsBeingDelete"].ToString().ToUpper() == "TRUE")
                         {
-                            PurchaseRequestDetail dtl = _uow.GetObjectByKey<PurchaseRequestDetail>(intkeyvalue);
-                            _uow.Delete(dtl);
+                            PurchaseRequestDetail dtl = obj.PurchaseRequestDetail.Where(pp => pp.Oid == intkeyvalue).FirstOrDefault();
+                            if (dtl != null)
+                                dtl.Delete();
+                                //obj.PurchaseRequestDetail.Remove(dtl);
 
                         }
                     }

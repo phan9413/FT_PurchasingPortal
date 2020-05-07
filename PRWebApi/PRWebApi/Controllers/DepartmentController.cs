@@ -31,22 +31,22 @@ namespace PRWebApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class VehicleController : ControllerBase
+    public class DepartmentController : ControllerBase
     {
         IConfiguration _config;
         UnitOfWork _uow;
-        public VehicleController(IConfiguration config, UnitOfWork uow)
+        public DepartmentController(IConfiguration config, UnitOfWork uow)
         {
             _config = config;
             _uow = uow;
             //XpoDefault.Session = new UnitOfWork();
         }
         [HttpGet]
-        public IEnumerable<Vehicle> Get()
+        public IEnumerable<Departments> Get()
         {
             try
             {
-                IEnumerable<Vehicle> list = _uow.Query<Vehicle>();
+                IEnumerable<Departments> list = _uow.Query<Departments>();
                 return list;
             }
             catch (Exception ex)
@@ -55,9 +55,9 @@ namespace PRWebApi.Controllers
             }
         }
         [HttpGet("{id}")]
-        public Vehicle Get(int id)
+        public Departments Get(int id)
         {
-            return _uow.GetObjectByKey<Vehicle>(id);
+            return _uow.GetObjectByKey<Departments>(id);
         }
         [HttpPost]
         public async Task<IActionResult> Post([FromBody]JObject values)
@@ -66,7 +66,7 @@ namespace PRWebApi.Controllers
             //PurchaseRequest customer = new PurchaseRequest(_uow);
             //customer.FullName = values["FullName"].Value<string>();
             //_uow.CommitChanges();
-            Vehicle obj = JsonPopulateObjectHelper.PopulateObject<Vehicle>(values.ToString(), _uow);
+            Departments obj = JsonPopulateObjectHelper.PopulateObject<Departments>(values.ToString(), _uow);
             //RuleSet rule = new RuleSet();
             //rule.ValidateAll((IObjectSpace)obj.Session, _uow.GetObjectsToSave(), "Any");
             await _uow.CommitChangesAsync();
@@ -92,7 +92,7 @@ namespace PRWebApi.Controllers
             //JsonPopulateObjectHelper.PopulateObject(value.ToString(), _uow, customer);
             //_uow.CommitChanges();
 
-            Vehicle obj = await _uow.GetObjectByKeyAsync<Vehicle>(id);
+            Departments obj = await _uow.GetObjectByKeyAsync<Departments>(id);
             if (obj == null)
             {
                 return NotFound();
@@ -108,7 +108,7 @@ namespace PRWebApi.Controllers
             //_uow.Delete(customer);
             //_uow.CommitChanges();
 
-            Vehicle obj = await _uow.GetObjectByKeyAsync<Vehicle>(id);
+            Departments obj = await _uow.GetObjectByKeyAsync<Departments>(id);
             if (obj == null)
             {
                 return NotFound();

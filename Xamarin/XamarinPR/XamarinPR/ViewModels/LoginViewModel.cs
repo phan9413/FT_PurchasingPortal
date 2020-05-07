@@ -75,6 +75,7 @@ namespace XamarinPR.ViewModels
                 if (client.isSuccessStatusCode)
                 {
                     DisplayAlert("Alert", "Login Success.", "OK");
+                    Application.Current.MainPage = new NavigationPage(new MainPage());
 
                     return;
                 }

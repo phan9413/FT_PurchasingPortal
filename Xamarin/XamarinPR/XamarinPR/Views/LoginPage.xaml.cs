@@ -32,5 +32,16 @@ namespace XamarinPR.Views
                 vm.SubmitCommand.Execute(null);
             };
         }
+
+        private void page1_Clicked(object sender, EventArgs e)
+        {
+            Application.Current.MainPage = new NavigationPage(new Page1());
+            //Application.Current.MainPage.Navigation.PushAsync();
+        }
+
+        private void cspage1_Clicked(object sender, EventArgs e)
+        {
+            Application.Current.MainPage = new NavigationPage(new csPage1());
+        }
     }
 }

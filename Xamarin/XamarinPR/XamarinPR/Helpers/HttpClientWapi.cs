@@ -127,45 +127,6 @@ namespace XamarinPR.Helper
             return repliedContent;
         }
 
-        ///// <summary>
-        ///// Handler dynamic query path of the server
-        ///// like super admin add, update company, users and group
-        ///// </summary>
-        ///// <param name="cioRequest"></param>
-        ///// <param name="query"></param>
-        ///// <returns></returns>
-        //public async Task<string> RequestSvrAsync_mgt(Cio cioRequest, string query)
-        //{
-        //    string repliedContent = string.Empty;
-        //    try
-        //    {
-        //        cancelSource = new CancellationTokenSource();
-        //        cancelToken = cancelSource.Token;
-        //        ShareUltilities shareUltilities = App.su;
-        //        HttpClient httpClient = App.client; // reference to the single http client
-
-        //        // added 20200311T1124
-        //        // add in the bearer token for request resource
-        //        httpClient.DefaultRequestHeaders.Authorization =
-        //                    new AuthenticationHeaderValue("Bearer", App.bearerToken.access_token);
-
-        //        string json = JsonConvert.SerializeObject(cioRequest);
-        //        StringContent stringContent = new StringContent(json, Encoding.UTF8, shareUltilities.APP_JSON);
-        //        Uri uri = new Uri(shareUltilities.WEBAPI_HOST + query);
-
-        //        cancelToken.ThrowIfCancellationRequested(); // <-- to detect any cancellation by the user                
-        //        HttpResponseMessage response = await httpClient.PostAsync(uri, stringContent, cancelToken);
-        //        isSuccessStatusCode = response.IsSuccessStatusCode;
-
-        //        cancelToken.ThrowIfCancellationRequested();
-        //        repliedContent = await response.Content.ReadAsStringAsync();
-        //    }
-        //    catch (Exception excep)
-        //    {
-        //        lastErrorDesc = excep.ToString();
-        //    }
-        //    return repliedContent;
-        //}
 
         /// <summary>
         /// Cancel the request
