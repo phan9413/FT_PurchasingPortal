@@ -12,6 +12,5 @@ namespace PRWebApi.Models
         public string Password { get; set; }
         public string StoredPassword { get; set; }
         public int Company { get; set; }
-        public int PurchaseRequest { get; set; }
     }
 }

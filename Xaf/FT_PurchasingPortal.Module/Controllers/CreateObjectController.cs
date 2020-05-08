@@ -120,6 +120,23 @@ namespace FT_PurchasingPortal.Module.Controllers
                         if (masterobject.DocCur != null)
                             currentobject.DocCur = currentobject.Session.GetObjectByKey<vwCurrency>(masterobject.DocCur.BoKey);
                     }
+                    else if (collectionSource.MasterObjectType == typeof(PurchaseDelivery))
+                    {
+                        PurchaseDelivery masterobject = (PurchaseDelivery)collectionSource.MasterObject;
+                        PurchaseDeliveryDetail currentobject = (PurchaseDeliveryDetail)e.CreatedObject;
+                        if (masterobject.PurchaseDeliveryDetail.Count > 0)
+                        {
+                            comparevalue = masterobject.PurchaseDeliveryDetail.Min(pp => pp.Oid);
+                            comparevisorder = masterobject.PurchaseDeliveryDetail.Max(pp => pp.VisOrder);
+                        }
+                        if (comparevalue <= minvalue) minvalue = comparevalue - 1;
+                        currentobject.Oid = minvalue;
+
+                        if (comparevisorder >= maxvisorder) maxvisorder = comparevisorder + 1;
+                        currentobject.VisOrder = maxvisorder;
+                        if (masterobject.DocCur != null)
+                            currentobject.DocCur = currentobject.Session.GetObjectByKey<vwCurrency>(masterobject.DocCur.BoKey);
+                    }
                 }
             }
         }

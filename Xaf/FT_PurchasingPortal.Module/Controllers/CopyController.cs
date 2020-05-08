@@ -90,6 +90,10 @@ namespace FT_PurchasingPortal.Module.Controllers
                     {
                         tDtl = ios.CreateObject<PurchaseOrderDetail>();
                     }
+                    else if (tObject.GetType() == typeof(PurchaseDelivery))
+                    {
+                        tDtl = ios.CreateObject<PurchaseDeliveryDetail>();
+                    }
                     #endregion
 
                     #region assign udf detail
@@ -103,6 +107,10 @@ namespace FT_PurchasingPortal.Module.Controllers
                     {
                         sClassD = ((PurchaseOrderDetail)dtl).UDFs;
                     }
+                    else if (dtl.GetType() == typeof(PurchaseDeliveryDetail))
+                    {
+                        sClassD = ((PurchaseDeliveryDetail)dtl).UDFs;
+                    }
 
                     if (tDtl.GetType() == typeof(PurchaseRequestDetail))
                     {
@@ -111,6 +119,10 @@ namespace FT_PurchasingPortal.Module.Controllers
                     else if (tDtl.GetType() == typeof(PurchaseOrderDetail))
                     {
                         tClassD = ((PurchaseOrderDetail)tDtl).UDFs;
+                    }
+                    else if (tDtl.GetType() == typeof(PurchaseDeliveryDetail))
+                    {
+                        tClassD = ((PurchaseDeliveryDetail)tDtl).UDFs;
                     }
                     AssignUDFDetail(ref sClassD, ref tClassD);
                     #endregion
@@ -154,6 +166,10 @@ namespace FT_PurchasingPortal.Module.Controllers
                     else if (tObject.GetType() == typeof(PurchaseOrder))
                     {
                         ((PurchaseOrder)tObject).PurchaseOrderDetail.Add((PurchaseOrderDetail)tDtl);
+                    }
+                    else if (tObject.GetType() == typeof(PurchaseDelivery))
+                    {
+                        ((PurchaseDelivery)tObject).PurchaseDeliveryDetail.Add((PurchaseDeliveryDetail)tDtl);
                     }
                     #endregion
 
@@ -203,6 +219,10 @@ namespace FT_PurchasingPortal.Module.Controllers
                 {
                     sClass = ((PurchaseOrder)sObject).UDFs;
                 }
+                else if (sObject.GetType() == typeof(PurchaseDelivery))
+                {
+                    sClass = ((PurchaseDelivery)sObject).UDFs;
+                }
 
                 if (tObject.GetType() == typeof(PurchaseRequest))
                 {
@@ -211,6 +231,10 @@ namespace FT_PurchasingPortal.Module.Controllers
                 else if (tObject.GetType() == typeof(PurchaseOrder))
                 {
                     tClass = ((PurchaseOrder)tObject).UDFs;
+                }
+                else if (tObject.GetType() == typeof(PurchaseDelivery))
+                {
+                    tClass = ((PurchaseDelivery)tObject).UDFs;
                 }
                 AssignUDFHeader(ref sClass, ref tClass);
                 #endregion
@@ -242,6 +266,10 @@ namespace FT_PurchasingPortal.Module.Controllers
                         {
                             tDtl = ios.CreateObject<PurchaseOrderDetail>();
                         }
+                        else if (tObject.GetType() == typeof(PurchaseDelivery))
+                        {
+                            tDtl = ios.CreateObject<PurchaseDeliveryDetail>();
+                        }
                         #endregion
 
                         #region assign udf detail
@@ -255,6 +283,10 @@ namespace FT_PurchasingPortal.Module.Controllers
                         {
                             sClassD = ((PurchaseOrderDetail)dtl).UDFs;
                         }
+                        else if (dtl.GetType() == typeof(PurchaseDelivery))
+                        {
+                            sClassD = ((PurchaseDeliveryDetail)dtl).UDFs;
+                        }
 
                         if (tDtl.GetType() == typeof(PurchaseRequestDetail))
                         {
@@ -263,6 +295,10 @@ namespace FT_PurchasingPortal.Module.Controllers
                         else if (tDtl.GetType() == typeof(PurchaseOrderDetail))
                         {
                             tClassD = ((PurchaseOrderDetail)tDtl).UDFs;
+                        }
+                        else if (tDtl.GetType() == typeof(PurchaseDeliveryDetail))
+                        {
+                            tClassD = ((PurchaseDeliveryDetail)tDtl).UDFs;
                         }
                         AssignUDFDetail(ref sClassD, ref tClassD);
                         #endregion
@@ -307,8 +343,12 @@ namespace FT_PurchasingPortal.Module.Controllers
                         {
                             ((PurchaseOrder)tObject).PurchaseOrderDetail.Add((PurchaseOrderDetail)tDtl);
                         }
+                        else if (tObject.GetType() == typeof(PurchaseDelivery))
+                        {
+                            ((PurchaseDelivery)tObject).PurchaseDeliveryDetail.Add((PurchaseDeliveryDetail)tDtl);
+                        }
                         #endregion
-                         
+
                     }
 
                 }

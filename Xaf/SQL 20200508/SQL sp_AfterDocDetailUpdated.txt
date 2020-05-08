@@ -1,0 +1,118 @@
+
+/****** Object:  StoredProcedure [dbo].[sp_AfterDocDetailUpdated]    Script Date: 8/5/2020 5:39:21 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+ALTER procedure
+[dbo].[sp_AfterDocDetailUpdated] 
+@usercode nvarchar(50),
+@docid int,
+@objtype nvarchar(50)
+AS
+begin
+ -- DocStatus
+	--Draft = 0, (new create document / doc user press save)
+	--Cancelled = 1, (once doc userpress cancel button)
+	--Rejected = 2, (once approverejected / or reject user press reject button)
+	--Submited = 3, (once doc userpress submit button (trigger approval base on approval condition))
+	--Accepted = 4, (once approveuser approval completed / or no approval required after press submit button)
+	--Closed = 5, (once closeuser press close button)
+	--Posted = 6, (once postuser press post button)
+	--PostedCancel = 7 (once sap posting error)
+
+ -- LineStatus
+    --Open = 0,
+    --Close = 1,
+    --Cancel = 2,
+    --Delete = 3
+	-------------------------------------------
+	declare @useroid uniqueidentifier
+	declare @baseline int
+	declare @basetypeoid int
+	declare @basetype nvarchar(50)
+	declare @qty numeric(19,6)
+	declare @totalqty numeric(19,6)
+
+	select @useroid = Oid from PermissionPolicyUser where UserName = @usercode
+
+	if @objtype = 'StockTransferRequest' -- OSTF
+	begin
+		select @useroid = Oid from PermissionPolicyUser where UserName = @usercode
+	end
+
+	if @objtype = 'PurchaseDelivery' -- OPRN
+	begin
+		select @useroid = Oid from PermissionPolicyUser where UserName = @usercode
+
+		select @baseline = T0.BaseLine, @basetypeoid = T0.BaseType, @basetype = T2.BoCode 
+		from OPRN1 T0
+		inner join ODOC T2 on T0.BaseType = T2.OID
+		where T0.OID = @docid
+
+		update OPRN1 set OpenQty = Quantity - CopyQty, OpenCreQty = Quantity - CopyCreQty where OID = @docid
+
+		if @baseline > 0
+		begin
+			select @qty = sum(T1.Quantity) 
+			from OPRN T0 inner join OPRN1 T1 on T0.OID = T1.PurchaseDelivery
+			inner join OPRND T2 on T0.DocStatus = T2.OID
+			where T1.BaseLine = @baseline and T1.BaseType = @basetypeoid
+			and T2.CurrDocStatus in (0,2,3,4,5,6,7) and T1.LineStatus in (0, 1)
+
+			select @totalqty = isnull(@qty,0)
+
+			if @basetype = 'PurchaseOrder'
+			begin
+				update OPRQ1 set CopyQty = @totalqty, OpenQty = Quantity - @totalqty where OID = @baseline
+			end
+		end
+	end
+	
+	if @objtype = 'PurchaseOrder' -- OPRQ
+	begin
+		select @useroid = Oid from PermissionPolicyUser where UserName = @usercode
+
+		select @baseline = T0.BaseLine, @basetypeoid = T0.BaseType, @basetype = T2.BoCode 
+		from OPRQ1 T0
+		inner join ODOC T2 on T0.BaseType = T2.OID
+		where T0.OID = @docid
+
+		update OPRQ1 set OpenQty = Quantity - CopyQty, OpenCreQty = Quantity - CopyCreQty where OID = @docid
+
+		if @baseline > 0
+		begin
+			select @qty = sum(T1.Quantity) 
+			from OPRQ T0 inner join OPRQ1 T1 on T0.OID = T1.PurchaseOrder
+			inner join OPRQD T2 on T0.DocStatus = T2.OID
+			where T1.BaseLine = @baseline and T1.BaseType = @basetypeoid
+			and T2.CurrDocStatus in (0,2,3,4,5,6,7) and T1.LineStatus in (0, 1)
+
+			select @totalqty = isnull(@qty,0)
+
+			if @basetype = 'PurchaseRequest'
+			begin
+				update OPRE1 set CopyQty = @totalqty, OpenQty = Quantity - @totalqty where OID = @baseline
+			end
+		end
+	end
+
+	if @objtype = 'PurchaseRequest' -- OPRE
+	begin
+		select @useroid = Oid from PermissionPolicyUser where UserName = @usercode
+
+		select @baseline = T0.BaseLine, @basetypeoid = T0.BaseType, @basetype = T2.BoCode 
+		from OPRE1 T0
+		inner join ODOC T2 on T0.BaseType = T2.OID
+		where T0.OID = @docid
+
+		update OPRE1 set OpenQty = Quantity - CopyQty, OpenCreQty = Quantity - CopyCreQty where OID = @docid
+	end
+
+end
+
+
+
+
+

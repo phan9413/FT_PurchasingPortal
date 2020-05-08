@@ -84,6 +84,49 @@ go
 DBCC CHECKIDENT ('OPRQ', RESEED, 0)
 go
 
+update OPRN set DocStatus = null, AppStatus = null, UDFs = null
+go
+update OPRN1 set UDFs = null
+go
+update OPRNA set CurrAppStage = null
+go
+delete from OPRN1U
+go
+DBCC CHECKIDENT ('OPRN1U', RESEED, 0)
+go
+delete from OPRNU
+go
+DBCC CHECKIDENT ('OPRNU', RESEED, 0)
+go
+delete from OPRN1
+go
+DBCC CHECKIDENT ('OPRN1', RESEED, 0)
+go
+delete from OPRND1
+go
+DBCC CHECKIDENT ('OPRND1', RESEED, 0)
+go
+delete from OPRND
+go
+DBCC CHECKIDENT ('OPRND', RESEED, 0)
+go
+delete from OPRNA2
+go
+DBCC CHECKIDENT ('OPRNA2', RESEED, 0)
+go
+delete from OPRNA1
+go
+DBCC CHECKIDENT ('OPRNA1', RESEED, 0)
+go
+delete from OPRNA
+go
+DBCC CHECKIDENT ('OPRNA', RESEED, 0)
+go
+delete from OPRN
+go
+DBCC CHECKIDENT ('OPRN', RESEED, 0)
+go
+
 update OSTF set DocStatus = null, AppStatus = null, UDFs = null
 go
 update OSTF1 set UDFs = null

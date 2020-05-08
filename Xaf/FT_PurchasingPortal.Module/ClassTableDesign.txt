@@ -48,6 +48,7 @@
 [ApprovalBy] (enum)
 	User = 0
 	Position = 1
+    Appointed_User = 2
 
 [AppType] (enum)
     Budget = 0
@@ -167,7 +168,6 @@
 	* Approval can be done by SystemUser level
 	- [Company] (belong to which company)
 	- [Employee] (User Details)
-	- WhsCode (user warehouse)
 
 [Employee] (select from OEMP, User Details)
 	- SAPUserID (sap client login user id)
@@ -175,6 +175,7 @@
 	- FullName (full name)
 	- UserEmail (email)
 	- ICNo (IC)
+	- [WhsCode->vwWarehouses] (user warehouse)
 	- [Department] (For Approval)
 	- [Division] (For Approval)
 	- [Position] (For Approval)
@@ -337,6 +338,7 @@
 	- IsReject (direct reject document when approval hit )
 	- IsAppReject (direct reject document when approval reject)
 	- [ApprovalBy] (enum)
+	- [AppointedUser->Employee] (approval by specific employee. when [ApprovalBy] = Appointed_User)
 	- [Division] (approval by position's division. when [ApprovalBy] = Position)
 	----- <[SystemUser]> (many to many, when [ApprovalBy] = User)
 	----- <[Position]> (many to many, when [ApprovalBy] = Position)

@@ -18,16 +18,16 @@ using FT_PurchasingPortal.Module.BusinessObjects;
 namespace FT_PurchasingPortal.Module.Controllers
 {
     // For more typical usage scenarios, be sure to check out https://documentation.devexpress.com/eXpressAppFramework/clsDevExpressExpressAppViewControllertopic.aspx.
-    public partial class PurchaseRequestController : ViewController
+    public partial class PurchaseDeliveryController : ViewController
     {
         RecordsNavigationController recordnaviator;
         GenController genCon;
         CopyController copyCon;
-        public PurchaseRequestController()
+        public PurchaseDeliveryController()
         {
             InitializeComponent();
             // Target required Views (via the TargetXXX properties) and create their Actions.
-            TargetObjectType = typeof(PurchaseRequest);
+            TargetObjectType = typeof(PurchaseDelivery);
             TargetViewType = ViewType.DetailView;
 
         }
@@ -73,23 +73,32 @@ namespace FT_PurchasingPortal.Module.Controllers
         }
         public void resetButton()
         {
-            this.CopyToPO.Active.SetItemValue("Enabled", false);
-            PurchaseRequest selectobject = (PurchaseRequest)View.CurrentObject;
+            this.CopyFromPO.Active.SetItemValue("Enabled", false);
+            PurchaseDelivery selectobject = (PurchaseDelivery)View.CurrentObject;
 
-            switch (selectobject.DocStatus.CurrDocStatus)
+            if (selectobject.DocStatus.CurrDocStatus == DocStatus.Draft)
             {
-                case DocStatus.Draft:
-                case DocStatus.Submited:
-                case DocStatus.Cancelled:
-                    break;
-                default:
-                    this.CopyToPO.Active.SetItemValue("Enabled", true);
-                    break;
+                this.CopyFromPO.Active.SetItemValue("Enabled", true);
             }
+            else
+            {
+                switch (selectobject.DocStatus.CurrDocStatus)
+                {
+                    case DocStatus.Cancelled:
+                    case DocStatus.Closed:
+                    case DocStatus.Posted:
+                    case DocStatus.PostedCancel:
+                        break;
+                    default:
+                        this.CopyFromPO.Active.SetItemValue("Enabled", true);
+                        break;
+                }
+            }
+
         }
         private void enableButton()
         {
-            this.CopyToPO.Enabled.SetItemValue("EditMode", ((DetailView)View).ViewEditMode == ViewEditMode.View);
+            this.CopyFromPO.Enabled.SetItemValue("EditMode", ((DetailView)View).ViewEditMode == ViewEditMode.Edit);
         }
         protected override void OnViewControlsCreated()
         {
@@ -113,24 +122,36 @@ namespace FT_PurchasingPortal.Module.Controllers
             base.OnDeactivated();
         }
 
-
-        private void CopyToPO_Execute(object sender, SimpleActionExecuteEventArgs e)
+        private void CopyFromPO_CustomizePopupWindowParams(object sender, CustomizePopupWindowParamsEventArgs e)
         {
-            PurchaseRequest sObject = (PurchaseRequest)View.CurrentObject;
-            IObjectSpace ios = Application.CreateObjectSpace();
-            PurchaseOrder tObject = ios.CreateObject<PurchaseOrder>();
+            PurchaseDelivery masterobject = (PurchaseDelivery)View.CurrentObject;
 
-            if (copyCon.CopyToDocument(sObject, tObject, ios, (DetailView)View))
+            string ObjType = masterobject.DocType.BoCode;
+            string BusinessPartner = masterobject.CardCode == null ? "" : masterobject.CardCode.CardCode;
+
+            IObjectSpace newObjectSpace = Application.CreateObjectSpace(typeof(PurchaseOrderDetail));
+            string listViewId = Application.FindLookupListViewId(typeof(PurchaseOrderDetail));
+            CollectionSourceBase collectionSource = Application.CreateCollectionSource(newObjectSpace, typeof(PurchaseOrderDetail), listViewId);
+            if (BusinessPartner == "")
+                collectionSource.Criteria["filter01"] = CriteriaOperator.Parse("1=0");
+            else
+                collectionSource.Criteria["Filter01"] = CriteriaOperator.Parse("OpenQty > CopyQty and PurchaseOrder is not null and PurchaseOrder.DocStatus.CurrDocStatus in (?, ?, ?) and LineStatus in (?) and (PurchaseOrder.CardCode=?)", DocStatus.Accepted, DocStatus.Closed, DocStatus.Posted, LineStatusEnum.Open, BusinessPartner);
+
+            e.View = Application.CreateListView(listViewId, collectionSource, true);
+            //e.View = Application.CreateListView(typeof(PurchaseRequestDetail), true);
+        }
+
+        private void CopyFromPO_Execute(object sender, PopupWindowShowActionExecuteEventArgs e)
+        {
+            PurchaseDelivery masterobject = (PurchaseDelivery)View.CurrentObject;
+            IObjectSpace ios = View is DetailView ? ObjectSpace : Application.CreateObjectSpace();
+
+            if (copyCon.CopyFromDocument(masterobject, (ListView)e.PopupWindow.View, ios))
             {
-                if (tObject.CardCode != null)
-                    tObject.IsCopy = true;
-
-                genCon.showMsg("Operation Done", "New Purchase Order copied. Please save it.", InformationType.Success);
-                genCon.openNewView(ios, tObject, ViewEditMode.Edit);
+                masterobject.IsCopy = true;
+                genCon.showMsg("Operation Done", "Item Copied.", InformationType.Success);
                 return;
             }
-
-            genCon.showMsg("Operation Done", "No Open Item for copied.", InformationType.Info);
         }
     }
 }

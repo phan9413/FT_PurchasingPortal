@@ -74,6 +74,7 @@ namespace FT_PurchasingPortal.Module.Controllers
         public void resetButton()
         {
             this.CopyFromPR.Active.SetItemValue("Enabled", false);
+            this.CopyToDO.Active.SetItemValue("Enabled", false);
             PurchaseOrder selectobject = (PurchaseOrder)View.CurrentObject;
 
             if (selectobject.DocStatus.CurrDocStatus == DocStatus.Draft)
@@ -93,12 +94,23 @@ namespace FT_PurchasingPortal.Module.Controllers
                         this.CopyFromPR.Active.SetItemValue("Enabled", true);
                         break;
                 }
+                switch (selectobject.DocStatus.CurrDocStatus)
+                {
+                    case DocStatus.Draft:
+                    case DocStatus.Submited:
+                    case DocStatus.Cancelled:
+                        break;
+                    default:
+                        this.CopyToDO.Active.SetItemValue("Enabled", true);
+                        break;
+                }
             }
 
         }
         private void enableButton()
         {
             this.CopyFromPR.Enabled.SetItemValue("EditMode", ((DetailView)View).ViewEditMode == ViewEditMode.Edit);
+            this.CopyToDO.Enabled.SetItemValue("EditMode", ((DetailView)View).ViewEditMode == ViewEditMode.View);
         }
         protected override void OnViewControlsCreated()
         {
@@ -152,6 +164,25 @@ namespace FT_PurchasingPortal.Module.Controllers
                 genCon.showMsg("Operation Done", "Item Copied.", InformationType.Success);
                 return;
             }
+        }
+
+        private void CopyToDO_Execute(object sender, SimpleActionExecuteEventArgs e)
+        {
+            PurchaseOrder sObject = (PurchaseOrder)View.CurrentObject;
+            IObjectSpace ios = Application.CreateObjectSpace();
+            PurchaseDelivery tObject = ios.CreateObject<PurchaseDelivery>();
+
+            if (copyCon.CopyToDocument(sObject, tObject, ios, (DetailView)View))
+            {
+                if (tObject.CardCode != null)
+                    tObject.IsCopy = true;
+
+                genCon.showMsg("Operation Done", "New Purchase Delivery copied. Please save it.", InformationType.Success);
+                genCon.openNewView(ios, tObject, ViewEditMode.Edit);
+                return;
+            }
+
+            genCon.showMsg("Operation Done", "No Open Item for copied.", InformationType.Info);
         }
     }
 }

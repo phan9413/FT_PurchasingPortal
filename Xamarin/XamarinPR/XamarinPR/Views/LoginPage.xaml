@@ -26,8 +26,8 @@
             <Button Command="{Binding SubmitCommand}" Text="Login" TextColor="White"  
                     FontAttributes="Bold" FontSize="Large" HorizontalOptions="FillAndExpand"  
                     BackgroundColor="#088da5" />
-            <Button x:Name="page1" Text="Page 1" Clicked="page1_Clicked" />
-            <Button x:Name="cspage1" Text="CS Page 1" Clicked="cspage1_Clicked" />
+            <!--<Button x:Name="page1" Text="Page 1" Clicked="page1_Clicked" />
+            <Button x:Name="cspage1" Text="CS Page 1" Clicked="cspage1_Clicked" />-->
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

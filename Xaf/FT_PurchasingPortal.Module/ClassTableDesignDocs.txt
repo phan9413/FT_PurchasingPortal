@@ -21,6 +21,7 @@
 [ClassAppStage] (class, approval stage)
 	- [AppStageDoc] (approval document)
 	- [Approval] (approval)
+	- [CurrAppointedUser->Employee] (current appointed employee, when [Approval.ApprovalBy] = Appointed_User)
 	- EmailCnt (count of email sent)
 
 [ClassAppStatus] (class, approval status done)
@@ -237,6 +238,46 @@
 	-
 
 #purchase request end
+=================================================================
+#purchase delivery start
+
+[PurchaseDeliveryApp->ClassAppStatusDoc] (select from OPRNA, purchase request approval document)
+	- [CurrAppStage->PurchaseDeliveryAppStage]
+	---- <[PurchaseDeliveryAppStage]> (1 to many)
+	---- <[PurchaseDeliveryAppStatus]> (1 to many)
+
+[PurchaseDeliveryAppStage->ClassAppStage] (select from OPRNA1, purchase request approval stage)
+	- [AppStageDoc->PurchaseDeliveryApp] (purchase request approval document)
+
+[PurchaseDeliveryAppStatus->ClassAppStatus] (select from OPRNA2, purchase request approval status done)
+	- [AppStageDoc->PurchaseDeliveryApp] (purchase request approval document)
+	- [AppStage->PurchaseDeliveryAppStage] 
+
+
+[PurchaseDeliveryDoc->ClassDocStatusDoc] (select from OPRND, purchase request doc status document)
+	---- <[PurchaseDeliveryDocStatus]> (1 to many)
+
+[PurchaseDeliveryDocStatus->ClassDocStatus] (select from OPRND1, purchase request doc status)
+	- [DocStatusDoc->PurchaseDeliveryDoc] (purchase request doc status document)
+
+
+[PurchaseOrder->ClassDocument] (select from OPRN, purchase request)
+	- [DocStatus->PurchaseDeliveryDoc] (purchase request doc status document)
+	- [AppStatus->PurchaseDeliveryApproval] (purchase request approval document)
+	- [UDFs->PurchaseDeliveryUDF] (purchase request udf)
+	---- <[PurchaseDeliveryDetail]> (1 to many)
+
+[PurchaseDeliveryDetail->ClassDocumentDetail] (select from OPRN1, purchase request detail)
+	- [UDFs->PurchaseDeliveryDetailUDF] (purchase request detail udf)
+	- [PurchaseDelivery] (purchase request)
+
+[PurchaseDeliveryUDF->ClassUDFHeader] (select from OPRNU, purchase request udf)
+	-
+
+[PurchaseDeliveryDetailUDF->ClassUDFDetail] (select from OPRN1U, purchase request detail udf)
+	-
+
+#purchase delivery end
 =================================================================
 #stock transfer request start
 [StockTransferRequestApp->ClassAppStatusDoc] (select from OSTFEA, stock transfer request approval document)

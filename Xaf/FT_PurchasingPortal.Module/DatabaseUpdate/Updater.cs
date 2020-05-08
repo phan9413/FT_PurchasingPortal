@@ -76,6 +76,15 @@ namespace FT_PurchasingPortal.Module.DatabaseUpdate {
                 doctype.BoName = temp;
                 doctype.Save();
             }
+            temp = DocTypeCodes.PurchaseDelivery;
+            doctype = ObjectSpace.FindObject<DocType>(new BinaryOperator("BoCode", temp));
+            if (doctype == null)
+            {
+                doctype = ObjectSpace.CreateObject<DocType>();
+                doctype.BoCode = temp;
+                doctype.BoName = temp;
+                doctype.Save();
+            }
             temp = DocTypeCodes.StockTransferRequest;
             doctype = ObjectSpace.FindObject<DocType>(new BinaryOperator("BoCode", temp));
             if (doctype == null)

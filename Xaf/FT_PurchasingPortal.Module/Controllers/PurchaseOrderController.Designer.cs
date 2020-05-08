@@ -30,6 +30,7 @@
         {
             this.components = new System.ComponentModel.Container();
             this.CopyFromPR = new DevExpress.ExpressApp.Actions.PopupWindowShowAction(this.components);
+            this.CopyToDO = new DevExpress.ExpressApp.Actions.SimpleAction(this.components);
             // 
             // CopyFromPR
             // 
@@ -42,14 +43,24 @@
             this.CopyFromPR.CustomizePopupWindowParams += new DevExpress.ExpressApp.Actions.CustomizePopupWindowParamsEventHandler(this.CopyFromPR_CustomizePopupWindowParams);
             this.CopyFromPR.Execute += new DevExpress.ExpressApp.Actions.PopupWindowShowActionExecuteEventHandler(this.CopyFromPR_Execute);
             // 
+            // CopyToDO
+            // 
+            this.CopyToDO.Caption = "Copy To DO";
+            this.CopyToDO.ConfirmationMessage = null;
+            this.CopyToDO.Id = "CopyToDO";
+            this.CopyToDO.ToolTip = null;
+            this.CopyToDO.Execute += new DevExpress.ExpressApp.Actions.SimpleActionExecuteEventHandler(this.CopyToDO_Execute);
+            // 
             // PurchaseOrderController
             // 
             this.Actions.Add(this.CopyFromPR);
+            this.Actions.Add(this.CopyToDO);
 
         }
 
         #endregion
 
         private DevExpress.ExpressApp.Actions.PopupWindowShowAction CopyFromPR;
+        private DevExpress.ExpressApp.Actions.SimpleAction CopyToDO;
     }
 }

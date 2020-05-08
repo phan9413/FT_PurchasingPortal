@@ -185,6 +185,11 @@
     <Compile Include="BusinessObjects\ClassUDFDetail.cs" />
     <Compile Include="BusinessObjects\ClassUDFHeader.cs" />
     <Compile Include="BusinessObjects\NonPersistentObject.cs" />
+    <Compile Include="BusinessObjects\PurchaseDelivery.cs" />
+    <Compile Include="BusinessObjects\PurchaseDeliveryApp.cs" />
+    <Compile Include="BusinessObjects\PurchaseDeliveryAttachment.cs" />
+    <Compile Include="BusinessObjects\PurchaseDeliveryDoc.cs" />
+    <Compile Include="BusinessObjects\PurchaseDeliveryUDF.cs" />
     <Compile Include="BusinessObjects\StockTransferRequestApp.cs" />
     <Compile Include="BusinessObjects\PurchaseRequestUDF.cs" />
     <Compile Include="BusinessObjects\PurchaseRequestDoc.cs" />
@@ -278,6 +283,12 @@
     <Compile Include="Controllers\GenController.Designer.cs">
       <DependentUpon>GenController.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controllers\PurchaseDeliveryController.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controllers\PurchaseDeliveryController.Designer.cs">
+      <DependentUpon>PurchaseDeliveryController.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controllers\PurchaseOrderController.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -312,6 +323,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Controllers\DocumentDVController.resx">
       <DependentUpon>DocumentDVController.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controllers\PurchaseDeliveryController.resx">
+      <DependentUpon>PurchaseDeliveryController.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controllers\PurchaseOrderController.resx">
       <DependentUpon>PurchaseOrderController.cs</DependentUpon>

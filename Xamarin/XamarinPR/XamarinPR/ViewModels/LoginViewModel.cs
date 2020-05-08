@@ -3,7 +3,7 @@ using System.ComponentModel;
 using System.Windows.Input;
 
 using Xamarin.Forms;
-using XamarinPR.Helper;
+using XamarinPR.Helpers;
 using XamarinPR.Models;
 using XamarinPR.Views;
 
@@ -75,7 +75,7 @@ namespace XamarinPR.ViewModels
                 if (client.isSuccessStatusCode)
                 {
                     DisplayAlert("Alert", "Login Success.", "OK");
-                    Application.Current.MainPage = new NavigationPage(new MainPage());
+                    Application.Current.MainPage = new NavigationPage(new GetPODetail());
 
                     return;
                 }

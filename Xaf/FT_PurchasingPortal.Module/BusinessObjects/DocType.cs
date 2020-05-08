@@ -213,6 +213,7 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
                 {
                     case DocTypeCodes.PurchaseRequest:
                     case DocTypeCodes.PurchaseOrder:
+                    case DocTypeCodes.PurchaseDelivery:
                         return "Y";
                 }
                 return "";
@@ -228,6 +229,7 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
                 {
                     case DocTypeCodes.PurchaseRequest:
                     case DocTypeCodes.PurchaseOrder:
+                    case DocTypeCodes.PurchaseDelivery:
                         rtn = "S";
                         break;
                     case DocTypeCodes.SalesAgreement:

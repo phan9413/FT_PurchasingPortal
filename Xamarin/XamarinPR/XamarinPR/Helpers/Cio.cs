@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace XamarinPR.Helper
+namespace XamarinPR.Helpers
 {
     // an object to send over server 
     // to activate action and verification of token
