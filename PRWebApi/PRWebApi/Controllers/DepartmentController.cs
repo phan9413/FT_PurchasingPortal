@@ -57,65 +57,93 @@ namespace PRWebApi.Controllers
         [HttpGet("{id}")]
         public Departments Get(int id)
         {
-            return _uow.GetObjectByKey<Departments>(id);
+            try
+            {
+                return _uow.GetObjectByKey<Departments>(id);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
         [HttpPost]
         public async Task<IActionResult> Post([FromBody]JObject values)
         {
-            //PurchaseRequest obj = JsonPopulateObjectHelper.PopulateObject<PurchaseRequest>(values.ToString(), _uow);
-            //PurchaseRequest customer = new PurchaseRequest(_uow);
-            //customer.FullName = values["FullName"].Value<string>();
-            //_uow.CommitChanges();
-            Departments obj = JsonPopulateObjectHelper.PopulateObject<Departments>(values.ToString(), _uow);
-            //RuleSet rule = new RuleSet();
-            //rule.ValidateAll((IObjectSpace)obj.Session, _uow.GetObjectsToSave(), "Any");
-            await _uow.CommitChangesAsync();
-            return Ok(obj);
+            try
+            {
+                //PurchaseRequest obj = JsonPopulateObjectHelper.PopulateObject<PurchaseRequest>(values.ToString(), _uow);
+                //PurchaseRequest customer = new PurchaseRequest(_uow);
+                //customer.FullName = values["FullName"].Value<string>();
+                //_uow.CommitChanges();
+                Departments obj = JsonPopulateObjectHelper.PopulateObject<Departments>(values.ToString(), _uow);
+                //RuleSet rule = new RuleSet();
+                //rule.ValidateAll((IObjectSpace)obj.Session, _uow.GetObjectsToSave(), "Any");
+                await _uow.CommitChangesAsync();
+                return Ok(obj);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, [FromBody]JObject value)
         {
-            ////PurchaseRequest customer = _uow.GetObjectByKey<PurchaseRequest>(id);
-            ////JToken token;
-            ////if (value.TryGetValue("Department", out token))
-            ////{
-            ////    customer.Department = _uow.GetObjectByKey<Departments>(token["Oid"].Value<int>());
-            ////}
-
-            ////if (value.TryGetValue("FullName", out token))
-            ////{
-            ////    customer.FullName = value["FullName"].Value<string>();
-            ////}
-
-            //PurchaseRequest customer = _uow.GetObjectByKey<PurchaseRequest>(id);
-
-            //JsonPopulateObjectHelper.PopulateObject(value.ToString(), _uow, customer);
-            //_uow.CommitChanges();
-
-            Departments obj = await _uow.GetObjectByKeyAsync<Departments>(id);
-            if (obj == null)
+            try
             {
-                return NotFound();
+                ////PurchaseRequest customer = _uow.GetObjectByKey<PurchaseRequest>(id);
+                ////JToken token;
+                ////if (value.TryGetValue("Department", out token))
+                ////{
+                ////    customer.Department = _uow.GetObjectByKey<Departments>(token["Oid"].Value<int>());
+                ////}
+
+                ////if (value.TryGetValue("FullName", out token))
+                ////{
+                ////    customer.FullName = value["FullName"].Value<string>();
+                ////}
+
+                //PurchaseRequest customer = _uow.GetObjectByKey<PurchaseRequest>(id);
+
+                //JsonPopulateObjectHelper.PopulateObject(value.ToString(), _uow, customer);
+                //_uow.CommitChanges();
+
+                Departments obj = await _uow.GetObjectByKeyAsync<Departments>(id);
+                if (obj == null)
+                {
+                    return NotFound();
+                }
+                JsonPopulateObjectHelper.PopulateObject(value.ToString(), _uow, obj);
+                await _uow.CommitChangesAsync();
+                return Ok(obj);
             }
-            JsonPopulateObjectHelper.PopulateObject(value.ToString(), _uow, obj);
-            await _uow.CommitChangesAsync();
-            return Ok(obj);
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            //PurchaseRequest customer = _uow.GetObjectByKey<PurchaseRequest>(id);
-            //_uow.Delete(customer);
-            //_uow.CommitChanges();
-
-            Departments obj = await _uow.GetObjectByKeyAsync<Departments>(id);
-            if (obj == null)
+            try
             {
-                return NotFound();
+                //PurchaseRequest customer = _uow.GetObjectByKey<PurchaseRequest>(id);
+                //_uow.Delete(customer);
+                //_uow.CommitChanges();
+
+                Departments obj = await _uow.GetObjectByKeyAsync<Departments>(id);
+                if (obj == null)
+                {
+                    return NotFound();
+                }
+                _uow.Delete(obj);
+                await _uow.CommitChangesAsync();
+                return Ok(obj);
             }
-            _uow.Delete(obj);
-            await _uow.CommitChangesAsync();
-            return Ok(obj);
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
         //[HttpGet]
         //public List<DocTypeSeries> Get()

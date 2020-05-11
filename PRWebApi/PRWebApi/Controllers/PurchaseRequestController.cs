@@ -64,9 +64,9 @@ namespace PRWebApi.Controllers
         [HttpPost]
         public async Task<IActionResult> Post([FromBody]JObject values)
         {
-            PurchaseRequest obj = null;
             try
             {
+                PurchaseRequest obj = null;
                 //PurchaseRequest obj = JsonPopulateObjectHelper.PopulateObject<PurchaseRequest>(values.ToString(), _uow);
                 //PurchaseRequest customer = new PurchaseRequest(_uow);
                 //customer.FullName = values["FullName"].Value<string>();
@@ -77,35 +77,35 @@ namespace PRWebApi.Controllers
 
                 await _uow.CommitChangesAsync();
                 //obj = JsonConvert.DeserializeObject<PurchaseRequest>(values.ToString());
+                return Ok(obj);
             }
             catch (Exception ex) 
-            { 
-            
+            {
+                throw new Exception(ex.Message);
             }
-            return Ok(obj);
         }
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, [FromBody]JObject values)
         {
-            ////PurchaseRequest customer = _uow.GetObjectByKey<PurchaseRequest>(id);
-            ////JToken token;
-            ////if (value.TryGetValue("Department", out token))
-            ////{
-            ////    customer.Department = _uow.GetObjectByKey<Departments>(token["Oid"].Value<int>());
-            ////}
-
-            ////if (value.TryGetValue("FullName", out token))
-            ////{
-            ////    customer.FullName = value["FullName"].Value<string>();
-            ////}
-
-            //PurchaseRequest customer = _uow.GetObjectByKey<PurchaseRequest>(id);
-
-            //JsonPopulateObjectHelper.PopulateObject(value.ToString(), _uow, customer);
-            //_uow.CommitChanges();
-            PurchaseRequest obj = null;
             try
             {
+                ////PurchaseRequest customer = _uow.GetObjectByKey<PurchaseRequest>(id);
+                ////JToken token;
+                ////if (value.TryGetValue("Department", out token))
+                ////{
+                ////    customer.Department = _uow.GetObjectByKey<Departments>(token["Oid"].Value<int>());
+                ////}
+
+                ////if (value.TryGetValue("FullName", out token))
+                ////{
+                ////    customer.FullName = value["FullName"].Value<string>();
+                ////}
+
+                //PurchaseRequest customer = _uow.GetObjectByKey<PurchaseRequest>(id);
+
+                //JsonPopulateObjectHelper.PopulateObject(value.ToString(), _uow, customer);
+                //_uow.CommitChanges();
+                PurchaseRequest obj = null;
 
                 obj = await _uow.GetObjectByKeyAsync<PurchaseRequest>(id);
                 if (obj == null)
@@ -118,55 +118,120 @@ namespace PRWebApi.Controllers
                 deleteDetails(values, obj);
 
                 await _uow.CommitChangesAsync();
+                return Ok(obj);
             }
             catch (Exception ex)
             {
-
+                throw new Exception(ex.Message);
             }
-            return Ok(obj);
         }
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            //PurchaseRequest customer = _uow.GetObjectByKey<PurchaseRequest>(id);
-            //_uow.Delete(customer);
-            //_uow.CommitChanges();
-
-            PurchaseRequest obj = await _uow.GetObjectByKeyAsync<PurchaseRequest>(id);
-            if (obj == null)
+            try
             {
-                return NotFound();
-            }
-            _uow.Delete(obj);
-            await _uow.CommitChangesAsync();
-            return Ok(obj);
-        }
-        //[HttpGet]
-        //public List<DocTypeSeries> Get()
-        //{
-        //    List<DocTypeSeries> result = null;
-        //    XPQuery<DocTypeSeries> query = (XPQuery<DocTypeSeries>)_uow.Query<DocTypeSeries>();
-        //    result = query.ToList<DocTypeSeries>();
+                //PurchaseRequest customer = _uow.GetObjectByKey<PurchaseRequest>(id);
+                //_uow.Delete(customer);
+                //_uow.CommitChanges();
 
-        //    return result;
-        //}
+                PurchaseRequest obj = await _uow.GetObjectByKeyAsync<PurchaseRequest>(id);
+                if (obj == null)
+                {
+                    return NotFound();
+                }
+                _uow.Delete(obj);
+                await _uow.CommitChangesAsync();
+                return Ok(obj);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+//[HttpGet]
+//public List<DocTypeSeries> Get()
+//{
+//    List<DocTypeSeries> result = null;
+//    XPQuery<DocTypeSeries> query = (XPQuery<DocTypeSeries>)_uow.Query<DocTypeSeries>();
+//    result = query.ToList<DocTypeSeries>();
+
+//    return result;
+//}
 
         private void addNewDetailsOnly(JObject value, PurchaseRequest obj, bool IsNewHeader)
         {
-            #region add details
-            string detalclassname = "PurchaseRequestDetail";
-            bool isnew = false;
-            int intkeyvalue = -1;
-            JArray jarray = (JArray)value[detalclassname];
-            foreach (JObject Jdtl in jarray.Children())
+            try
             {
-                isnew = false;
-                if (IsNewHeader)
+                #region add details
+                string detalclassname = "PurchaseRequestDetail";
+                bool isnew = false;
+                int intkeyvalue = -1;
+                JArray jarray = (JArray)value[detalclassname];
+                foreach (JObject Jdtl in jarray.Children())
                 {
-                    isnew = true;
+                    isnew = false;
+                    if (IsNewHeader)
+                    {
+                        isnew = true;
+                    }
+                    else
+                    {
+                        if (Jdtl.ContainsKey("Oid"))
+                        {
+                            if (Jdtl["Oid"] == null)
+                            {
+                                isnew = true;
+                            }
+                            else
+                            {
+                                if (int.TryParse(Jdtl["Oid"].ToString(), out intkeyvalue))
+                                {
+                                    if (intkeyvalue == -1) isnew = true;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            isnew = true;
+                        }
+                    }
+                    if (isnew)
+                    {
+                        if (Jdtl.ContainsKey("IsBeingDelete"))
+                        {
+                            if (Jdtl["IsBeingDelete"].ToString() == "1" || Jdtl["IsBeingDelete"].ToString().ToUpper() == "TRUE")
+                            {
+                                isnew = false;
+                            }
+                        }
+                        if (isnew)
+                        {
+                            PurchaseRequestDetail dtl = JsonPopulateObjectHelper.PopulateObject<PurchaseRequestDetail>(Jdtl.ToString(), _uow);
+                            obj.PurchaseRequestDetail.Add(dtl);
+                        }
+                    }
+
                 }
-                else
+                #endregion
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        private void deleteDetails(JObject value, PurchaseRequest obj)
+        {
+            try
+            {
+                #region delete details
+                string detalclassname = "PurchaseRequestDetail";
+                bool isnew = false;
+                int intkeyvalue = -1;
+                JArray jarray = (JArray)value[detalclassname];
+                foreach (JObject Jdtl in jarray.Children())
                 {
+                    isnew = false;
                     if (Jdtl.ContainsKey("Oid"))
                     {
                         if (Jdtl["Oid"] == null)
@@ -185,72 +250,28 @@ namespace PRWebApi.Controllers
                     {
                         isnew = true;
                     }
-                }
-                if (isnew)
-                {
-                    if (Jdtl.ContainsKey("IsBeingDelete"))
+                    if (!isnew)
                     {
-                        if (Jdtl["IsBeingDelete"].ToString() == "1" || Jdtl["IsBeingDelete"].ToString().ToUpper() == "TRUE")
+                        if (Jdtl.ContainsKey("IsBeingDelete"))
                         {
-                            isnew = false;
+                            if (Jdtl["IsBeingDelete"].ToString() == "1" || Jdtl["IsBeingDelete"].ToString().ToUpper() == "TRUE")
+                            {
+                                PurchaseRequestDetail dtl = obj.PurchaseRequestDetail.Where(pp => pp.Oid == intkeyvalue).FirstOrDefault();
+                                if (dtl != null)
+                                    dtl.Delete();
+                                    //obj.PurchaseRequestDetail.Remove(dtl);
+
+                            }
                         }
                     }
-                    if (isnew)
-                    {
-                        PurchaseRequestDetail dtl = JsonPopulateObjectHelper.PopulateObject<PurchaseRequestDetail>(Jdtl.ToString(), _uow);
-                        obj.PurchaseRequestDetail.Add(dtl);
-                    }
+
                 }
-
+                #endregion
             }
-            #endregion
-        }
-
-        private void deleteDetails(JObject value, PurchaseRequest obj)
-        {
-            #region delete details
-            string detalclassname = "PurchaseRequestDetail";
-            bool isnew = false;
-            int intkeyvalue = -1;
-            JArray jarray = (JArray)value[detalclassname];
-            foreach (JObject Jdtl in jarray.Children())
+            catch (Exception ex)
             {
-                isnew = false;
-                if (Jdtl.ContainsKey("Oid"))
-                {
-                    if (Jdtl["Oid"] == null)
-                    {
-                        isnew = true;
-                    }
-                    else
-                    {
-                        if (int.TryParse(Jdtl["Oid"].ToString(), out intkeyvalue))
-                        {
-                            if (intkeyvalue == -1) isnew = true;
-                        }
-                    }
-                }
-                else
-                {
-                    isnew = true;
-                }
-                if (!isnew)
-                {
-                    if (Jdtl.ContainsKey("IsBeingDelete"))
-                    {
-                        if (Jdtl["IsBeingDelete"].ToString() == "1" || Jdtl["IsBeingDelete"].ToString().ToUpper() == "TRUE")
-                        {
-                            PurchaseRequestDetail dtl = obj.PurchaseRequestDetail.Where(pp => pp.Oid == intkeyvalue).FirstOrDefault();
-                            if (dtl != null)
-                                dtl.Delete();
-                                //obj.PurchaseRequestDetail.Remove(dtl);
-
-                        }
-                    }
-                }
-
+                throw new Exception(ex.Message);
             }
-            #endregion
 
         }
     }

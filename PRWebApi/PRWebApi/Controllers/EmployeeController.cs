@@ -53,63 +53,91 @@ namespace PRWebApi.Controllers
         [HttpGet("{id}")]
         public Employee Get(int id)
         {
-            return _uow.GetObjectByKey<Employee>(id);
+            try
+            {
+                return _uow.GetObjectByKey<Employee>(id);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
         [HttpPost]
         public async Task<IActionResult> Post([FromBody]JObject values)
         {
-            //Employee obj = JsonPopulateObjectHelper.PopulateObject<Employee>(values.ToString(), _uow);
-            //Employee customer = new Employee(_uow);
-            //customer.FullName = values["FullName"].Value<string>();
-            //_uow.CommitChanges();
-            Employee obj = JsonPopulateObjectHelper.PopulateObject<Employee>(values.ToString(), _uow);
-            await _uow.CommitChangesAsync();
-            return Ok(obj);
+            try
+            {
+                //Employee obj = JsonPopulateObjectHelper.PopulateObject<Employee>(values.ToString(), _uow);
+                //Employee customer = new Employee(_uow);
+                //customer.FullName = values["FullName"].Value<string>();
+                //_uow.CommitChanges();
+                Employee obj = JsonPopulateObjectHelper.PopulateObject<Employee>(values.ToString(), _uow);
+                await _uow.CommitChangesAsync();
+                return Ok(obj);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, [FromBody]JObject value)
         {
-            ////Employee customer = _uow.GetObjectByKey<Employee>(id);
-            ////JToken token;
-            ////if (value.TryGetValue("Department", out token))
-            ////{
-            ////    customer.Department = _uow.GetObjectByKey<Departments>(token["Oid"].Value<int>());
-            ////}
-
-            ////if (value.TryGetValue("FullName", out token))
-            ////{
-            ////    customer.FullName = value["FullName"].Value<string>();
-            ////}
-
-            //Employee customer = _uow.GetObjectByKey<Employee>(id);
-
-            //JsonPopulateObjectHelper.PopulateObject(value.ToString(), _uow, customer);
-            //_uow.CommitChanges();
-
-            Employee obj = await _uow.GetObjectByKeyAsync<Employee>(id);
-            if (obj == null)
+            try
             {
-                return NotFound();
+                ////Employee customer = _uow.GetObjectByKey<Employee>(id);
+                ////JToken token;
+                ////if (value.TryGetValue("Department", out token))
+                ////{
+                ////    customer.Department = _uow.GetObjectByKey<Departments>(token["Oid"].Value<int>());
+                ////}
+
+                ////if (value.TryGetValue("FullName", out token))
+                ////{
+                ////    customer.FullName = value["FullName"].Value<string>();
+                ////}
+
+                //Employee customer = _uow.GetObjectByKey<Employee>(id);
+
+                //JsonPopulateObjectHelper.PopulateObject(value.ToString(), _uow, customer);
+                //_uow.CommitChanges();
+
+                Employee obj = await _uow.GetObjectByKeyAsync<Employee>(id);
+                if (obj == null)
+                {
+                    return NotFound();
+                }
+                JsonPopulateObjectHelper.PopulateObject(value.ToString(), _uow, obj);
+                await _uow.CommitChangesAsync();
+                return Ok(obj);
             }
-            JsonPopulateObjectHelper.PopulateObject(value.ToString(), _uow, obj);
-            await _uow.CommitChangesAsync();
-            return Ok(obj);
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            //Employee customer = _uow.GetObjectByKey<Employee>(id);
-            //_uow.Delete(customer);
-            //_uow.CommitChanges();
-
-            Employee obj = await _uow.GetObjectByKeyAsync<Employee>(id);
-            if (obj == null)
+            try
             {
-                return NotFound();
+                //Employee customer = _uow.GetObjectByKey<Employee>(id);
+                //_uow.Delete(customer);
+                //_uow.CommitChanges();
+
+                Employee obj = await _uow.GetObjectByKeyAsync<Employee>(id);
+                if (obj == null)
+                {
+                    return NotFound();
+                }
+                _uow.Delete(obj);
+                await _uow.CommitChangesAsync();
+                return Ok(obj);
             }
-            _uow.Delete(obj);
-            await _uow.CommitChangesAsync();
-            return Ok(obj);
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
         //[HttpGet]
         //public List<DocTypeSeries> Get()

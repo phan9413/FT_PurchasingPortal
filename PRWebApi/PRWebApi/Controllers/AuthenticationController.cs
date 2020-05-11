@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using PRWebApi.Helpers;
 using PRWebApi.Models;
 using DevExpress.ExpressApp;
+using System;
 
 namespace PRWebApi.Controllers
 {
@@ -24,29 +25,50 @@ namespace PRWebApi.Controllers
 		//public ActionResult Login(string userName, string password)
 		public ActionResult Login([FromBody] UserLogin data)
 		{
+			try
+			{
 
-			ActionResult result;
-			if (securityProvider.InitConnection(data.UserName, data.Password))
-			{
-				result = Ok();
+				ActionResult result;
+				if (securityProvider.InitConnection(data.UserName, data.Password))
+				{
+					result = Ok();
+				}
+				else
+				{
+					result = Unauthorized();
+				}
+				return result;
 			}
-			else
+			catch (Exception ex)
 			{
-				result = Unauthorized();
+				throw new Exception(ex.Message);
 			}
-			return result;
 		}
 		[HttpGet]
 		[Route("Logout")]
 		public async Task<ActionResult> Logout()
 		{
-			await HttpContext.SignOutAsync();
-			return Ok();
+			try
+			{
+				await HttpContext.SignOutAsync();
+				return Ok();
+			}
+			catch (Exception ex)
+			{
+				throw new Exception(ex.Message);
+			}
 		}
 		[Route("Authentication")]
 		public IActionResult Authentication()
 		{
-			return View();
+			try
+			{
+				return View();
+			}
+			catch (Exception ex)
+			{
+				throw new Exception(ex.Message);
+			}
 		}
 		protected override void Dispose(bool disposing)
 		{

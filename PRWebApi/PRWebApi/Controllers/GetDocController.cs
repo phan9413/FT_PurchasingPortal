@@ -30,45 +30,59 @@ namespace PRWebApi.Controllers
         [Route("api/getpoitem/{docno}")]
         public IActionResult Getpo(string docno)
         {
-            PurchaseOrder obj = _uow.Query<PurchaseOrder>().Where(pp => pp.DocNo == docno).FirstOrDefault();
-            if (obj == null)
+            try
             {
-                return NotFound();
+                PurchaseOrder obj = _uow.Query<PurchaseOrder>().Where(pp => pp.DocNo == docno).FirstOrDefault();
+                if (obj == null)
+                {
+                    return NotFound();
+                }
+                //return Ok(obj);
+
+                List<PurchaseOrder> objlist = new List<PurchaseOrder>();
+                objlist.Add(obj);
+
+                var result = objlist.Select(r => new
+                {
+                    Header = r,
+                    PurchaseOrderDetail = r.PurchaseOrderDetail.ToArray()
+                }).Single();
+
+                return Ok(result);
             }
-            //return Ok(obj);
-
-            List<PurchaseOrder> objlist = new List<PurchaseOrder>();
-            objlist.Add(obj);
-
-            var result = objlist.Select(r => new
+            catch (Exception ex)
             {
-                Header = r,
-                PurchaseOrderDetail = r.PurchaseOrderDetail.ToArray()
-            }).Single();
-
-            return Ok(result);
+                throw new Exception(ex.Message);
+            }
         }
         [HttpGet]
         [Route("api/getpritem/{docno}")]
         public IActionResult Getpr(string docno)
         {
-            PurchaseRequest obj = _uow.Query<PurchaseRequest>().Where(pp => pp.DocNo == docno).FirstOrDefault();
-            if (obj == null)
+            try
             {
-                return NotFound();
+                PurchaseRequest obj = _uow.Query<PurchaseRequest>().Where(pp => pp.DocNo == docno).FirstOrDefault();
+                if (obj == null)
+                {
+                    return NotFound();
+                }
+                //return Ok(obj);
+
+                List<PurchaseRequest> objlist = new List<PurchaseRequest>();
+                objlist.Add(obj);
+
+                var result = objlist.Select(r => new
+                {
+                    Header = r,
+                    PurchaseRequestDetail = r.PurchaseRequestDetail.ToArray()
+                }).Single();
+
+                return Ok(result);
             }
-            //return Ok(obj);
-
-            List<PurchaseRequest> objlist = new List<PurchaseRequest>();
-            objlist.Add(obj);
-
-            var result = objlist.Select(r => new
+            catch (Exception ex)
             {
-                Header = r,
-                PurchaseRequestDetail = r.PurchaseRequestDetail.ToArray()
-            }).Single();
-
-            return Ok(result);
+                throw new Exception(ex.Message);
+            }
         }
 
     }
