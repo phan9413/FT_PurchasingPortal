@@ -26,6 +26,16 @@ namespace PRWebApi.Controllers
             FT_PurchasingPortal.Module.GeneralValues.IsNetCore = true;
             //XpoDefault.Session = new UnitOfWork();
         }
+
+        /// <summary>
+        /// Get PO from API
+        /// </summary>
+        /// <remarks>
+        /// Note that the key is a Oid and an integer.
+        /// </remarks>
+        /// <param name="docno">PO No</param>       
+        /// <response code="200">Returns found item</response>
+        /// <response code="400">Not Found</response>
         [HttpGet]
         [Route("api/getpoitem/{docno}")]
         public IActionResult Getpo(string docno)
@@ -55,6 +65,16 @@ namespace PRWebApi.Controllers
                 throw new Exception(ex.Message);
             }
         }
+
+        /// <summary>
+        /// Get PR from API
+        /// </summary>
+        /// <remarks>
+        /// Note that the key is a Oid and an integer.
+        /// </remarks>
+        /// <param name="docno">PR No</param>       
+        /// <response code="200">Returns found item</response>
+        /// <response code="400">Not Found</response>
         [HttpGet]
         [Route("api/getpritem/{docno}")]
         public IActionResult Getpr(string docno)

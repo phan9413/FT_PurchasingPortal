@@ -10,6 +10,7 @@ using System;
 
 namespace PRWebApi.Controllers
 {
+	/*
     [Route("api/[controller]")]
     [ApiController]
     public class AuthenticationController : Microsoft.AspNetCore.Mvc.Controller
@@ -19,6 +20,7 @@ namespace PRWebApi.Controllers
 		{
 			this.securityProvider = securityProvider;
 		}
+		
 		[HttpPost]
 		//[Route("Login")]
 		[AllowAnonymous]
@@ -58,6 +60,7 @@ namespace PRWebApi.Controllers
 				throw new Exception(ex.Message);
 			}
 		}
+		[HttpGet]
 		[Route("Authentication")]
 		public IActionResult Authentication()
 		{
@@ -78,5 +81,7 @@ namespace PRWebApi.Controllers
 			}
 			base.Dispose(disposing);
 		}
+	
 	}
+	*/
 }

@@ -26,6 +26,22 @@ namespace PRWebApi.Controllers
             FT_PurchasingPortal.Module.GeneralValues.IsNetCore = true;
             //XpoDefault.Session = new UnitOfWork();
         }
+
+        /// <summary>
+        /// Gen GRN to API from PO
+        /// </summary>
+        /// <remarks>
+        /// Note that the key is a Oid and an integer.
+        ///  
+        ///     POST
+        ///     {
+        ///        PurchaseDelivery Object
+        ///     }
+        /// 
+        /// </remarks>
+        /// <param name="docno">PO No</param>       
+        /// <response code="200">Returns the newly created item</response>
+        /// <response code="400">PO Not Found</response>
         [HttpPost]
         [Route("api/submitgrnfrompo/{docno}")]
         public async Task<IActionResult> GenGRN(string docno, [FromBody]JObject values)

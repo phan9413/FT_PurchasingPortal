@@ -1,0 +1,458 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>PRWebApi</name>
+    </assembly>
+    <members>
+        <member name="M:PRWebApi.Controllers.DepartmentController.Get">
+            <summary>
+            Get all Department.
+            </summary>
+            <remarks>
+            Note that the key is a Oid and an integer.
+            </remarks>
+            <returns>Found Item</returns>
+            <response code="200">Returns found item</response>
+        </member>
+        <member name="M:PRWebApi.Controllers.DepartmentController.Get(System.Int32)">
+            <summary>
+            Get a Department.
+            </summary>
+            <remarks>
+            Note that the key is a Oid and an integer.
+            </remarks>
+            <param name="id"></param>
+            <returns>Found Item</returns>
+            <response code="200">Returns found item</response>
+            <response code="400">Not Found</response>
+        </member>
+        <member name="M:PRWebApi.Controllers.DepartmentController.Post(Newtonsoft.Json.Linq.JObject)">
+            <summary>
+            Create a Department.
+            </summary>
+            <remarks>
+            Note that the key is a Oid and an integer.
+             
+                POST
+                {
+                   Departments Object
+                }
+            
+            </remarks>
+            <returns>New Created Item</returns>
+            <response code="200">Returns the newly created item</response>
+            <response code="400">Not Found</response>
+        </member>
+        <member name="M:PRWebApi.Controllers.DepartmentController.Put(System.Int32,Newtonsoft.Json.Linq.JObject)">
+            <summary>
+            Update a Department.
+            </summary>
+            <remarks>
+            Note that the key is a Oid and an integer.
+             
+                PUT
+                {
+                   Departments Object
+                }
+            
+            </remarks>
+            <param name="id">Oid value</param>
+            <returns>Updated Item</returns>
+            <response code="200">Returns the updated item</response>
+            <response code="400">Not Found</response>
+        </member>
+        <member name="M:PRWebApi.Controllers.DepartmentController.Delete(System.Int32)">
+            <summary>
+            Delete a Department.
+            </summary>
+            <remarks>
+            Note that the key is a Oid and an integer.
+            </remarks>
+            <param name="id">Oid value</param>
+            <returns></returns>
+            <response code="200">Deleted Item</response>
+            <response code="400">Not Found</response>
+        </member>
+        <member name="M:PRWebApi.Controllers.EmployeeController.Get">
+            <summary>
+            Get all Employee.
+            </summary>
+            <remarks>
+            Note that the key is a Oid and an integer.
+            </remarks>
+            <returns>Found Item</returns>
+            <response code="200">Returns found item</response>
+        </member>
+        <member name="M:PRWebApi.Controllers.EmployeeController.Get(System.Int32)">
+            <summary>
+            Get a Employee.
+            </summary>
+            <remarks>
+            Note that the key is a Oid and an integer.
+            </remarks>
+            <param name="id"></param>
+            <returns>Found Item</returns>
+            <response code="200">Returns found item</response>
+            <response code="400">Not Found</response>
+        </member>
+        <member name="M:PRWebApi.Controllers.EmployeeController.Post(Newtonsoft.Json.Linq.JObject)">
+            <summary>
+            Create a Employee.
+            </summary>
+            <remarks>
+            Note that the key is a Oid and an integer.
+             
+                POST
+                {
+                   Employees Object
+                }
+            
+            </remarks>
+            <returns>New Created Item</returns>
+            <response code="200">Returns the newly created item</response>
+            <response code="400">Not Found</response>
+        </member>
+        <member name="M:PRWebApi.Controllers.EmployeeController.Put(System.Int32,Newtonsoft.Json.Linq.JObject)">
+            <summary>
+            Update a Employee.
+            </summary>
+            <remarks>
+            Note that the key is a Oid and an integer.
+             
+                PUT
+                {
+                   Employee Object
+                }
+            
+            </remarks>
+            <param name="id">Oid value</param>
+            <returns>Updated Item</returns>
+            <response code="200">Returns the updated item</response>
+            <response code="400">Not Found</response>
+        </member>
+        <member name="M:PRWebApi.Controllers.EmployeeController.Delete(System.Int32)">
+            <summary>
+            Delete a Employee.
+            </summary>
+            <remarks>
+            Note that the key is a Oid and an integer.
+            </remarks>
+            <param name="id">Oid value</param>
+            <returns></returns>
+            <response code="200">Deleted Item</response>
+            <response code="400">Not Found</response>
+        </member>
+        <member name="M:PRWebApi.Controllers.GenDocController.GenGRN(System.String,Newtonsoft.Json.Linq.JObject)">
+            <summary>
+            Gen GRN to API from PO
+            </summary>
+            <remarks>
+            Note that the key is a Oid and an integer.
+             
+                POST
+                {
+                   PurchaseDelivery Object
+                }
+            
+            </remarks>
+            <param name="docno">PO No</param>       
+            <response code="200">Returns the newly created item</response>
+            <response code="400">PO Not Found</response>
+        </member>
+        <member name="M:PRWebApi.Controllers.GetDocController.Getpo(System.String)">
+            <summary>
+            Get PO from API
+            </summary>
+            <remarks>
+            Note that the key is a Oid and an integer.
+            </remarks>
+            <param name="docno">PO No</param>       
+            <response code="200">Returns found item</response>
+            <response code="400">Not Found</response>
+        </member>
+        <member name="M:PRWebApi.Controllers.GetDocController.Getpr(System.String)">
+            <summary>
+            Get PR from API
+            </summary>
+            <remarks>
+            Note that the key is a Oid and an integer.
+            </remarks>
+            <param name="docno">PR No</param>       
+            <response code="200">Returns found item</response>
+            <response code="400">Not Found</response>
+        </member>
+        <member name="M:PRWebApi.Controllers.PositionController.Get">
+            <summary>
+            Get all Department.
+            </summary>
+            <remarks>
+            Note that the key is a Oid and an integer.
+            </remarks>
+            <returns>Found Item</returns>
+            <response code="200">Returns found item</response>
+        </member>
+        <member name="M:PRWebApi.Controllers.PositionController.Get(System.Int32)">
+            <summary>
+            Get a Department.
+            </summary>
+            <remarks>
+            Note that the key is a Oid and an integer.
+            </remarks>
+            <param name="id"></param>
+            <returns>Found Item</returns>
+            <response code="200">Returns found item</response>
+            <response code="400">Not Found</response>
+        </member>
+        <member name="M:PRWebApi.Controllers.PositionController.Post(Newtonsoft.Json.Linq.JObject)">
+            <summary>
+            Create a Department.
+            </summary>
+            <remarks>
+            Note that the key is a Oid and an integer.
+             
+                POST
+                {
+                   Positions Object
+                }
+            
+            </remarks>
+            <returns>New Created Item</returns>
+            <response code="200">Returns the newly created item</response>
+            <response code="400">Not Found</response>
+        </member>
+        <member name="M:PRWebApi.Controllers.PositionController.Put(System.Int32,Newtonsoft.Json.Linq.JObject)">
+            <summary>
+            Update a Department.
+            </summary>
+            <remarks>
+            Note that the key is a Oid and an integer.
+             
+                PUT
+                {
+                   Positions Object
+                }
+            
+            </remarks>
+            <param name="id">Oid value</param>
+            <returns>Updated Item</returns>
+            <response code="200">Returns the updated item</response>
+            <response code="400">Not Found</response>
+        </member>
+        <member name="M:PRWebApi.Controllers.PositionController.Delete(System.Int32)">
+            <summary>
+            Delete a Department.
+            </summary>
+            <remarks>
+            Note that the key is a Oid and an integer.
+            </remarks>
+            <param name="id">Oid value</param>
+            <returns></returns>
+            <response code="200">Deleted Item</response>
+            <response code="400">Not Found</response>
+        </member>
+        <member name="M:PRWebApi.Controllers.PurchaseDeliveryController.Get">
+            <summary>
+            Get all PurchaseDelivery.
+            </summary>
+            <remarks>
+            Note that the key is a Oid and an integer.
+            </remarks>
+            <returns>Found Item</returns>
+            <response code="200">Returns found item</response>
+        </member>
+        <member name="M:PRWebApi.Controllers.PurchaseDeliveryController.Get(System.Int32)">
+            <summary>
+            Get a PurchaseDelivery.
+            </summary>
+            <remarks>
+            Note that the key is a Oid and an integer.
+            </remarks>
+            <param name="id"></param>
+            <returns>Found Item</returns>
+            <response code="200">Returns found item</response>
+            <response code="400">Not Found</response>
+        </member>
+        <member name="M:PRWebApi.Controllers.PurchaseDeliveryController.Post(Newtonsoft.Json.Linq.JObject)">
+            <summary>
+            Create a PurchaseDelivery.
+            </summary>
+            <remarks>
+            Note that the key is a Oid and an integer.
+             
+                POST
+                {
+                   PurchaseDelivery Object
+                }
+            
+            </remarks>
+            <returns>New Created Item</returns>
+            <response code="200">Returns the newly created item</response>
+            <response code="400">Not Found</response>
+        </member>
+        <member name="M:PRWebApi.Controllers.PurchaseDeliveryController.Put(System.Int32,Newtonsoft.Json.Linq.JObject)">
+            <summary>
+            Update a PurchaseDelivery.
+            </summary>
+            <remarks>
+            Note that the key is a Oid and an integer.
+             
+                PUT
+                {
+                   PurchaseDelivery Object
+                }
+            
+            </remarks>
+            <returns>New Created Item</returns>
+            <response code="200">Returns the newly created item</response>
+            <response code="400">Not Found</response>
+        </member>
+        <member name="M:PRWebApi.Controllers.PurchaseDeliveryController.Delete(System.Int32)">
+            <summary>
+            Delete a PurchaseDelivery.
+            </summary>
+            <remarks>
+            Note that the key is a Oid and an integer.
+            </remarks>
+            <param name="id">Oid value</param>
+            <returns></returns>
+            <response code="200">Deleted Item</response>
+            <response code="400">Not Found</response>
+        </member>
+        <member name="M:PRWebApi.Controllers.PurchaseOrderController.Get">
+            <summary>
+            Get all PurchaseOrder.
+            </summary>
+            <remarks>
+            Note that the key is a Oid and an integer.
+            </remarks>
+            <returns>Found Item</returns>
+            <response code="200">Returns found item</response>
+        </member>
+        <member name="M:PRWebApi.Controllers.PurchaseOrderController.Get(System.Int32)">
+            <summary>
+            Get a PurchaseOrder.
+            </summary>
+            <remarks>
+            Note that the key is a Oid and an integer.
+            </remarks>
+            <param name="id"></param>
+            <returns>Found Item</returns>
+            <response code="200">Returns found item</response>
+            <response code="400">Not Found</response>
+        </member>
+        <member name="M:PRWebApi.Controllers.PurchaseOrderController.Post(Newtonsoft.Json.Linq.JObject)">
+            <summary>
+            Create a PurchaseOrder.
+            </summary>
+            <remarks>
+            Note that the key is a Oid and an integer.
+             
+                POST
+                {
+                   PurchaseOrder Object
+                }
+            
+            </remarks>
+            <returns>New Created Item</returns>
+            <response code="200">Returns the newly created item</response>
+            <response code="400">Not Found</response>
+        </member>
+        <member name="M:PRWebApi.Controllers.PurchaseOrderController.Put(System.Int32,Newtonsoft.Json.Linq.JObject)">
+            <summary>
+            Update a PurchaseOrder.
+            </summary>
+            <remarks>
+            Note that the key is a Oid and an integer.
+             
+                PUT
+                {
+                   PurchaseOrder Object
+                }
+            
+            </remarks>
+            <returns>New Created Item</returns>
+            <response code="200">Returns the newly created item</response>
+            <response code="400">Not Found</response>
+        </member>
+        <member name="M:PRWebApi.Controllers.PurchaseOrderController.Delete(System.Int32)">
+            <summary>
+            Delete a PurchaseOrder.
+            </summary>
+            <remarks>
+            Note that the key is a Oid and an integer.
+            </remarks>
+            <param name="id">Oid value</param>
+            <returns></returns>
+            <response code="200">Deleted Item</response>
+            <response code="400">Not Found</response>
+        </member>
+        <member name="M:PRWebApi.Controllers.PurchaseRequestController.Get">
+            <summary>
+            Get all PurchaseRequest.
+            </summary>
+            <remarks>
+            Note that the key is a Oid and an integer.
+            </remarks>
+            <returns>Found Item</returns>
+            <response code="200">Returns found item</response>
+        </member>
+        <member name="M:PRWebApi.Controllers.PurchaseRequestController.Get(System.Int32)">
+            <summary>
+            Get a PurchaseRequest.
+            </summary>
+            <remarks>
+            Note that the key is a Oid and an integer.
+            </remarks>
+            <param name="id"></param>
+            <returns>Found Item</returns>
+            <response code="200">Returns found item</response>
+            <response code="400">Not Found</response>
+        </member>
+        <member name="M:PRWebApi.Controllers.PurchaseRequestController.Post(Newtonsoft.Json.Linq.JObject)">
+            <summary>
+            Create a PurchaseRequest.
+            </summary>
+            <remarks>
+            Note that the key is a Oid and an integer.
+             
+                POST
+                {
+                   PurchaseRequest Object
+                }
+            
+            </remarks>
+            <returns>New Created Item</returns>
+            <response code="200">Returns the newly created item</response>
+            <response code="400">Not Found</response>
+        </member>
+        <member name="M:PRWebApi.Controllers.PurchaseRequestController.Put(System.Int32,Newtonsoft.Json.Linq.JObject)">
+            <summary>
+            Update a PurchaseRequest.
+            </summary>
+            <remarks>
+            Note that the key is a Oid and an integer.
+             
+                PUT
+                {
+                   PurchaseRequest Object
+                }
+            
+            </remarks>
+            <returns>New Created Item</returns>
+            <response code="200">Returns the newly created item</response>
+            <response code="400">Not Found</response>
+        </member>
+        <member name="M:PRWebApi.Controllers.PurchaseRequestController.Delete(System.Int32)">
+            <summary>
+            Delete a PurchaseRequest.
+            </summary>
+            <remarks>
+            Note that the key is a Oid and an integer.
+            </remarks>
+            <param name="id">Oid value</param>
+            <returns></returns>
+            <response code="200">Deleted Item</response>
+            <response code="400">Not Found</response>
+        </member>
+    </members>
+</doc>

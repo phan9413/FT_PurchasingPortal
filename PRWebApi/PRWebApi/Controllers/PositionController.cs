@@ -31,11 +31,11 @@ namespace PRWebApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class EmployeeController : ControllerBase
+    public class PositionController : ControllerBase
     {
         IConfiguration _config;
         UnitOfWork _uow;
-        public EmployeeController(IConfiguration config, UnitOfWork uow)
+        public PositionController(IConfiguration config, UnitOfWork uow)
         {
             _config = config;
             _uow = uow;
@@ -43,7 +43,7 @@ namespace PRWebApi.Controllers
         }
 
         /// <summary>
-        /// Get all Employee.
+        /// Get all Department.
         /// </summary>
         /// <remarks>
         /// Note that the key is a Oid and an integer.
@@ -55,7 +55,7 @@ namespace PRWebApi.Controllers
         {
             try
             {
-                IEnumerable<Employee> list = _uow.Query<Employee>();
+                IEnumerable<Positions> list = _uow.Query<Positions>();
                 return Ok(list);
             }
             catch (Exception ex)
@@ -64,7 +64,7 @@ namespace PRWebApi.Controllers
             }
         }
         /// <summary>
-        /// Get a Employee.
+        /// Get a Department.
         /// </summary>
         /// <remarks>
         /// Note that the key is a Oid and an integer.
@@ -78,7 +78,7 @@ namespace PRWebApi.Controllers
         {
             try
             {
-                Employee obj = await _uow.GetObjectByKeyAsync<Employee>(id);
+                Positions obj = await _uow.GetObjectByKeyAsync<Positions>(id);
                 if (obj == null)
                 {
                     NotFound();
@@ -92,14 +92,14 @@ namespace PRWebApi.Controllers
         }
 
         /// <summary>
-        /// Create a Employee.
+        /// Create a Department.
         /// </summary>
         /// <remarks>
         /// Note that the key is a Oid and an integer.
         ///  
         ///     POST
         ///     {
-        ///        Employees Object
+        ///        Positions Object
         ///     }
         /// 
         /// </remarks>
@@ -115,7 +115,7 @@ namespace PRWebApi.Controllers
                 //PurchaseRequest customer = new PurchaseRequest(_uow);
                 //customer.FullName = values["FullName"].Value<string>();
                 //_uow.CommitChanges();
-                Employee obj = JsonPopulateObjectHelper.PopulateObject<Employee>(values.ToString(), _uow);
+                Positions obj = JsonPopulateObjectHelper.PopulateObject<Positions>(values.ToString(), _uow);
                 //RuleSet rule = new RuleSet();
                 //rule.ValidateAll((IObjectSpace)obj.Session, _uow.GetObjectsToSave(), "Any");
                 await _uow.CommitChangesAsync();
@@ -127,14 +127,14 @@ namespace PRWebApi.Controllers
             }
         }
         /// <summary>
-        /// Update a Employee.
+        /// Update a Department.
         /// </summary>
         /// <remarks>
         /// Note that the key is a Oid and an integer.
         ///  
         ///     PUT
         ///     {
-        ///        Employee Object
+        ///        Positions Object
         ///     }
         /// 
         /// </remarks>
@@ -149,9 +149,9 @@ namespace PRWebApi.Controllers
             {
                 ////PurchaseRequest customer = _uow.GetObjectByKey<PurchaseRequest>(id);
                 ////JToken token;
-                ////if (value.TryGetValue("Employee", out token))
+                ////if (value.TryGetValue("Department", out token))
                 ////{
-                ////    customer.Employee = _uow.GetObjectByKey<Employees>(token["Oid"].Value<int>());
+                ////    customer.Department = _uow.GetObjectByKey<Positions>(token["Oid"].Value<int>());
                 ////}
 
                 ////if (value.TryGetValue("FullName", out token))
@@ -164,7 +164,7 @@ namespace PRWebApi.Controllers
                 //JsonPopulateObjectHelper.PopulateObject(value.ToString(), _uow, customer);
                 //_uow.CommitChanges();
 
-                Employee obj = await _uow.GetObjectByKeyAsync<Employee>(id);
+                Positions obj = await _uow.GetObjectByKeyAsync<Positions>(id);
                 if (obj == null)
                 {
                     return NotFound();
@@ -179,7 +179,7 @@ namespace PRWebApi.Controllers
             }
         }
         /// <summary>
-        /// Delete a Employee.
+        /// Delete a Department.
         /// </summary>
         /// <remarks>
         /// Note that the key is a Oid and an integer.
@@ -197,7 +197,7 @@ namespace PRWebApi.Controllers
                 //_uow.Delete(customer);
                 //_uow.CommitChanges();
 
-                Employee obj = await _uow.GetObjectByKeyAsync<Employee>(id);
+                Positions obj = await _uow.GetObjectByKeyAsync<Positions>(id);
                 if (obj == null)
                 {
                     return NotFound();

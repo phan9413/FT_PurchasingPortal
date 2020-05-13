@@ -17,6 +17,8 @@ using DevExpress.Xpo;
 using DevExpress.Xpo.DB;
 using PRWebApi.Helpers;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.OpenApi.Models;
+using Microsoft.Extensions.PlatformAbstractions;
 
 namespace PRWebApi
 {
@@ -96,7 +98,8 @@ namespace PRWebApi
             //    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
             //);
             //services.AddControllers();
-            //services.AddMvc();
+            //services.AddMvcCore();
+            //services.AddApiExplorer();
 
             services.AddMvc(options =>
             {
@@ -132,8 +135,8 @@ namespace PRWebApi
             //     .Build());
 
             //});
-#endregion
-#region jwt bearer
+            #endregion
+            #region jwt bearer
             //services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             //    .AddJwtBearer(options =>
             //    {
@@ -148,7 +151,25 @@ namespace PRWebApi
             //            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"]))
             //        };
             //    });
-#endregion
+            #endregion
+
+            #region swagger
+            // Inject an implementation of ISwaggerProvider with defaulted settings applied.
+            services.AddSwaggerGen();
+            // Add the detail information for the API.
+            services.ConfigureSwaggerGen((options) =>
+            {
+                options.SwaggerDoc("v1", new OpenApiInfo {
+                    Title = "Swagger API",
+                    Version = "v1"
+                });
+
+                //Determine base path for the application.
+                var basePath = PlatformServices.Default.Application.ApplicationBasePath;
+                //Set the comments path for the swagger json and ui.
+                options.IncludeXmlComments(basePath + "\\PRWebApi.xml");
+            });
+            #endregion
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -191,6 +212,16 @@ namespace PRWebApi
             app.UseAuthentication();
 
             app.UseAuthorization();
+
+            #region swagger
+            // Enable middleware to serve generated Swagger as a JSON endpoint.
+            app.UseSwagger();
+            // Enable middleware to serve swagger-ui assets (HTML, JS, CSS etc.)
+            app.UseSwaggerUI( c => {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "My Swagger v1");
+
+            });
+            #endregion
 
             app.UseEndpoints(endpoints =>
             {

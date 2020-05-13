@@ -41,31 +41,71 @@ namespace PRWebApi.Controllers
             _uow = uow;
             //XpoDefault.Session = new UnitOfWork();
         }
+
+        /// <summary>
+        /// Get all Department.
+        /// </summary>
+        /// <remarks>
+        /// Note that the key is a Oid and an integer.
+        /// </remarks>
+        /// <returns>Found Item</returns>
+        /// <response code="200">Returns found item</response>
         [HttpGet]
-        public IEnumerable<Departments> Get()
+        public IActionResult Get()
         {
             try
             {
                 IEnumerable<Departments> list = _uow.Query<Departments>();
-                return list;
+                return Ok(list);
             }
             catch (Exception ex)
             {
                 throw new Exception(ex.Message);
             }
         }
+        /// <summary>
+        /// Get a Department.
+        /// </summary>
+        /// <remarks>
+        /// Note that the key is a Oid and an integer.
+        /// </remarks>
+        /// <param name="id"></param>
+        /// <returns>Found Item</returns>
+        /// <response code="200">Returns found item</response>
+        /// <response code="400">Not Found</response>
         [HttpGet("{id}")]
-        public Departments Get(int id)
+        public async Task<IActionResult> Get(int id)
         {
             try
             {
-                return _uow.GetObjectByKey<Departments>(id);
+                Departments obj = await _uow.GetObjectByKeyAsync<Departments>(id);
+                if (obj == null)
+                {
+                    NotFound();
+                }
+                return Ok(obj);
             }
             catch (Exception ex)
             {
                 throw new Exception(ex.Message);
             }
         }
+
+        /// <summary>
+        /// Create a Department.
+        /// </summary>
+        /// <remarks>
+        /// Note that the key is a Oid and an integer.
+        ///  
+        ///     POST
+        ///     {
+        ///        Departments Object
+        ///     }
+        /// 
+        /// </remarks>
+        /// <returns>New Created Item</returns>
+        /// <response code="200">Returns the newly created item</response>
+        /// <response code="400">Not Found</response>
         [HttpPost]
         public async Task<IActionResult> Post([FromBody]JObject values)
         {
@@ -86,6 +126,22 @@ namespace PRWebApi.Controllers
                 throw new Exception(ex.Message);
             }
         }
+        /// <summary>
+        /// Update a Department.
+        /// </summary>
+        /// <remarks>
+        /// Note that the key is a Oid and an integer.
+        ///  
+        ///     PUT
+        ///     {
+        ///        Departments Object
+        ///     }
+        /// 
+        /// </remarks>
+        /// <param name="id">Oid value</param>
+        /// <returns>Updated Item</returns>
+        /// <response code="200">Returns the updated item</response>
+        /// <response code="400">Not Found</response>
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, [FromBody]JObject value)
         {
@@ -122,6 +178,16 @@ namespace PRWebApi.Controllers
                 throw new Exception(ex.Message);
             }
         }
+        /// <summary>
+        /// Delete a Department.
+        /// </summary>
+        /// <remarks>
+        /// Note that the key is a Oid and an integer.
+        /// </remarks>
+        /// <param name="id">Oid value</param>
+        /// <returns></returns>
+        /// <response code="200">Deleted Item</response>
+        /// <response code="400">Not Found</response>
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {

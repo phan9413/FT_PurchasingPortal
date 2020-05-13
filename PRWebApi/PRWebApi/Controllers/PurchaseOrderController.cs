@@ -16,11 +16,11 @@ namespace PRWebApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class PurchaseRequestController : ControllerBase
+    public class PurchaseOrderController : ControllerBase
     {
         IConfiguration _config;
         UnitOfWork _uow;
-        public PurchaseRequestController(IConfiguration config, UnitOfWork uow)
+        public PurchaseOrderController(IConfiguration config, UnitOfWork uow)
         {
             _config = config;
             _uow = uow;
@@ -28,7 +28,7 @@ namespace PRWebApi.Controllers
             //XpoDefault.Session = new UnitOfWork();
         }
         /// <summary>
-        /// Get all PurchaseRequest.
+        /// Get all PurchaseOrder.
         /// </summary>
         /// <remarks>
         /// Note that the key is a Oid and an integer.
@@ -40,7 +40,7 @@ namespace PRWebApi.Controllers
         {
             try
             {
-                IEnumerable<PurchaseRequest> list = _uow.Query<PurchaseRequest>();
+                IEnumerable<PurchaseOrder> list = _uow.Query<PurchaseOrder>();
                 return Ok(list);
             }
             catch (Exception ex)
@@ -49,7 +49,7 @@ namespace PRWebApi.Controllers
             }
         }
         /// <summary>
-        /// Get a PurchaseRequest.
+        /// Get a PurchaseOrder.
         /// </summary>
         /// <remarks>
         /// Note that the key is a Oid and an integer.
@@ -63,20 +63,20 @@ namespace PRWebApi.Controllers
         {
             try
             {
-                PurchaseRequest obj = await _uow.GetObjectByKeyAsync<PurchaseRequest>(id);
+                PurchaseOrder obj = await _uow.GetObjectByKeyAsync<PurchaseOrder>(id);
                 if (obj == null)
                 {
                     return NotFound();
                 }
                 //return Ok(obj);
 
-                List<PurchaseRequest> objlist = new List<PurchaseRequest>();
+                List<PurchaseOrder> objlist = new List<PurchaseOrder>();
                 objlist.Add(obj);
 
                 var result = objlist.Select(r => new
                 {
                     Header = r,
-                    PurchaseRequestDetail = r.PurchaseRequestDetail.ToArray()
+                    PurchaseOrderDetail = r.PurchaseOrderDetail.ToArray()
                 }).Single();
 
                 return Ok(result);
@@ -88,14 +88,14 @@ namespace PRWebApi.Controllers
         }
 
         /// <summary>
-        /// Create a PurchaseRequest.
+        /// Create a PurchaseOrder.
         /// </summary>
         /// <remarks>
         /// Note that the key is a Oid and an integer.
         ///  
         ///     POST
         ///     {
-        ///        PurchaseRequest Object
+        ///        PurchaseOrder Object
         ///     }
         /// 
         /// </remarks>
@@ -107,17 +107,17 @@ namespace PRWebApi.Controllers
         {
             try
             {
-                PurchaseRequest obj = null;
-                //PurchaseRequest obj = JsonPopulateObjectHelper.PopulateObject<PurchaseRequest>(values.ToString(), _uow);
-                //PurchaseRequest customer = new PurchaseRequest(_uow);
+                PurchaseOrder obj = null;
+                //PurchaseOrder obj = JsonPopulateObjectHelper.PopulateObject<PurchaseOrder>(values.ToString(), _uow);
+                //PurchaseOrder customer = new PurchaseOrder(_uow);
                 //customer.FullName = values["FullName"].Value<string>();
                 //_uow.CommitChanges();
-                obj = JsonPopulateObjectHelper.PopulateObject<PurchaseRequest>(values.ToString(), _uow);
+                obj = JsonPopulateObjectHelper.PopulateObject<PurchaseOrder>(values.ToString(), _uow);
 
                 addNewDetailsOnly(values, obj, true);
 
                 await _uow.CommitChangesAsync();
-                //obj = JsonConvert.DeserializeObject<PurchaseRequest>(values.ToString());
+                //obj = JsonConvert.DeserializeObject<PurchaseOrder>(values.ToString());
                 return Ok(obj);
             }
             catch (Exception ex) 
@@ -126,14 +126,14 @@ namespace PRWebApi.Controllers
             }
         }
         /// <summary>
-        /// Update a PurchaseRequest.
+        /// Update a PurchaseOrder.
         /// </summary>
         /// <remarks>
         /// Note that the key is a Oid and an integer.
         ///  
         ///     PUT
         ///     {
-        ///        PurchaseRequest Object
+        ///        PurchaseOrder Object
         ///     }
         /// 
         /// </remarks>
@@ -145,7 +145,7 @@ namespace PRWebApi.Controllers
         {
             try
             {
-                ////PurchaseRequest customer = _uow.GetObjectByKey<PurchaseRequest>(id);
+                ////PurchaseOrder customer = _uow.GetObjectByKey<PurchaseOrder>(id);
                 ////JToken token;
                 ////if (value.TryGetValue("Department", out token))
                 ////{
@@ -157,13 +157,13 @@ namespace PRWebApi.Controllers
                 ////    customer.FullName = value["FullName"].Value<string>();
                 ////}
 
-                //PurchaseRequest customer = _uow.GetObjectByKey<PurchaseRequest>(id);
+                //PurchaseOrder customer = _uow.GetObjectByKey<PurchaseOrder>(id);
 
                 //JsonPopulateObjectHelper.PopulateObject(value.ToString(), _uow, customer);
                 //_uow.CommitChanges();
-                PurchaseRequest obj = null;
+                PurchaseOrder obj = null;
 
-                obj = await _uow.GetObjectByKeyAsync<PurchaseRequest>(id);
+                obj = await _uow.GetObjectByKeyAsync<PurchaseOrder>(id);
                 if (obj == null)
                 {
                     return NotFound();
@@ -182,7 +182,7 @@ namespace PRWebApi.Controllers
             }
         }
         /// <summary>
-        /// Delete a PurchaseRequest.
+        /// Delete a PurchaseOrder.
         /// </summary>
         /// <remarks>
         /// Note that the key is a Oid and an integer.
@@ -196,11 +196,11 @@ namespace PRWebApi.Controllers
         {
             try
             {
-                //PurchaseRequest customer = _uow.GetObjectByKey<PurchaseRequest>(id);
+                //PurchaseOrder customer = _uow.GetObjectByKey<PurchaseOrder>(id);
                 //_uow.Delete(customer);
                 //_uow.CommitChanges();
 
-                PurchaseRequest obj = await _uow.GetObjectByKeyAsync<PurchaseRequest>(id);
+                PurchaseOrder obj = await _uow.GetObjectByKeyAsync<PurchaseOrder>(id);
                 if (obj == null)
                 {
                     return NotFound();
@@ -224,12 +224,12 @@ namespace PRWebApi.Controllers
 //    return result;
 //}
 
-        private void addNewDetailsOnly(JObject value, PurchaseRequest obj, bool IsNewHeader)
+        private void addNewDetailsOnly(JObject value, PurchaseOrder obj, bool IsNewHeader)
         {
             try
             {
                 #region add details
-                string detalclassname = "PurchaseRequestDetail";
+                string detalclassname = "PurchaseOrderDetail";
                 bool isnew = false;
                 int intkeyvalue = -1;
                 JArray jarray = (JArray)value[detalclassname];
@@ -272,8 +272,8 @@ namespace PRWebApi.Controllers
                         }
                         if (isnew)
                         {
-                            PurchaseRequestDetail dtl = JsonPopulateObjectHelper.PopulateObject<PurchaseRequestDetail>(Jdtl.ToString(), _uow);
-                            obj.PurchaseRequestDetail.Add(dtl);
+                            PurchaseOrderDetail dtl = JsonPopulateObjectHelper.PopulateObject<PurchaseOrderDetail>(Jdtl.ToString(), _uow);
+                            obj.PurchaseOrderDetail.Add(dtl);
                         }
                     }
 
@@ -286,12 +286,12 @@ namespace PRWebApi.Controllers
             }
         }
 
-        private void deleteDetails(JObject value, PurchaseRequest obj)
+        private void deleteDetails(JObject value, PurchaseOrder obj)
         {
             try
             {
                 #region delete details
-                string detalclassname = "PurchaseRequestDetail";
+                string detalclassname = "PurchaseOrderDetail";
                 bool isnew = false;
                 int intkeyvalue = -1;
                 JArray jarray = (JArray)value[detalclassname];
@@ -322,10 +322,10 @@ namespace PRWebApi.Controllers
                         {
                             if (Jdtl["IsBeingDelete"].ToString() == "1" || Jdtl["IsBeingDelete"].ToString().ToUpper() == "TRUE")
                             {
-                                PurchaseRequestDetail dtl = obj.PurchaseRequestDetail.Where(pp => pp.Oid == intkeyvalue).FirstOrDefault();
+                                PurchaseOrderDetail dtl = obj.PurchaseOrderDetail.Where(pp => pp.Oid == intkeyvalue).FirstOrDefault();
                                 if (dtl != null)
                                     dtl.Delete();
-                                    //obj.PurchaseRequestDetail.Remove(dtl);
+                                    //obj.PurchaseOrderDetail.Remove(dtl);
 
                             }
                         }
