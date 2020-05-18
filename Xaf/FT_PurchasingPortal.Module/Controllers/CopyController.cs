@@ -379,5 +379,102 @@ namespace FT_PurchasingPortal.Module.Controllers
             }
         }
 
+        public void copyClassDocumentDetail(ClassDocumentDetail dtl, ClassDocumentDetail tDtl, IObjectSpace ios)
+        {
+            #region assign udf detail
+            ClassUDFDetail sClassD = null;
+            ClassUDFDetail tClassD = null;
+            if (dtl.GetType() == typeof(PurchaseRequestDetail))
+            {
+                sClassD = ((PurchaseRequestDetail)dtl).UDFs;
+            }
+            else if (dtl.GetType() == typeof(PurchaseOrderDetail))
+            {
+                sClassD = ((PurchaseOrderDetail)dtl).UDFs;
+            }
+            else if (dtl.GetType() == typeof(PurchaseDeliveryDetail))
+            {
+                sClassD = ((PurchaseDeliveryDetail)dtl).UDFs;
+            }
+
+            if (tDtl.GetType() == typeof(PurchaseRequestDetail))
+            {
+                tClassD = ((PurchaseRequestDetail)tDtl).UDFs;
+            }
+            else if (tDtl.GetType() == typeof(PurchaseOrderDetail))
+            {
+                tClassD = ((PurchaseOrderDetail)tDtl).UDFs;
+            }
+            else if (tDtl.GetType() == typeof(PurchaseDeliveryDetail))
+            {
+                tClassD = ((PurchaseDeliveryDetail)tDtl).UDFs;
+            }
+            AssignUDFDetail(ref sClassD, ref tClassD);
+            #endregion
+
+            tDtl.Quantity = dtl.Quantity;
+            if (dtl.DocCur != null)
+                tDtl.DocCur = ios.FindObject<vwCurrency>(CriteriaOperator.Parse("BoKey=?", dtl.DocCur.BoKey));
+            if (dtl.ItemCode != null)
+                tDtl.ItemCode = ios.FindObject<vwItemMasters>(CriteriaOperator.Parse("BoKey=?", dtl.ItemCode.BoKey));
+            tDtl.Dscription = dtl.Dscription;
+            if (dtl.WhsCode != null)
+                tDtl.WhsCode = ios.FindObject<vwWarehouses>(CriteriaOperator.Parse("BoKey=?", dtl.WhsCode.BoKey));
+            if (dtl.OcrCode != null)
+                tDtl.OcrCode = ios.FindObject<vwDimension1>(CriteriaOperator.Parse("BoKey=?", dtl.OcrCode.BoKey));
+            if (dtl.OcrCode2 != null)
+                tDtl.OcrCode2 = ios.FindObject<vwDimension2>(CriteriaOperator.Parse("BoKey=?", dtl.OcrCode2.BoKey));
+            if (dtl.OcrCode3 != null)
+                tDtl.OcrCode3 = ios.FindObject<vwDimension3>(CriteriaOperator.Parse("BoKey=?", dtl.OcrCode3.BoKey));
+            if (dtl.OcrCode4 != null)
+                tDtl.OcrCode4 = ios.FindObject<vwDimension4>(CriteriaOperator.Parse("BoKey=?", dtl.OcrCode4.BoKey));
+            if (dtl.OcrCode5 != null)
+                tDtl.OcrCode5 = ios.FindObject<vwDimension5>(CriteriaOperator.Parse("BoKey=?", dtl.OcrCode5.BoKey));
+            if (dtl.PrjCode != null)
+                tDtl.PrjCode = ios.FindObject<vwProjects>(CriteriaOperator.Parse("BoKey=?", dtl.PrjCode.BoKey));
+            if (dtl.AcctCode != null)
+                tDtl.AcctCode = ios.FindObject<vwAccounts>(CriteriaOperator.Parse("BoKey=?", dtl.AcctCode.BoKey));
+            tDtl.UnitMsr = dtl.UnitMsr;
+            tDtl.UnitPrice = dtl.UnitPrice;
+
+            if (dtl.BaseType != null)
+                tDtl.BaseType = ios.GetObjectByKey<DocType>(dtl.BaseType.Oid);
+
+            tDtl.Baseline = dtl.Baseline;
+        }
+
+        public void copyClassStockTransferDocumentDetail(ClassStockTransferDocumentDetail dtl, ClassStockTransferDocumentDetail tDtl, IObjectSpace ios)
+        {
+            #region assign udf detail
+            ClassUDFDetail sClassD = null;
+            ClassUDFDetail tClassD = null;
+            if (dtl.GetType() == typeof(StockTransferRequestDetail))
+            {
+                sClassD = ((StockTransferRequestDetail)dtl).UDFs;
+            }
+            AssignUDFDetail(ref sClassD, ref tClassD);
+            #endregion
+
+            tDtl.Quantity = dtl.Quantity;
+            if (dtl.ItemCode != null)
+                tDtl.ItemCode = ios.FindObject<vwItemMasters>(CriteriaOperator.Parse("BoKey=?", dtl.ItemCode.BoKey));
+            tDtl.Dscription = dtl.Dscription;
+            if (dtl.WhsCode != null)
+                tDtl.WhsCode = ios.FindObject<vwWarehouses>(CriteriaOperator.Parse("BoKey=?", dtl.WhsCode.BoKey));
+            if (dtl.OcrCode != null)
+                tDtl.OcrCode = ios.FindObject<vwDimension1>(CriteriaOperator.Parse("BoKey=?", dtl.OcrCode.BoKey));
+            if (dtl.OcrCode2 != null)
+                tDtl.OcrCode2 = ios.FindObject<vwDimension2>(CriteriaOperator.Parse("BoKey=?", dtl.OcrCode2.BoKey));
+            if (dtl.OcrCode3 != null)
+                tDtl.OcrCode3 = ios.FindObject<vwDimension3>(CriteriaOperator.Parse("BoKey=?", dtl.OcrCode3.BoKey));
+            if (dtl.OcrCode4 != null)
+                tDtl.OcrCode4 = ios.FindObject<vwDimension4>(CriteriaOperator.Parse("BoKey=?", dtl.OcrCode4.BoKey));
+            if (dtl.OcrCode5 != null)
+                tDtl.OcrCode5 = ios.FindObject<vwDimension5>(CriteriaOperator.Parse("BoKey=?", dtl.OcrCode5.BoKey));
+            if (dtl.PrjCode != null)
+                tDtl.PrjCode = ios.FindObject<vwProjects>(CriteriaOperator.Parse("BoKey=?", dtl.PrjCode.BoKey));
+            tDtl.UnitMsr = dtl.UnitMsr;
+
+        }
     }
 }

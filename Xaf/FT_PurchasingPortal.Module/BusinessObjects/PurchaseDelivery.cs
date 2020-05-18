@@ -53,11 +53,26 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
             UDFs = new PurchaseDeliveryUDF(Session);
             DocType = Session.FindObject<DocType>(CriteriaOperator.Parse("BoCode=?", DocTypeCodes.PurchaseDelivery));
             DocTypeSeries = Session.FindObject<DocTypeSeries>(CriteriaOperator.Parse("DocType.Oid=? and Company.Oid=?", DocType.Oid, Company.Oid));
+            
+            if (CreateUser != null)
+            {
+                this.IsViewItemPriceRole = CreateUser.CheckAccessVP(DocType.BoCode);
+            }
         }
         protected override void OnLoaded()
         {
+            base.OnLoaded();
             if (DocStatus.CurrDocStatus != BusinessObjects.DocStatus.Draft)
                 IsCopy = true;
+
+            if (!GeneralValues.IsNetCore)
+            {
+                SystemUsers user = Session.GetObjectByKey<SystemUsers>(SecuritySystem.CurrentUserId);
+                if (user != null)
+                {
+                    this.IsViewItemPriceRole = CreateUser.CheckAccessVP(DocType.BoCode);
+                }
+            }
         }
         private PurchaseDeliveryDoc _DocStatus;
         [XafDisplayName("Document Status")]
@@ -134,6 +149,23 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
             // Place your initialization code here (https://documentation.devexpress.com/eXpressAppFramework/CustomDocument112834.aspx).
             UDFs = new PurchaseDeliveryDetailUDF(Session);
             ObjType = Session.FindObject<DocType>(CriteriaOperator.Parse("BoCode=?", DocTypeCodes.PurchaseDelivery));
+            if (CreateUser != null)
+            {
+                this.IsViewItemPriceRole = CreateUser.CheckAccessVP(ObjType.BoCode);
+            }
+        }
+        protected override void OnLoaded()
+        {
+            base.OnLoaded();
+
+            if (!GeneralValues.IsNetCore)
+            {
+                SystemUsers user = Session.GetObjectByKey<SystemUsers>(SecuritySystem.CurrentUserId);
+                if (user != null)
+                {
+                    this.IsViewItemPriceRole = CreateUser.CheckAccessVP(ObjType.BoCode);
+                }
+            }
         }
         private PurchaseDeliveryDetailUDF _UDFs;
         [XafDisplayName("User Define Info.")]

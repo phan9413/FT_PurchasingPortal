@@ -13,6 +13,7 @@ using DevExpress.ExpressApp.Templates;
 using DevExpress.ExpressApp.Utils;
 using DevExpress.Persistent.Base;
 using DevExpress.Persistent.Validation;
+using FT_PurchasingPortal.Module.BusinessObjects;
 
 namespace FT_PurchasingPortal.Module.Controllers
 {
@@ -62,6 +63,33 @@ namespace FT_PurchasingPortal.Module.Controllers
             options.Win.Type = WinMessageType.Flyout;
             Application.ShowViewStrategy.ShowMessage(options);
 
+        }
+        public bool GetCurrentUserViewPriceStatus()
+        {
+            bool rtn = false;
+            IObjectSpace ios = Application.CreateObjectSpace();
+            SystemUsers user = null;
+            if (!string.IsNullOrEmpty(SecuritySystem.CurrentUserId.ToString()))
+            {
+                user = ios.GetObjectByKey<SystemUsers>(SecuritySystem.CurrentUserId);
+            }
+            if (user != null)
+            {
+                string temp = View.ObjectTypeInfo.Type.ToString();
+                string[] classname = temp.Split('.');
+                temp = classname[classname.Length - 1];
+                //temp = temp.Replace("Ajiya.Module.BusinessObjects.", "");
+                temp = temp.Replace("Detail", "");
+                rtn = user.CheckAccessVP(temp);
+                //if (user.Roles.Where(p => p.Name == "C_" + temp + GeneralValues.viewpricestring).Count() > 0)
+                //    rtn = true;
+
+                //if (!rtn)
+                //    rtn = user.Roles.Where(p => p.IsAdministrative).Count() > 0 ? true : false;
+
+            }
+            ios.Dispose();
+            return rtn;
         }
     }
 }

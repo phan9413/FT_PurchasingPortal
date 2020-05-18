@@ -53,6 +53,23 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
             UDFs = new StockTransferRequestUDF(Session);
             DocType = Session.FindObject<DocType>(CriteriaOperator.Parse("BoCode=?", DocTypeCodes.StockTransferRequest));
             DocTypeSeries = Session.FindObject<DocTypeSeries>(CriteriaOperator.Parse("DocType.Oid=? and Company.Oid=?", DocType.Oid, Company.Oid));
+            if (CreateUser != null)
+            {
+                this.IsViewItemPriceRole = CreateUser.CheckAccessVP(DocType.BoCode);
+            }
+        }
+        protected override void OnLoaded()
+        {
+            base.OnLoaded();
+
+            if (!GeneralValues.IsNetCore)
+            {
+                SystemUsers user = Session.GetObjectByKey<SystemUsers>(SecuritySystem.CurrentUserId);
+                if (user != null)
+                {
+                    this.IsViewItemPriceRole = CreateUser.CheckAccessVP(DocType.BoCode);
+                }
+            }
         }
         [Browsable(false)]
         public bool IsWarehouseValid
@@ -137,6 +154,23 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
             // Place your initialization code here (https://documentation.devexpress.com/eXpressAppFramework/CustomDocument112834.aspx).
             UDFs = new StockTransferRequestDetailUDF(Session);
             ObjType = Session.FindObject<DocType>(CriteriaOperator.Parse("BoCode=?", DocTypeCodes.StockTransferRequest));
+            if (CreateUser != null)
+            {
+                this.IsViewItemPriceRole = CreateUser.CheckAccessVP(ObjType.BoCode);
+            }
+        }
+        protected override void OnLoaded()
+        {
+            base.OnLoaded();
+
+            if (!GeneralValues.IsNetCore)
+            {
+                SystemUsers user = Session.GetObjectByKey<SystemUsers>(SecuritySystem.CurrentUserId);
+                if (user != null)
+                {
+                    this.IsViewItemPriceRole = CreateUser.CheckAccessVP(ObjType.BoCode);
+                }
+            }
         }
         [Browsable(false)]
         public bool IsWarehouseValid

@@ -128,9 +128,4 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
         //[Appearance("ParamInt", BackColor = "Black", Criteria = "ParamType != 2")]
         //public string ParamInt { get; set; }
     }
-    public enum CrReportEnum
-    {
-        STRING = 0,
-        DATE = 1
-    }
 }

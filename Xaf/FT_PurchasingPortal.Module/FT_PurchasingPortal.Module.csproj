@@ -321,6 +321,9 @@
     <EmbeddedResource Include="Controllers\CopyController.resx">
       <DependentUpon>CopyController.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Controllers\CreateObjectController.resx">
+      <DependentUpon>CreateObjectController.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Controllers\DocumentDVController.resx">
       <DependentUpon>DocumentDVController.cs</DependentUpon>
     </EmbeddedResource>

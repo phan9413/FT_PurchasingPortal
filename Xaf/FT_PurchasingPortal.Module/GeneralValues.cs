@@ -21,6 +21,7 @@ namespace FT_PurchasingPortal.Module
     }
     public class GeneralValues
     {
+        public const string viewpricestring = "_ViewPrice";
         //public static bool IsBeingLookup = false;
         //public static string ObjType = "";
         //public static string BusinessPartner = "";

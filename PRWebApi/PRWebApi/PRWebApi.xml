@@ -4,6 +4,75 @@
         <name>PRWebApi</name>
     </assembly>
     <members>
+        <member name="M:PRWebApi.Controllers.ApprovalController.Get">
+            <summary>
+            Get all Department.
+            </summary>
+            <remarks>
+            Note that the key is a Oid and an integer.
+            </remarks>
+            <returns>Found Item</returns>
+            <response code="200">Returns found item</response>
+        </member>
+        <member name="M:PRWebApi.Controllers.ApprovalController.Get(System.Int32)">
+            <summary>
+            Get a Department.
+            </summary>
+            <remarks>
+            Note that the key is a Oid and an integer.
+            </remarks>
+            <param name="id"></param>
+            <returns>Found Item</returns>
+            <response code="200">Returns found item</response>
+            <response code="400">Not Found</response>
+        </member>
+        <member name="M:PRWebApi.Controllers.ApprovalController.Post(Newtonsoft.Json.Linq.JObject)">
+            <summary>
+            Create a Department.
+            </summary>
+            <remarks>
+            Note that the key is a Oid and an integer.
+             
+                POST
+                {
+                   Approval Object
+                }
+            
+            </remarks>
+            <returns>New Created Item</returns>
+            <response code="200">Returns the newly created item</response>
+            <response code="400">Not Found</response>
+        </member>
+        <member name="M:PRWebApi.Controllers.ApprovalController.Put(System.Int32,Newtonsoft.Json.Linq.JObject)">
+            <summary>
+            Update a Department.
+            </summary>
+            <remarks>
+            Note that the key is a Oid and an integer.
+             
+                PUT
+                {
+                   Approval Object
+                }
+            
+            </remarks>
+            <param name="id">Oid value</param>
+            <returns>Updated Item</returns>
+            <response code="200">Returns the updated item</response>
+            <response code="400">Not Found</response>
+        </member>
+        <member name="M:PRWebApi.Controllers.ApprovalController.Delete(System.Int32)">
+            <summary>
+            Delete a Department.
+            </summary>
+            <remarks>
+            Note that the key is a Oid and an integer.
+            </remarks>
+            <param name="id">Oid value</param>
+            <returns></returns>
+            <response code="200">Deleted Item</response>
+            <response code="400">Not Found</response>
+        </member>
         <member name="M:PRWebApi.Controllers.DepartmentController.Get">
             <summary>
             Get all Department.

@@ -24,6 +24,7 @@ namespace FT_PurchasingPortal.Module.Controllers
     public partial class DocumentDVController : ViewController
     {
         RecordsNavigationController recordnaviator;
+        RefreshController refreshCon;
         GenController genCon;
         public DocumentDVController()
         {
@@ -718,12 +719,18 @@ namespace FT_PurchasingPortal.Module.Controllers
                     recordnaviator.PreviousObjectAction.Executed += PreviousObjectAction_Executed;
                     recordnaviator.NextObjectAction.Executed += NextObjectAction_Executed;
                 }
+
+                refreshCon = Frame.GetController<RefreshController>();
+
                 resetButton();
                 enableButton();
             }
         }
+
+
         public void resetButton()
         {
+
             this.SubmitDoc.Active.SetItemValue("Enabled", false);
             this.CloseDoc.Active.SetItemValue("Enabled", false);
             this.PostDoc.Active.SetItemValue("Enabled", false);
@@ -911,9 +918,9 @@ namespace FT_PurchasingPortal.Module.Controllers
 
             if (!SubmitAction(e.CurrentObject)) return;
 
-            RefreshController refreshcontroller = Frame.GetController<RefreshController>();
-            if (refreshcontroller != null)
-                refreshcontroller.RefreshAction.DoExecute();
+            //RefreshController refreshCon = Frame.GetController<RefreshController>();
+            if (refreshCon != null)
+                refreshCon.RefreshAction.DoExecute();
             genCon.showMsg("Successful", "Submit Done.", InformationType.Success);
             ((DetailView)View).ViewEditMode = ViewEditMode.View;
             View.BreakLinksToControls();
@@ -953,9 +960,9 @@ namespace FT_PurchasingPortal.Module.Controllers
 
             if (!PostDocAction(e.CurrentObject)) return;
             View.ObjectSpace.CommitChanges();
-            RefreshController refCon = Frame.GetController<RefreshController>();
-            if (refCon != null)
-                refCon.RefreshAction.DoExecute();
+            //RefreshController refreshCon = Frame.GetController<RefreshController>();
+            if (refreshCon != null)
+                refreshCon.RefreshAction.DoExecute();
             genCon.showMsg("Successful", "Post Done.", InformationType.Success);
         }
         private void CloseDoc_Cancel(object sender, EventArgs e)
@@ -1015,9 +1022,9 @@ namespace FT_PurchasingPortal.Module.Controllers
 
             if (!CloseDocAction(e.CurrentObject, p.ParamString)) return;
             View.ObjectSpace.CommitChanges();
-            RefreshController refCon = Frame.GetController<RefreshController>();
-            if (refCon != null)
-                refCon.RefreshAction.DoExecute();
+            //RefreshController refreshCon = Frame.GetController<RefreshController>();
+            if (refreshCon != null)
+                refreshCon.RefreshAction.DoExecute();
             genCon.showMsg("Successful", "Close Done.", InformationType.Success);
         }
         private void CancelDoc_CustomizePopupWindowParams(object sender, CustomizePopupWindowParamsEventArgs e)
@@ -1074,9 +1081,9 @@ namespace FT_PurchasingPortal.Module.Controllers
 
             if (!CancelDocAction(e.CurrentObject, p.ParamString)) return;
             View.ObjectSpace.CommitChanges();
-            RefreshController refCon = Frame.GetController<RefreshController>();
-            if (refCon != null)
-                refCon.RefreshAction.DoExecute();
+            //RefreshController refreshCon = Frame.GetController<RefreshController>();
+            if (refreshCon != null)
+                refreshCon.RefreshAction.DoExecute();
             genCon.showMsg("Successful", "Cancel Done.", InformationType.Success);
         }
         private void RejectDoc_CustomizePopupWindowParams(object sender, CustomizePopupWindowParamsEventArgs e)
@@ -1133,9 +1140,9 @@ namespace FT_PurchasingPortal.Module.Controllers
 
             if (!RejectDocAction(e.CurrentObject, p.ParamString)) return;
             View.ObjectSpace.CommitChanges();
-            RefreshController refCon = Frame.GetController<RefreshController>();
-            if (refCon != null)
-                refCon.RefreshAction.DoExecute();
+            //RefreshController refreshCon = Frame.GetController<RefreshController>();
+            if (refreshCon != null)
+                refreshCon.RefreshAction.DoExecute();
             genCon.showMsg("Successful", "Reject Done.", InformationType.Success);
         }
 
@@ -1438,9 +1445,9 @@ namespace FT_PurchasingPortal.Module.Controllers
             if (!ApproveAction(View.CurrentObject, appstatus, appRemark)) return;
 
 
-            RefreshController refreshcontroller = Frame.GetController<RefreshController>();
-            if (refreshcontroller != null)
-                refreshcontroller.RefreshAction.DoExecute();
+            //RefreshController refreshCon = Frame.GetController<RefreshController>();
+            if (refreshCon != null)
+                refreshCon.RefreshAction.DoExecute();
 
             genCon.showMsg("Successful", "Approval Done.", InformationType.Success);
             //((DetailView)View).ViewEditMode = ViewEditMode.View;
@@ -1556,9 +1563,9 @@ namespace FT_PurchasingPortal.Module.Controllers
             }
             View.ObjectSpace.CommitChanges();
 
-            RefreshController refreshcontroller = Frame.GetController<RefreshController>();
-            if (refreshcontroller != null)
-                refreshcontroller.RefreshAction.DoExecute();
+            //RefreshController refreshCon = Frame.GetController<RefreshController>();
+            if (refreshCon != null)
+                refreshCon.RefreshAction.DoExecute();
 
             genCon.showMsg("Successful", "Change appointed user done.", InformationType.Success);
             //((DetailView)View).ViewEditMode = ViewEditMode.View;

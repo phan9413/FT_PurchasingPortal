@@ -92,6 +92,11 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
         //    // Trigger a custom business logic for the current record in the UI (https://documentation.devexpress.com/eXpressAppFramework/CustomDocument112619.aspx).
         //    this.PersistentProperty = "Paid";
         //}
+        [Browsable(false)]
+        [Appearance("IsViewItemPriceRole", Enabled = false)]
+        [NonPersistent]
+        public bool IsViewItemPriceRole { get; set; }
+
         private Company _Company;
         [Index(0), VisibleInListView(true), VisibleInDetailView(true), VisibleInLookupListView(true)]
         [Appearance("Company", Enabled = false)]

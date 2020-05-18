@@ -295,7 +295,6 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
         //[EditorAlias("VPDec")]
         //[Appearance("dhpUnitPrice", Visibility = DevExpress.ExpressApp.Editors.ViewItemVisibility.Hide, Criteria = "not IsViewItemPriceRole")]
         //[Index(91), VisibleInDetailView(true), VisibleInListView(true), VisibleInLookupListView(false)]
-        //[Appearance("LineTotal", Enabled = false)]
         //[ModelDefault("DisplayFormat", "{0:n4}")]
         //[DbType("numeric(19,6)")]
         //public decimal UnitPrice
@@ -338,7 +337,7 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
         //        SetPropertyValue("LineTotalFC", ref _LineTotalFC, value);
         //    }
         //}
-
+        [NonCloneable]
         private SystemUsers _CreateUser;
         [XafDisplayName("Create User")]
         //[ModelDefault("EditMask", "(000)-00"), VisibleInListView(false)]
@@ -352,7 +351,7 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
                 SetPropertyValue("CreateUser", ref _CreateUser, value);
             }
         }
-
+        [NonCloneable]
         private DateTime? _CreateDate;
         [Index(301), VisibleInListView(false), VisibleInDetailView(false), VisibleInLookupListView(false)]
         [NonCloneableAttribute()]
@@ -364,7 +363,7 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
                 SetPropertyValue("CreateDate", ref _CreateDate, value);
             }
         }
-
+        [NonCloneable]
         private SystemUsers _UpdateUser;
         [XafDisplayName("Update User"), ToolTip("Enter Text")]
         //[ModelDefault("EditMask", "(000)-00"), VisibleInListView(false)]
@@ -377,7 +376,7 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
                 SetPropertyValue("UpdateUser", ref _UpdateUser, value);
             }
         }
-
+        [NonCloneable]
         private DateTime? _UpdateDate;
         [Index(303), VisibleInListView(false), VisibleInDetailView(false), VisibleInLookupListView(false)]
         public DateTime? UpdateDate

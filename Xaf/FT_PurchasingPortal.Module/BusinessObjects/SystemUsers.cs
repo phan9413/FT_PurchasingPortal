@@ -46,29 +46,36 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
             Company = Session.FindObject<Company>(new BinaryOperator("BoCode", GeneralValues.hq, BinaryOperatorType.Equal));
             Employee = new Employee(Session);
             Employee.SystemUser = this;
-            IsUpdater = false;
         }
         protected override void OnLoaded()
         {
             base.OnLoaded();
-            IsUpdater = false;
         }
         protected override void OnSaving()
         {
-            if (!IsUpdater)
+            if (!(Session is NestedUnitOfWork)
+                && (Session.DataLayer != null)
+                    && (Session.ObjectLayer is SimpleObjectLayer)
+                        )
             {
-                if (string.IsNullOrEmpty(Employee.FullName))
+                if (Session.IsNewObject(this))
                 {
-                    throw new Exception("Please fill in Employee Full Name.");
+                    Employee.FullName = this.UserName;
                 }
             }
+
             base.OnSaving();
         }
-        [Browsable(false)]
-        [NonPersistent]
-        public bool IsUpdater
+        public bool CheckAccessVP(string checkobj)
         {
-            get; set;
+            bool rtn = false;
+
+            if (this.Roles.Where(p => p.Name == checkobj + GeneralValues.viewpricestring).Count() > 0)
+                rtn = true;
+            //if (!rtn)
+            //    rtn = this.Roles.Where(p => p.IsAdministrative).Count() > 0 ? true : false;
+
+            return rtn;
         }
         //private string _PersistentProperty;
         //[XafDisplayName("My display name"), ToolTip("My hint message")]

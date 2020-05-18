@@ -44,16 +44,17 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
         {
             base.AfterConstruction();
             // Place your initialization code here (https://documentation.devexpress.com/eXpressAppFramework/CustomDocument112834.aspx).
-            IsUpdater = false;
         }
         protected override void OnLoaded()
         {
             base.OnLoaded();
-            IsUpdater = false;
         }
         protected override void OnSaving()
         {
-            if (!IsUpdater)
+            if (!(Session is NestedUnitOfWork)
+               && (Session.DataLayer != null)
+                   && (Session.ObjectLayer is SimpleObjectLayer)
+                       )
             {
                 if (string.IsNullOrEmpty(FullName))
                 {
@@ -71,12 +72,6 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
             if (!string.IsNullOrEmpty(TypePassword))
                 SAPPassword = TypePassword;
 
-        }
-        [Browsable(false)]
-        [NonPersistent]
-        public bool IsUpdater
-        {
-            get; set;
         }
         //private string _PersistentProperty;
         //[XafDisplayName("My display name"), ToolTip("My hint message")]

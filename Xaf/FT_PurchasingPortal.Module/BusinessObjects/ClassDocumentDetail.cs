@@ -268,7 +268,6 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
         }
 
         private double _Quantity;
-        // hide price
         [Index(90), VisibleInDetailView(true), VisibleInListView(true), VisibleInLookupListView(false)]
         [ModelDefault("DisplayFormat", "{0:n4}")]
         [DbType("numeric(19,6)")]
@@ -295,7 +294,6 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
         [EditorAlias("VPDec")]
         [Appearance("dhpUnitPrice", Visibility = DevExpress.ExpressApp.Editors.ViewItemVisibility.Hide, Criteria = "not IsViewItemPriceRole")]
         [Index(92), VisibleInDetailView(true), VisibleInListView(true), VisibleInLookupListView(false)]
-        [Appearance("UnitPrice", Enabled = false)]
         [ModelDefault("DisplayFormat", "{0:n4}")]
         [DbType("numeric(19,6)")]
         public decimal UnitPrice
@@ -365,7 +363,7 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
                 SetPropertyValue("AcctCode", ref _AcctCode, value);
             }
         }
-
+        [NonCloneable]
         private SystemUsers _CreateUser;
         [XafDisplayName("Create User")]
         //[ModelDefault("EditMask", "(000)-00"), VisibleInListView(false)]
@@ -379,7 +377,7 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
                 SetPropertyValue("CreateUser", ref _CreateUser, value);
             }
         }
-
+        [NonCloneable]
         private DateTime? _CreateDate;
         [Index(301), VisibleInListView(false), VisibleInDetailView(false), VisibleInLookupListView(false)]
         [NonCloneableAttribute()]
@@ -391,7 +389,7 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
                 SetPropertyValue("CreateDate", ref _CreateDate, value);
             }
         }
-
+        [NonCloneable]
         private SystemUsers _UpdateUser;
         [XafDisplayName("Update User"), ToolTip("Enter Text")]
         //[ModelDefault("EditMask", "(000)-00"), VisibleInListView(false)]
@@ -404,7 +402,7 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
                 SetPropertyValue("UpdateUser", ref _UpdateUser, value);
             }
         }
-
+        [NonCloneable]
         private DateTime? _UpdateDate;
         [Index(303), VisibleInListView(false), VisibleInDetailView(false), VisibleInLookupListView(false)]
         public DateTime? UpdateDate
@@ -415,6 +413,7 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
                 SetPropertyValue("UpdateDate", ref _UpdateDate, value);
             }
         }
+        [NonCloneable]
         private double _CopyQty;
         [Index(310), VisibleInListView(false), VisibleInDetailView(false), VisibleInLookupListView(false)]
         [DbType("numeric(19,6)")]
@@ -426,6 +425,7 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
                 SetPropertyValue("CopyQty", ref _CopyQty, value);
             }
         }
+        [NonCloneable]
         private double _CopyCreQty;
         [Index(311), VisibleInListView(false), VisibleInDetailView(false), VisibleInLookupListView(false)]
         [DbType("numeric(19,6)")]
@@ -437,6 +437,7 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
                 SetPropertyValue("CopyCreQty", ref _CopyCreQty, value);
             }
         }
+        [NonCloneable]
         private double _OpenQty;
         [Index(312), VisibleInListView(false), VisibleInDetailView(false), VisibleInLookupListView(false)]
         [DbType("numeric(19,6)")]
@@ -448,6 +449,7 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
                 SetPropertyValue("OpenQty", ref _OpenQty, value);
             }
         }
+        [NonCloneable]
         private double _OpenCreQty;
         [Index(313), VisibleInListView(false), VisibleInDetailView(false), VisibleInLookupListView(false)]
         [DbType("numeric(19,6)")]

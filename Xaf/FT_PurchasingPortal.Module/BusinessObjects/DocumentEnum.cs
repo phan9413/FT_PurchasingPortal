@@ -31,6 +31,12 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
     //    Local = 0,
     //    Oversea = 1
     //}
+    public enum CrReportEnum
+    {
+        STRING = 0,
+        DATE = 1
+    }
+
     public enum CopyToEnum
     {
         CopyZeroQty = 0,
