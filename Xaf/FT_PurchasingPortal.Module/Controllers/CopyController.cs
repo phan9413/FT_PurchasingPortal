@@ -153,6 +153,8 @@ namespace FT_PurchasingPortal.Module.Controllers
                         tDtl.AcctCode = ios.FindObject<vwAccounts>(CriteriaOperator.Parse("BoKey=?", dtl.AcctCode.BoKey));
                     tDtl.UnitMsr = dtl.UnitMsr;
                     tDtl.UnitPrice = dtl.UnitPrice;
+                    if (dtl.TaxCode != null)
+                        tDtl.TaxCode = ios.FindObject<vwTaxes>(CriteriaOperator.Parse("BoKey=?", dtl.TaxCode.BoKey));
 
                     if (dtl.ObjType != null)
                         tDtl.BaseType = ios.GetObjectByKey<DocType>(dtl.ObjType.Oid);
@@ -329,6 +331,8 @@ namespace FT_PurchasingPortal.Module.Controllers
                             tDtl.AcctCode = ios.FindObject<vwAccounts>(CriteriaOperator.Parse("BoKey=?", dtl.AcctCode.BoKey));
                         tDtl.UnitMsr = dtl.UnitMsr;
                         tDtl.UnitPrice = dtl.UnitPrice;
+                        if (dtl.TaxCode != null)
+                            tDtl.TaxCode = ios.FindObject<vwTaxes>(CriteriaOperator.Parse("BoKey=?", dtl.TaxCode.BoKey));
 
                         if (dtl.ObjType != null)
                             tDtl.BaseType = ios.GetObjectByKey<DocType>(dtl.ObjType.Oid);
@@ -436,11 +440,15 @@ namespace FT_PurchasingPortal.Module.Controllers
                 tDtl.AcctCode = ios.FindObject<vwAccounts>(CriteriaOperator.Parse("BoKey=?", dtl.AcctCode.BoKey));
             tDtl.UnitMsr = dtl.UnitMsr;
             tDtl.UnitPrice = dtl.UnitPrice;
+            if (dtl.TaxCode != null)
+                tDtl.TaxCode = ios.FindObject<vwTaxes>(CriteriaOperator.Parse("BoKey=?", dtl.TaxCode.BoKey));
 
             if (dtl.BaseType != null)
                 tDtl.BaseType = ios.GetObjectByKey<DocType>(dtl.BaseType.Oid);
 
             tDtl.Baseline = dtl.Baseline;
+
+            tDtl.IsDuplicated = true;
         }
 
         public void copyClassStockTransferDocumentDetail(ClassStockTransferDocumentDetail dtl, ClassStockTransferDocumentDetail tDtl, IObjectSpace ios)
@@ -475,6 +483,7 @@ namespace FT_PurchasingPortal.Module.Controllers
                 tDtl.PrjCode = ios.FindObject<vwProjects>(CriteriaOperator.Parse("BoKey=?", dtl.PrjCode.BoKey));
             tDtl.UnitMsr = dtl.UnitMsr;
 
+            tDtl.IsDuplicated = true;
         }
     }
 }

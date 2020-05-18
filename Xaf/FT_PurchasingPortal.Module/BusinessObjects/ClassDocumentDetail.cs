@@ -88,6 +88,9 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
             }
         }
 
+        /// <summary>
+        /// for Webapi
+        /// </summary>
         [Browsable(false)]
         public bool IsBeingDelete { get; set; }
 
@@ -302,6 +305,19 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
             set
             {
                 SetPropertyValue("UnitPrice", ref _UnitPrice, value);
+            }
+        }
+        private vwTaxes _TaxCode;
+        [Index(93), VisibleInListView(true), VisibleInDetailView(true), VisibleInLookupListView(true)]
+        [XafDisplayName("Tax Code")]
+        [DataSourceCriteria("CompanyCode = '@This.Company.BoCode' and IsActive and Category = '@This.ObjType.TaxCategory'")]
+        [NoForeignKey]
+        public vwTaxes TaxCode
+        {
+            get { return _TaxCode; }
+            set
+            {
+                SetPropertyValue("TaxCode", ref _TaxCode, value);
             }
         }
         private decimal _LineTotal;

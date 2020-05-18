@@ -21,6 +21,7 @@ using DevExpress.ExpressApp.ConditionalAppearance;
 namespace FT_PurchasingPortal.Module.BusinessObjects
 {
     [DefaultClassOptions]
+    [DefaultProperty("Code")]
     [NavigationItem("SAP Setup")]
     [XafDisplayName("Tax Code")]
     //[DefaultListViewOptions(MasterDetailMode.ListViewOnly, false, NewItemRowPosition.None)]

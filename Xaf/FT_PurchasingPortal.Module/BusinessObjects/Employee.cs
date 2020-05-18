@@ -119,7 +119,7 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
         }
 
         private vwWarehouses _WhsCode;
-        [DataSourceCriteria("CompanyCode = '@This.Company.BoCode' and IsActive")]
+        [DataSourceCriteria("CompanyCode = '@This.SystemUser.Company.BoCode' and IsActive")]
         [NoForeignKey]
         [Index(9)]
         public vwWarehouses WhsCode

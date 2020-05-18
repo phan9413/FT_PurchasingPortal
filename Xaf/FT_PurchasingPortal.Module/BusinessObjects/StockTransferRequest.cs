@@ -57,6 +57,16 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
             {
                 this.IsViewItemPriceRole = CreateUser.CheckAccessVP(DocType.BoCode);
             }
+            if (CreateUser.Employee.WhsCode != null)
+            {
+                Filler = Session.FindObject<vwWarehouses>(CriteriaOperator.Parse("CompanyCode=? and WhsCode=?", Company.BoCode, CreateUser.Employee.WhsCode.WhsCode));
+                ToWhsCode = Session.FindObject<vwWarehouses>(CriteriaOperator.Parse("CompanyCode=? and WhsCode=?", Company.BoCode, CreateUser.Employee.WhsCode.WhsCode));
+            }
+            else if(!string.IsNullOrEmpty(Company.WhsCode))
+            {
+                Filler = Session.FindObject<vwWarehouses>(CriteriaOperator.Parse("CompanyCode=? and WhsCode=?", Company.BoCode, Company.WhsCode));
+                ToWhsCode = Session.FindObject<vwWarehouses>(CriteriaOperator.Parse("CompanyCode=? and WhsCode=?", Company.BoCode, Company.WhsCode));
+            }
         }
         protected override void OnLoaded()
         {

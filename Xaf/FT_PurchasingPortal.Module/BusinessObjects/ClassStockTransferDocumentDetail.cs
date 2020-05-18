@@ -68,6 +68,9 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
             }
         }
 
+        /// <summary>
+        /// for Webapi
+        /// </summary>
         [Browsable(false)]
         public bool IsBeingDelete { get; set; }
 

@@ -153,6 +153,12 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
             {
                 this.IsViewItemPriceRole = CreateUser.CheckAccessVP(ObjType.BoCode);
             }
+            if (!string.IsNullOrEmpty(Company.InputTax))
+                TaxCode = Session.FindObject<vwTaxes>(CriteriaOperator.Parse("CompanyCode=? and Code=?", Company.BoCode, Company.InputTax));
+            if (CreateUser.Employee.WhsCode != null)
+                WhsCode = Session.FindObject<vwWarehouses>(CriteriaOperator.Parse("CompanyCode=? and WhsCode=?", Company.BoCode, CreateUser.Employee.WhsCode.WhsCode));
+            else if (!string.IsNullOrEmpty(Company.WhsCode))
+                    WhsCode = Session.FindObject<vwWarehouses>(CriteriaOperator.Parse("CompanyCode=? and WhsCode=?", Company.BoCode, Company.WhsCode));
         }
         protected override void OnLoaded()
         {

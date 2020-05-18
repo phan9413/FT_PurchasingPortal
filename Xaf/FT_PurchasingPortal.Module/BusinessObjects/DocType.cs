@@ -220,6 +220,29 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
             }
         }
         [Browsable(false)]
+        public string TaxCategory
+        {
+            get
+            {
+                string rtn = "";
+
+                switch (this.BoCode)
+                {
+                    case DocTypeCodes.PurchaseRequest:
+                    case DocTypeCodes.PurchaseOrder:
+                    case DocTypeCodes.PurchaseDelivery:
+                        rtn = "I";
+                        break;
+                    case DocTypeCodes.SalesAgreement:
+                    case DocTypeCodes.SalesQuotation:
+                    case DocTypeCodes.SalesOrder:
+                        rtn = "O";
+                        break;
+                }
+                return rtn;
+            }
+        }
+        [Browsable(false)]
         public string CardType
         {
             get
