@@ -1,5 +1,5 @@
 
-/****** Object:  StoredProcedure [dbo].[sp_AfterDocUpdated]    Script Date: 6/3/2020 5:53:42 PM ******/
+/****** Object:  StoredProcedure [dbo].[sp_AfterDocUpdated]    Script Date: 20/5/2020 1:03:56 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -25,13 +25,16 @@ begin
 	if @objtype = 'PurchaseOrder' -- OPRQ
 	begin
 		select @useroid = Oid from PermissionPolicyUser where UserName = @usercode
-
 	end
 
 	if @objtype = 'PurchaseRequest' -- OPRE
 	begin
 		select @useroid = Oid from PermissionPolicyUser where UserName = @usercode
+	end
 
+	if @objtype = 'PurchaseDelivery' -- OPRN
+	begin
+		select @useroid = Oid from PermissionPolicyUser where UserName = @usercode
 	end
 
 end

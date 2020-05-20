@@ -66,10 +66,13 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
 
             if (!GeneralValues.IsNetCore)
             {
-                SystemUsers user = Session.GetObjectByKey<SystemUsers>(SecuritySystem.CurrentUserId);
-                if (user != null)
+                if (!string.IsNullOrEmpty(SecuritySystem.CurrentUserId.ToString()))
                 {
-                    this.IsViewItemPriceRole = CreateUser.CheckAccessVP(DocType.BoCode);
+                    SystemUsers user = Session.GetObjectByKey<SystemUsers>(SecuritySystem.CurrentUserId);
+                    if (user != null)
+                    {
+                        this.IsViewItemPriceRole = CreateUser.CheckAccessVP(DocType.BoCode);
+                    }
                 }
             }
         }

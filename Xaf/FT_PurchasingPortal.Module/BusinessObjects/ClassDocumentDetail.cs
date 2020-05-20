@@ -336,22 +336,22 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
                 SetPropertyValue("LineTotal", ref _LineTotal, value);
             }
         }
-        private decimal _LineTotalFC;
-        // hide price
-        [EditorAlias("VPDec")]
-        [Appearance("dhpLineTotalFC", Visibility = DevExpress.ExpressApp.Editors.ViewItemVisibility.Hide, Criteria = "not IsViewItemPriceRole")]
-        [Index(201), VisibleInDetailView(true), VisibleInListView(true), VisibleInLookupListView(false)]
-        [Appearance("LineTotalFC", Enabled = false)]
-        [ModelDefault("DisplayFormat", "{0:n2}")]
-        [DbType("numeric(19,6)")]
-        public decimal LineTotalFC
-        {
-            get { return _LineTotalFC; }
-            set
-            {
-                SetPropertyValue("LineTotalFC", ref _LineTotalFC, value);
-            }
-        }
+        //private decimal _LineTotalFC;
+        //// hide price
+        //[EditorAlias("VPDec")]
+        //[Appearance("dhpLineTotalFC", Visibility = DevExpress.ExpressApp.Editors.ViewItemVisibility.Hide, Criteria = "not IsViewItemPriceRole")]
+        //[Index(201), VisibleInDetailView(true), VisibleInListView(true), VisibleInLookupListView(false)]
+        //[Appearance("LineTotalFC", Enabled = false)]
+        //[ModelDefault("DisplayFormat", "{0:n2}")]
+        //[DbType("numeric(19,6)")]
+        //public decimal LineTotalFC
+        //{
+        //    get { return _LineTotalFC; }
+        //    set
+        //    {
+        //        SetPropertyValue("LineTotalFC", ref _LineTotalFC, value);
+        //    }
+        //}
         private LineStatusEnum _LineStatus;
         [XafDisplayName("Status")]
         //[ModelDefault("EditMask", "(000)-00"), VisibleInListView(false)]
@@ -495,6 +495,36 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
             set
             {
                 SetPropertyValue("Baseline", ref _Baseline, value);
+            }
+        }
+        private int _MasterOid;
+        [Index(400), VisibleInListView(false), VisibleInDetailView(false), VisibleInLookupListView(false)]
+        public int MasterOid
+        {
+            get { return _MasterOid; }
+            set
+            {
+                SetPropertyValue("MasterOid", ref _MasterOid, value);
+            }
+        }
+        private SystemUsers _DeleteBy;
+        [Index(401), VisibleInListView(false), VisibleInDetailView(false), VisibleInLookupListView(false)]
+        public SystemUsers DeleteBy
+        {
+            get { return _DeleteBy; }
+            set
+            {
+                SetPropertyValue("DeleteBy", ref _DeleteBy, value);
+            }
+        }
+        private DateTime? _DeleteDate;
+        [Index(402), VisibleInListView(false), VisibleInDetailView(false), VisibleInLookupListView(false)]
+        public DateTime? DeleteDate
+        {
+            get { return _DeleteDate; }
+            set
+            {
+                SetPropertyValue("DeleteDate", ref _DeleteDate, value);
             }
         }
 

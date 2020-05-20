@@ -390,6 +390,36 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
                 SetPropertyValue("UpdateDate", ref _UpdateDate, value);
             }
         }
+        private int _MasterOid;
+        [Index(400), VisibleInListView(false), VisibleInDetailView(false), VisibleInLookupListView(false)]
+        public int MasterOid
+        {
+            get { return _MasterOid; }
+            set
+            {
+                SetPropertyValue("MasterOid", ref _MasterOid, value);
+            }
+        }
+        private SystemUsers _DeleteBy;
+        [Index(401), VisibleInListView(false), VisibleInDetailView(false), VisibleInLookupListView(false)]
+        public SystemUsers DeleteBy
+        {
+            get { return _DeleteBy; }
+            set
+            {
+                SetPropertyValue("DeleteBy", ref _DeleteBy, value);
+            }
+        }
+        private DateTime? _DeleteDate;
+        [Index(402), VisibleInListView(false), VisibleInDetailView(false), VisibleInLookupListView(false)]
+        public DateTime? DeleteDate
+        {
+            get { return _DeleteDate; }
+            set
+            {
+                SetPropertyValue("DeleteDate", ref _DeleteDate, value);
+            }
+        }
 
         [Browsable(false)]
         public bool IsNew

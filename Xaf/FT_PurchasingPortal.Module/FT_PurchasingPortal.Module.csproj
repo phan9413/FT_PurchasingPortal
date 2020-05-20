@@ -283,6 +283,9 @@
     <Compile Include="Controllers\GenController.Designer.cs">
       <DependentUpon>GenController.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controllers\MyCustomInplaceReportController.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Controllers\PurchaseDeliveryController.cs">
       <SubType>Component</SubType>
     </Compile>

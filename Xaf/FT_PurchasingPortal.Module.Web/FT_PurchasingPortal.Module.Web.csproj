@@ -277,6 +277,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controllers\WebModifyController.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Controllers\ColumnWidthController.cs" />
     <Compile Include="Controllers\MyHideFromCustomizationFormController.cs" />
     <Compile Include="Editors\MyPropertyEditors.cs" />

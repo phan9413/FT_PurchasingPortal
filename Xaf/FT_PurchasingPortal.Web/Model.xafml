@@ -1,9 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Application CurrentUserDisplayMode="CaptionAndImage">
-  <NavigationItems StartupNavigationItem="MyDetails">
+  <NavigationItems GenerateRelatedAnalysisGroup="False" GenerateRelatedReportsGroup="False" GenerateRelatedViewVariantsGroup="False" StartupNavigationItem="MyDetails">
     <Items>
       <Item Id="Default">
         <Items>
+          <Item Id="Event_ListView" Index="" Visible="False" />
           <Item Id="MyDetails" ViewId="SystemUsers_DetailView_Copy" />
         </Items>
       </Item>

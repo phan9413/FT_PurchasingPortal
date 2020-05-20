@@ -1,5 +1,5 @@
 
-/****** Object:  StoredProcedure [dbo].[sp_AfterDocDetailUpdated]    Script Date: 17/3/2020 3:34:53 PM ******/
+/****** Object:  StoredProcedure [dbo].[sp_AfterDocDetailUpdated]    Script Date: 20/5/2020 1:57:33 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -34,17 +34,60 @@ begin
 	declare @basetype nvarchar(50)
 	declare @qty numeric(19,6)
 	declare @totalqty numeric(19,6)
+	declare @today datetime
 
+	select @today = getdate()
 	select @useroid = Oid from PermissionPolicyUser where UserName = @usercode
 
 	if @objtype = 'StockTransferRequest' -- OSTF
 	begin
-		select @useroid = Oid from PermissionPolicyUser where UserName = @usercode
+		update OSTF1 set MasterOid = isnull(StockTransferRequest,0) where OID = @docid
+		and isnull(MasterOid,0) = 0 and isnull(StockTransferRequest,0) > 0
+
+		update OSTF1 set DeleteBy = @useroid, DeleteDate = @today where OID = @docid
+		and StockTransferRequest is null
 	end
 
+
+	if @objtype = 'PurchaseDelivery' -- OPRN
+	begin
+		update OPRN1 set MasterOid = isnull(PurchaseDelivery,0) where OID = @docid
+		and isnull(MasterOid,0) = 0 and isnull(PurchaseDelivery,0) > 0
+
+		update OPRN1 set DeleteBy = @useroid, DeleteDate = @today where OID = @docid
+		and PurchaseDelivery is null
+
+		select @baseline = T0.BaseLine, @basetypeoid = T0.BaseType, @basetype = T2.BoCode 
+		from OPRN1 T0
+		inner join ODOC T2 on T0.BaseType = T2.OID
+		where T0.OID = @docid
+
+		update OPRN1 set OpenQty = Quantity - CopyQty, OpenCreQty = Quantity - CopyCreQty where OID = @docid
+
+		if @baseline > 0
+		begin
+			select @qty = sum(T1.Quantity) 
+			from OPRN T0 inner join OPRN1 T1 on T0.OID = T1.PurchaseDelivery
+			inner join OPRND T2 on T0.DocStatus = T2.OID
+			where T1.BaseLine = @baseline and T1.BaseType = @basetypeoid
+			and T2.CurrDocStatus in (0,2,3,4,5,6,7) and T1.LineStatus in (0, 1)
+
+			select @totalqty = isnull(@qty,0)
+
+			if @basetype = 'PurchaseOrder'
+			begin
+				update OPRQ1 set CopyQty = @totalqty, OpenQty = Quantity - @totalqty where OID = @baseline
+			end
+		end
+	end
+	
 	if @objtype = 'PurchaseOrder' -- OPRQ
 	begin
-		select @useroid = Oid from PermissionPolicyUser where UserName = @usercode
+		update OPRQ1 set MasterOid = isnull(PurchaseOrder,0) where OID = @docid
+		and isnull(MasterOid,0) = 0 and isnull(PurchaseOrder,0) > 0
+
+		update OPRQ1 set DeleteBy = @useroid, DeleteDate = @today where OID = @docid
+		and PurchaseOrder is null
 
 		select @baseline = T0.BaseLine, @basetypeoid = T0.BaseType, @basetype = T2.BoCode 
 		from OPRQ1 T0
@@ -72,7 +115,11 @@ begin
 
 	if @objtype = 'PurchaseRequest' -- OPRE
 	begin
-		select @useroid = Oid from PermissionPolicyUser where UserName = @usercode
+		update OPRE1 set MasterOid = isnull(PurchaseRequest,0) where OID = @docid
+		and isnull(MasterOid,0) = 0 and isnull(PurchaseRequest,0) > 0
+
+		update OPRE1 set DeleteBy = @useroid, DeleteDate = @today where OID = @docid
+		and PurchaseRequest is null
 
 		select @baseline = T0.BaseLine, @basetypeoid = T0.BaseType, @basetype = T2.BoCode 
 		from OPRE1 T0
