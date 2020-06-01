@@ -151,10 +151,17 @@ namespace FT_PurchasingPortal.Module.Controllers
                         tDtl.PrjCode = ios.FindObject<vwProjects>(CriteriaOperator.Parse("BoKey=?", dtl.PrjCode.BoKey));
                     if (dtl.AcctCode != null)
                         tDtl.AcctCode = ios.FindObject<vwAccounts>(CriteriaOperator.Parse("BoKey=?", dtl.AcctCode.BoKey));
-                    tDtl.UnitMsr = dtl.UnitMsr;
-                    tDtl.UnitPrice = dtl.UnitPrice;
                     if (dtl.TaxCode != null)
                         tDtl.TaxCode = ios.FindObject<vwTaxes>(CriteriaOperator.Parse("BoKey=?", dtl.TaxCode.BoKey));
+                    if (dtl.FreightCharge != null)
+                        tDtl.FreightCharge = ios.FindObject<vwExpenses>(CriteriaOperator.Parse("BoKey=?", dtl.FreightCharge.BoKey));
+
+                    tDtl.UnitMsr = dtl.UnitMsr;
+                    tDtl.UnitPrice = dtl.UnitPrice;
+                    tDtl.TaxPerc = dtl.TaxPerc;
+                    tDtl.TaxAmt = dtl.TaxAmt;
+                    tDtl.DiscountAmt = dtl.DiscountAmt;
+                    tDtl.FreightAmt = dtl.FreightAmt;
 
                     if (dtl.ObjType != null)
                         tDtl.BaseType = ios.GetObjectByKey<DocType>(dtl.ObjType.Oid);
@@ -329,15 +336,23 @@ namespace FT_PurchasingPortal.Module.Controllers
                             tDtl.PrjCode = ios.FindObject<vwProjects>(CriteriaOperator.Parse("BoKey=?", dtl.PrjCode.BoKey));
                         if (dtl.AcctCode != null)
                             tDtl.AcctCode = ios.FindObject<vwAccounts>(CriteriaOperator.Parse("BoKey=?", dtl.AcctCode.BoKey));
-                        tDtl.UnitMsr = dtl.UnitMsr;
-                        tDtl.UnitPrice = dtl.UnitPrice;
                         if (dtl.TaxCode != null)
                             tDtl.TaxCode = ios.FindObject<vwTaxes>(CriteriaOperator.Parse("BoKey=?", dtl.TaxCode.BoKey));
+                        if (dtl.FreightCharge != null)
+                            tDtl.FreightCharge = ios.FindObject<vwExpenses>(CriteriaOperator.Parse("BoKey=?", dtl.FreightCharge.BoKey));
+
+                        tDtl.UnitMsr = dtl.UnitMsr;
+                        tDtl.UnitPrice = dtl.UnitPrice;
+                        tDtl.TaxPerc = dtl.TaxPerc;
+                        tDtl.TaxAmt = dtl.TaxAmt;
+                        tDtl.DiscountAmt = dtl.DiscountAmt;
+                        tDtl.FreightAmt = dtl.FreightAmt;
 
                         if (dtl.ObjType != null)
                             tDtl.BaseType = ios.GetObjectByKey<DocType>(dtl.ObjType.Oid);
 
                         tDtl.Baseline = dtl.Oid;
+
                         #region create object by type
                         if (tObject.GetType() == typeof(PurchaseRequest))
                         {
@@ -438,10 +453,17 @@ namespace FT_PurchasingPortal.Module.Controllers
                 tDtl.PrjCode = ios.FindObject<vwProjects>(CriteriaOperator.Parse("BoKey=?", dtl.PrjCode.BoKey));
             if (dtl.AcctCode != null)
                 tDtl.AcctCode = ios.FindObject<vwAccounts>(CriteriaOperator.Parse("BoKey=?", dtl.AcctCode.BoKey));
-            tDtl.UnitMsr = dtl.UnitMsr;
-            tDtl.UnitPrice = dtl.UnitPrice;
             if (dtl.TaxCode != null)
                 tDtl.TaxCode = ios.FindObject<vwTaxes>(CriteriaOperator.Parse("BoKey=?", dtl.TaxCode.BoKey));
+            if (dtl.FreightCharge != null)
+                tDtl.FreightCharge = ios.FindObject<vwExpenses>(CriteriaOperator.Parse("BoKey=?", dtl.FreightCharge.BoKey));
+
+            tDtl.UnitMsr = dtl.UnitMsr;
+            tDtl.UnitPrice = dtl.UnitPrice;
+            tDtl.TaxPerc = dtl.TaxPerc;
+            tDtl.TaxAmt = dtl.TaxAmt;
+            tDtl.DiscountAmt = dtl.DiscountAmt;
+            tDtl.FreightAmt = dtl.FreightAmt;
 
             if (dtl.BaseType != null)
                 tDtl.BaseType = ios.GetObjectByKey<DocType>(dtl.BaseType.Oid);

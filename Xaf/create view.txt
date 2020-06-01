@@ -1,3 +1,12 @@
+drop table vwExpenses
+go
+create view vwExpenses
+as
+(
+	select '' + ExpnsCode as BoKey, ExpnsCode, ExpnsName, 1 as IsActive, 'HQ' as CompanyCode 
+	from [PUSRAWI_LIVE]..OEXD
+)
+go
 drop table vwAccounts
 go
 create view vwAccounts

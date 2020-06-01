@@ -71,6 +71,19 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
                 SetPropertyValue("EmailCnt", ref _EmailCnt, value);
             }
         }
+        private DateTime? _EmailDate;
+        [XafDisplayName("Email Date")]
+        //[ModelDefault("EditMask", "(000)-00"), VisibleInListView(false)]
+        [Index(21), VisibleInListView(true), VisibleInDetailView(true), VisibleInLookupListView(false)]
+        [Appearance("EmailDate", Enabled = false)]
+        public DateTime? EmailDate
+        {
+            get { return _EmailDate; }
+            set
+            {
+                SetPropertyValue("EmailDate", ref _EmailDate, value);
+            }
+        }
 
         //private ClaimTrxs _ClaimTrx;
         //[Association("ClaimTrxs-ClaimTrxAppStages")]

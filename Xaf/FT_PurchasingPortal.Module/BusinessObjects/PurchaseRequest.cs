@@ -35,6 +35,8 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
     [Appearance("RejectDocRecord", AppearanceItemType = "Action", TargetItems = "RejectDoc", Context = "DetailView", Visibility = DevExpress.ExpressApp.Editors.ViewItemVisibility.Hide, Criteria = "not (DocStatus.CurrDocStatus in (3, 4, 5, 7))")]
     //if (selectedObject.DocStatus.CurrDocStatus == DocStatus.Draft || selectedObject.DocStatus.CurrDocStatus == DocStatus.Rejected || selectedObject.DocStatus.CurrDocStatus == DocStatus.Accepted)
     [Appearance("SaveDocRecord", AppearanceItemType = "Action", TargetItems = "Save", Context = "DetailView", Visibility = DevExpress.ExpressApp.Editors.ViewItemVisibility.Hide, Criteria = "not (DocStatus.CurrDocStatus in (0, 2, 4))")]
+    //if (selectedObject.DocStatus.CurrDocStatus == DocStatus.Draft || selectedObject.DocStatus.CurrDocStatus == DocStatus.Rejected)
+    [Appearance("EditRecord", AppearanceItemType = "Action", TargetItems = "SwitchToEditMode;Edit", Context = "Any", Visibility = DevExpress.ExpressApp.Editors.ViewItemVisibility.Hide, Criteria = "not (DocStatus.CurrDocStatus in (0, 2))")]
 
     [Persistent("OPRE")]
     public class PurchaseRequest : ClassDocument
@@ -122,6 +124,7 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
                 SetPropertyValue("UDFs", ref _UDFs, value);
             }
         }
+        [ImmediatePostData]
         [Association("PurchaseRequest-Detail")]
         [XafDisplayName("Details")]
         [DevExpress.Xpo.Aggregated]
@@ -150,6 +153,39 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
         public PurchaseRequestDetail(Session session)
             : base(session)
         {
+        }
+        protected override void OnDeleting()
+        {
+            base.OnDeleting();
+            /// Aggregate
+            //if (!(Session is NestedUnitOfWork)
+            //   && (Session.DataLayer != null)
+            //       && (Session.ObjectLayer is DevExpress.ExpressApp.Security.ClientServer.SecuredSessionObjectLayer)
+            //           )
+            {
+                if (this.PurchaseRequest != null)
+                {
+                    this.PurchaseRequest.DocB4Total -= this.LineTotal;
+                }
+            }
+        }
+        protected override void OnSaving()
+        {
+            base.OnSaving();
+            /// Aggregate
+            if ((Session is NestedUnitOfWork)
+               && (Session.DataLayer != null)
+                   && (Session.ObjectLayer is SessionObjectLayer)
+                       )
+            {
+                if (this.PurchaseRequest != null)
+                {
+                    if (this.PurchaseRequest.PurchaseRequestDetail.Count > 0)
+                        this.PurchaseRequest.DocB4Total = this.PurchaseRequest.PurchaseRequestDetail.Sum(pp => pp.LineTotal);
+                    else
+                        this.PurchaseRequest.DocB4Total = 0;
+                }
+            }
         }
         public override void AfterConstruction()
         {

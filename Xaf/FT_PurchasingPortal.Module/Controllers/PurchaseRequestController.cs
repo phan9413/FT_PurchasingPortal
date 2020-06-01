@@ -75,6 +75,7 @@ namespace FT_PurchasingPortal.Module.Controllers
         {
             this.CopyToPO.Active.SetItemValue("Enabled", false);
             PurchaseRequest selectobject = (PurchaseRequest)View.CurrentObject;
+            SystemUsers user = ObjectSpace.GetObjectByKey<SystemUsers>(SecuritySystem.CurrentUserId);
 
             switch (selectobject.DocStatus.CurrDocStatus)
             {
@@ -83,7 +84,10 @@ namespace FT_PurchasingPortal.Module.Controllers
                 case DocStatus.Cancelled:
                     break;
                 default:
-                    this.CopyToPO.Active.SetItemValue("Enabled", true);
+                    if (user.Roles.Where(pp => pp.Name == DocTypeCodes.PurchaseOrder).Count() > 0)
+                    {
+                        this.CopyToPO.Active.SetItemValue("Enabled", true);
+                    }
                     break;
             }
         }

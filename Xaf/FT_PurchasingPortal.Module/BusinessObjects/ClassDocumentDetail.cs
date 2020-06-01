@@ -24,7 +24,7 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
     [NonPersistent]
     [Appearance("SaveAndNewDocDetailRecord", AppearanceItemType = "Action", TargetItems = "SaveAndNew", Context = "DetailView", Visibility = DevExpress.ExpressApp.Editors.ViewItemVisibility.Hide)]
     [Appearance("SaveAndCloseDocDetailRecord", AppearanceItemType = "Action", TargetItems = "SaveAndClose", Context = "DetailView", Visibility = DevExpress.ExpressApp.Editors.ViewItemVisibility.Hide)]
-    [Appearance("DuplicateFontColor", TargetItems = "*", FontColor = "Red", Criteria = "IsDuplicated")]
+    //[Appearance("DuplicateFontColor", TargetItems = "*", FontColor = "Red", Criteria = "IsDuplicated")]
     [RuleCriteria("ClassDocumentDetailDeleteRule", DefaultContexts.Delete, "IsCanDelete", "Cannot Delete when Target Document found")]
     // Specify more UI options using a declarative approach (https://documentation.devexpress.com/#eXpressAppFramework/CustomDocument112701).
     public class ClassDocumentDetail : XPObject
@@ -42,6 +42,13 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
             if (!GeneralValues.IsNetCore)
             {
                 CreateUser = Session.GetObjectByKey<SystemUsers>(SecuritySystem.CurrentUserId);
+            }
+            else
+            {
+                CreateUser = Session.FindObject<SystemUsers>(CriteriaOperator.Parse("UserName=?", GeneralValues.NetCoreUserName));
+            }
+            if (CreateUser != null)
+            {
                 if (CreateUser.Company != null)
                 {
                     Company = Session.GetObjectByKey<Company>(CreateUser.Company.Oid);
@@ -71,12 +78,20 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
                     SystemUsers user = Session.GetObjectByKey<SystemUsers>(SecuritySystem.CurrentUserId);
                     Session.ExecuteSproc("sp_AfterDocDetailUpdated", new OperandValue(user.UserName), new OperandValue(this.Oid), new OperandValue(this.ObjType.BoCode));
                 }
+                else
+                {
+                    Session.ExecuteSproc("sp_AfterDocUpdated", new OperandValue(GeneralValues.NetCoreUserName), new OperandValue(this.Oid), new OperandValue(this.ObjType.BoCode));
+                }
             }
         }
+
+        [Browsable(false)]
         [NonPersistent]
         [Index(999)]
         [Appearance("IsDuplicated", Enabled = false)]
         public bool IsDuplicated { get; set; }
+
+        [Browsable(false)]
         public bool IsCanDelete
         {
             get
@@ -271,6 +286,7 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
         }
 
         private double _Quantity;
+        [ImmediatePostData]
         [Index(90), VisibleInDetailView(true), VisibleInListView(true), VisibleInLookupListView(false)]
         [ModelDefault("DisplayFormat", "{0:n4}")]
         [DbType("numeric(19,6)")]
@@ -279,7 +295,13 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
             get { return _Quantity; }
             set
             {
-                SetPropertyValue("Quantity", ref _Quantity, value);
+                if (SetPropertyValue("Quantity", ref _Quantity, value))
+                {
+                    if (!IsLoading)
+                    {
+                        AssignLineTotal();
+                    }
+                }
             }
         }
         private string _UnitMsr;
@@ -293,6 +315,7 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
             }
         }
         private decimal _UnitPrice;
+        [ImmediatePostData]
         // hide price
         [EditorAlias("VPDec")]
         [Appearance("dhpUnitPrice", Visibility = DevExpress.ExpressApp.Editors.ViewItemVisibility.Hide, Criteria = "not IsViewItemPriceRole")]
@@ -304,11 +327,18 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
             get { return _UnitPrice; }
             set
             {
-                SetPropertyValue("UnitPrice", ref _UnitPrice, value);
+                if (SetPropertyValue("UnitPrice", ref _UnitPrice, value))
+                {
+                    if (!IsLoading)
+                    {
+                        AssignLineTotal();
+                    }
+                }
             }
         }
         private vwTaxes _TaxCode;
-        [Index(93), VisibleInListView(true), VisibleInDetailView(true), VisibleInLookupListView(true)]
+        [ImmediatePostData]
+        [Index(100), VisibleInListView(true), VisibleInDetailView(true), VisibleInLookupListView(true)]
         [XafDisplayName("Tax Code")]
         [DataSourceCriteria("CompanyCode = '@This.Company.BoCode' and IsActive and Category = '@This.ObjType.TaxCategory'")]
         [NoForeignKey]
@@ -317,14 +347,134 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
             get { return _TaxCode; }
             set
             {
-                SetPropertyValue("TaxCode", ref _TaxCode, value);
+                if (SetPropertyValue("TaxCode", ref _TaxCode, value))
+                {
+                    if (!IsLoading)
+                    {
+                        AssignTaxAmt();
+                    }
+                }
+
             }
         }
+        private double _TaxPerc;
+        // hide price
+        [XafDisplayName("Tax %")]
+        [EditorAlias("VPDec")]
+        [Appearance("dhpTaxPerc", Visibility = DevExpress.ExpressApp.Editors.ViewItemVisibility.Hide, Criteria = "not IsViewItemPriceRole")]
+        [Index(101), VisibleInDetailView(false), VisibleInListView(false), VisibleInLookupListView(false)]
+        [Appearance("TaxPerc", Enabled = false)]
+        [ModelDefault("DisplayFormat", "{0:n2}")]
+        [DbType("numeric(19,6)")]
+        public double TaxPerc
+        {
+            get { return _TaxPerc; }
+            set
+            {
+                SetPropertyValue("TaxPerc", ref _TaxPerc, value);
+
+            }
+        }
+        private decimal _TaxAmt;
+        // hide price
+        [XafDisplayName("Tax Amount")]
+        [EditorAlias("VPDec")]
+        [Appearance("dhpTaxAmt", Visibility = DevExpress.ExpressApp.Editors.ViewItemVisibility.Hide, Criteria = "not IsViewItemPriceRole")]
+        [Index(102), VisibleInDetailView(false), VisibleInListView(false), VisibleInLookupListView(false)]
+        [ModelDefault("DisplayFormat", "{0:n2}")]
+        [DbType("numeric(19,6)")]
+        public decimal TaxAmt
+        {
+            get { return _TaxAmt; }
+            set
+            {
+                if (SetPropertyValue("TaxAmt", ref _TaxAmt, value))
+                {
+                    if (!IsLoading)
+                    {
+                        AssignTaxAmt();
+                    }
+                }
+
+            }
+        }
+        private decimal _DiscountAmt;
+        [ImmediatePostData]
+        // hide price
+        [XafDisplayName("Discount")]
+        [EditorAlias("VPDec")]
+        [Appearance("dhpDiscount", Visibility = DevExpress.ExpressApp.Editors.ViewItemVisibility.Hide, Criteria = "not IsViewItemPriceRole")]
+        [Index(198), VisibleInDetailView(true), VisibleInListView(true), VisibleInLookupListView(false)]
+        [ModelDefault("DisplayFormat", "{0:n2}")]
+        [DbType("numeric(19,6)")]
+        public decimal DiscountAmt
+        {
+            get { return _DiscountAmt; }
+            set
+            {
+                if (SetPropertyValue("DiscountAmt", ref _DiscountAmt, value))
+                {
+                    if (!IsLoading)
+                    {
+                        AssignLineTotal();
+                    }
+                }
+
+            }
+        }
+        private vwExpenses _FreightCharge;
+        [ImmediatePostData]
+        [Index(199), VisibleInListView(true), VisibleInDetailView(true), VisibleInLookupListView(true)]
+        [XafDisplayName("Freight Charge")]
+        [DataSourceCriteria("CompanyCode = '@This.Company.BoCode' and IsActive")]
+        [NoForeignKey]
+        public vwExpenses FreightCharge
+        {
+            get { return _FreightCharge; }
+            set
+            {
+                if (SetPropertyValue("FreightCharge", ref _FreightCharge, value))
+                {
+                    if (!IsLoading)
+                    {
+                        if (value == null)
+                            FreightAmt = 0;
+
+                    }
+                }
+            }
+        }
+        private decimal _FreightAmt;
+        [ImmediatePostData]
+        // hide price
+        [XafDisplayName("Freight Amount")]
+        [EditorAlias("VPDec")]
+        [Appearance("dhpFreightAmt", Visibility = DevExpress.ExpressApp.Editors.ViewItemVisibility.Hide, Criteria = "not IsViewItemPriceRole")]
+        [Index(200), VisibleInDetailView(true), VisibleInListView(true), VisibleInLookupListView(false)]
+        [Appearance("FreightAmt", Enabled = false, Criteria = "FreightCharge is null")]
+        [ModelDefault("DisplayFormat", "{0:n2}")]
+        [DbType("numeric(19,6)")]
+        public decimal FreightAmt
+        {
+            get { return _FreightAmt; }
+            set
+            {
+                if (SetPropertyValue("FreightAmt", ref _FreightAmt, value))
+                {
+                    if (!IsLoading)
+                    {
+                        AssignLineTotal();
+                    }
+                }
+
+            }
+        }
+
         private decimal _LineTotal;
         // hide price
         [EditorAlias("VPDec")]
         [Appearance("dhpLineTotal", Visibility = DevExpress.ExpressApp.Editors.ViewItemVisibility.Hide, Criteria = "not IsViewItemPriceRole")]
-        [Index(200), VisibleInDetailView(true), VisibleInListView(true), VisibleInLookupListView(false)]
+        [Index(201), VisibleInDetailView(true), VisibleInListView(true), VisibleInLookupListView(false)]
         [Appearance("LineTotal", Enabled = false)]
         [ModelDefault("DisplayFormat", "{0:n2}")]
         [DbType("numeric(19,6)")]
@@ -352,23 +502,9 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
         //        SetPropertyValue("LineTotalFC", ref _LineTotalFC, value);
         //    }
         //}
-        private LineStatusEnum _LineStatus;
-        [XafDisplayName("Status")]
-        //[ModelDefault("EditMask", "(000)-00"), VisibleInListView(false)]
-        [Index(202), VisibleInListView(true), VisibleInDetailView(true), VisibleInLookupListView(false)]
-        [Appearance("LineStatus", Enabled = false)]
-        public LineStatusEnum LineStatus
-        {
-            get { return _LineStatus; }
-            set
-            {
-                SetPropertyValue("LineStatus", ref _LineStatus, value);
-            }
-        }
-
         private vwAccounts _AcctCode;
         [XafDisplayName("Account")]
-        [Index(299), VisibleInListView(true), VisibleInDetailView(true), VisibleInLookupListView(false)]
+        [Index(210), VisibleInListView(true), VisibleInDetailView(true), VisibleInLookupListView(false)]
         [NoForeignKey]
         [DataSourceCriteria("CompanyCode = '@This.Company.BoCode' and IsActive")]
         public vwAccounts AcctCode
@@ -377,6 +513,19 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
             set
             {
                 SetPropertyValue("AcctCode", ref _AcctCode, value);
+            }
+        }
+        private LineStatusEnum _LineStatus;
+        [XafDisplayName("Status")]
+        //[ModelDefault("EditMask", "(000)-00"), VisibleInListView(false)]
+        [Index(220), VisibleInListView(true), VisibleInDetailView(true), VisibleInLookupListView(false)]
+        [Appearance("LineStatus", Enabled = false)]
+        public LineStatusEnum LineStatus
+        {
+            get { return _LineStatus; }
+            set
+            {
+                SetPropertyValue("LineStatus", ref _LineStatus, value);
             }
         }
         [NonCloneable]
@@ -527,6 +676,15 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
                 SetPropertyValue("DeleteDate", ref _DeleteDate, value);
             }
         }
+        public void AssignTaxAmt()
+        {
+            TaxAmt = Math.Round((Convert.ToDecimal(Quantity) * UnitPrice) * Convert.ToDecimal(TaxPerc) / 100, 2, MidpointRounding.AwayFromZero);
+            AssignLineTotal();
+        }
+        public void AssignLineTotal()
+        {
+            LineTotal = Math.Round((Convert.ToDecimal(Quantity) * UnitPrice) - DiscountAmt + FreightAmt + TaxAmt, 2, MidpointRounding.AwayFromZero);
+        }
 
         [Browsable(false)]
         public bool IsNew
@@ -552,6 +710,8 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
                 {
                     if (!GeneralValues.IsNetCore)
                         UpdateUser = Session.GetObjectByKey<SystemUsers>(SecuritySystem.CurrentUserId);
+                    else
+                        UpdateUser = Session.FindObject<SystemUsers>(CriteriaOperator.Parse("UserName=?", GeneralValues.NetCoreUserName));
                     UpdateDate = DateTime.Now;
                 }
             }

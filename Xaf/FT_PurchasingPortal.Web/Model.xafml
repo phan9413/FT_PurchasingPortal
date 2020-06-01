@@ -9,6 +9,11 @@
         </Items>
       </Item>
       <Item Id="KPI" Visible="False" />
+      <Item Id="Purchasing">
+        <Items>
+          <Item Id="PurchaseDelivery_ListView" Visible="False" />
+        </Items>
+      </Item>
       <Item Id="Task" Visible="False" />
     </Items>
   </NavigationItems>

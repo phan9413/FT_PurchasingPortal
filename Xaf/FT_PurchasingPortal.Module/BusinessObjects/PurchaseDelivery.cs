@@ -36,6 +36,8 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
     //if (selectedObject.DocStatus.CurrDocStatus == DocStatus.Draft || selectedObject.DocStatus.CurrDocStatus == DocStatus.Rejected || selectedObject.DocStatus.CurrDocStatus == DocStatus.Accepted)
     [Appearance("SaveDocRecord", AppearanceItemType = "Action", TargetItems = "Save", Context = "DetailView", Visibility = DevExpress.ExpressApp.Editors.ViewItemVisibility.Hide, Criteria = "not (DocStatus.CurrDocStatus in (0, 2, 4))")]
     [Appearance("SaveDocRecord2", AppearanceItemType = "Action", TargetItems = "Save", Context = "DetailView", Visibility = DevExpress.ExpressApp.Editors.ViewItemVisibility.Hide, Criteria = "not IsCardCodeSelected")]
+    //if (selectedObject.DocStatus.CurrDocStatus == DocStatus.Draft || selectedObject.DocStatus.CurrDocStatus == DocStatus.Rejected)
+    [Appearance("EditRecord", AppearanceItemType = "Action", TargetItems = "SwitchToEditMode;Edit", Context = "Any", Visibility = DevExpress.ExpressApp.Editors.ViewItemVisibility.Hide, Criteria = "not (DocStatus.CurrDocStatus in (0, 2))")]
 
     [Persistent("OPRN")]
     public class PurchaseDelivery : ClassDocument
@@ -117,6 +119,7 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
                 SetPropertyValue("UDFs", ref _UDFs, value);
             }
         }
+        [ImmediatePostData]
         [Association("PurchaseDelivery-Detail")]
         [XafDisplayName("Details")]
         [DevExpress.Xpo.Aggregated]
@@ -163,16 +166,36 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
             else if (!string.IsNullOrEmpty(Company.WhsCode))
                     WhsCode = Session.FindObject<vwWarehouses>(CriteriaOperator.Parse("CompanyCode=? and WhsCode=?", Company.BoCode, Company.WhsCode));
         }
-        protected override void OnLoaded()
+        protected override void OnDeleting()
         {
-            base.OnLoaded();
-
-            if (!GeneralValues.IsNetCore)
+            base.OnDeleting();
+            /// Aggregate
+            //if (!(Session is NestedUnitOfWork)
+            //   && (Session.DataLayer != null)
+            //       && (Session.ObjectLayer is DevExpress.ExpressApp.Security.ClientServer.SecuredSessionObjectLayer)
+            //           )
             {
-                SystemUsers user = Session.GetObjectByKey<SystemUsers>(SecuritySystem.CurrentUserId);
-                if (user != null)
+                if (this.PurchaseDelivery != null)
                 {
-                    this.IsViewItemPriceRole = CreateUser.CheckAccessVP(ObjType.BoCode);
+                    this.PurchaseDelivery.DocB4Total -= this.LineTotal;
+                }
+            }
+        }
+        protected override void OnSaving()
+        {
+            base.OnSaving();
+            /// Aggregate
+            if ((Session is NestedUnitOfWork)
+               && (Session.DataLayer != null)
+                   && (Session.ObjectLayer is SessionObjectLayer)
+                       )
+            {
+                if (this.PurchaseDelivery != null)
+                {
+                    if (this.PurchaseDelivery.PurchaseDeliveryDetail.Count > 0)
+                        this.PurchaseDelivery.DocB4Total = this.PurchaseDelivery.PurchaseDeliveryDetail.Sum(pp => pp.LineTotal);
+                    else
+                        this.PurchaseDelivery.DocB4Total = 0;
                 }
             }
         }

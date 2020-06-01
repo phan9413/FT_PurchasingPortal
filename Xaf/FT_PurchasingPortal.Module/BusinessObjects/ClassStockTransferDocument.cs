@@ -40,6 +40,13 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
             if (!GeneralValues.IsNetCore)
             {
                 CreateUser = Session.GetObjectByKey<SystemUsers>(SecuritySystem.CurrentUserId);
+            }
+            else
+            {
+                CreateUser = Session.FindObject<SystemUsers>(CriteriaOperator.Parse("UserName=?", GeneralValues.NetCoreUserName));
+            }
+            if (CreateUser != null)
+            {
                 if (CreateUser.Company != null)
                 {
                     Company = Session.GetObjectByKey<Company>(CreateUser.Company.Oid);
@@ -52,10 +59,7 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
                 {
                     ToWhsCode = Session.GetObjectByKey<vwWarehouses>(CreateUser.Employee.WhsCode.BoKey);
                 }
-                if (CreateUser.Employee != null)
-                {
-                    DocOwner = Session.GetObjectByKey<Employee>(CreateUser.Employee.Oid);
-                }
+                DocOwner = Session.FindObject<Employee>(new BinaryOperator("SystemUser.Oid", CreateUser.Oid, BinaryOperatorType.Equal));
             }
             GroupNum = Session.FindObject<vwPriceList>(CriteriaOperator.Parse("CompanyCode=?", Company.BoCode));
             DocDate = DateTime.Today;
@@ -74,6 +78,10 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
                 {
                     SystemUsers user = Session.GetObjectByKey<SystemUsers>(SecuritySystem.CurrentUserId);
                     Session.ExecuteSproc("sp_AfterDocUpdated", new OperandValue(user.UserName), new OperandValue(this.Oid), new OperandValue(this.DocType.BoCode));
+                }
+                else
+                {
+                    Session.ExecuteSproc("sp_AfterDocUpdated", new OperandValue(GeneralValues.NetCoreUserName), new OperandValue(this.Oid), new OperandValue(this.DocType.BoCode));
                 }
             }
         }
@@ -491,6 +499,8 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
                 {
                     if (!GeneralValues.IsNetCore)
                         UpdateUser = Session.GetObjectByKey<SystemUsers>(SecuritySystem.CurrentUserId);
+                    else
+                        UpdateUser = Session.FindObject<SystemUsers>(CriteriaOperator.Parse("UserName=?", GeneralValues.NetCoreUserName));
                     UpdateDate = DateTime.Now;
                 }
             }

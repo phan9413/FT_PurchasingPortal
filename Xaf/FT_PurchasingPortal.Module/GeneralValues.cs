@@ -58,5 +58,6 @@ namespace FT_PurchasingPortal.Module
         public static string DeliveryMethod = "";
 
         public static bool IsNetCore = false;
+        public static string NetCoreUserName;
     }
 }

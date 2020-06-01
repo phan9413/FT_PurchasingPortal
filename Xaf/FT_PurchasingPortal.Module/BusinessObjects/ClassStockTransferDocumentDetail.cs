@@ -40,10 +40,14 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
             if (!GeneralValues.IsNetCore)
             {
                 CreateUser = Session.GetObjectByKey<SystemUsers>(SecuritySystem.CurrentUserId);
-                if (CreateUser.Company != null)
-                {
-                    Company = Session.GetObjectByKey<Company>(CreateUser.Company.Oid);
-                }
+            }
+            else
+            {
+                CreateUser = Session.FindObject<SystemUsers>(CriteriaOperator.Parse("UserName=?", GeneralValues.NetCoreUserName));
+            }
+            if (CreateUser.Company != null)
+            {
+                Company = Session.GetObjectByKey<Company>(CreateUser.Company.Oid);
             }
             IsDuplicated = false;
         }
@@ -64,6 +68,10 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
                 {
                     SystemUsers user = Session.GetObjectByKey<SystemUsers>(SecuritySystem.CurrentUserId);
                     Session.ExecuteSproc("sp_AfterDocDetailUpdated", new OperandValue(user.UserName), new OperandValue(this.Oid), new OperandValue(this.ObjType.BoCode));
+                }
+                else
+                {
+                    Session.ExecuteSproc("sp_AfterDocUpdated", new OperandValue(GeneralValues.NetCoreUserName), new OperandValue(this.Oid), new OperandValue(this.ObjType.BoCode));
                 }
             }
         }
@@ -445,6 +453,9 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
                 {
                     if (!GeneralValues.IsNetCore)
                         UpdateUser = Session.GetObjectByKey<SystemUsers>(SecuritySystem.CurrentUserId);
+                    else
+                        UpdateUser = Session.FindObject<SystemUsers>(CriteriaOperator.Parse("UserName=?", GeneralValues.NetCoreUserName));
+
                     UpdateDate = DateTime.Now;
                 }
             }

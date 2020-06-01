@@ -24,6 +24,7 @@ namespace PRWebApi.Controllers
             _config = config;
             _uow = uow;
             FT_PurchasingPortal.Module.GeneralValues.IsNetCore = true;
+            FT_PurchasingPortal.Module.GeneralValues.NetCoreUserName = "";
             //XpoDefault.Session = new UnitOfWork();
         }
 

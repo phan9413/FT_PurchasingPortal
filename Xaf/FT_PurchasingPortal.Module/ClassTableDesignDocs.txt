@@ -23,6 +23,7 @@
 	- [Approval] (approval)
 	- [CurrAppointedUser->Employee] (current appointed employee, when [Approval.ApprovalBy] = Appointed_User)
 	- EmailCnt (count of email sent)
+	- EmailDate (date of email sent)
 
 [ClassAppStatus] (class, approval status done)
 	- [AppStageDoc] (approval document)
@@ -67,8 +68,11 @@
 	- [SlpCode->vwSalesPersons]
 	- JrnMemo (journal memo)
 	- Comments (remarks)
-	- DocTotal (doc total)
-	- DocTotalFC (doc total fc)
+	- DocB4Total (doc total b4 discount)
+	- DiscountPerc
+	- DiscountAmt
+	- Rounding
+	- DocTotal
 	- [DocOwner->Employee]
 	- [CreateUser->SystemUser]
 	- CreateDate
@@ -91,10 +95,17 @@
 	- Quantity
 	- UnitMsr
 	- UnitPrice
+	- [TaxCode->vwTaxes]
+	- TaxPerc
+	- TaxAmt
+	- Quantity
+	- UnitMsr
+	- UnitPrice
+	- DiscountAmt
+	- FreightCharges
 	- LineTotal
-	- LineTotalFC
-	- [AcctCode->vwAccounts]
 	- [LineStatus->LineStatusEnum]
+	- [AcctCode->vwAccounts]
 	- [CreateUser->SystemUser]
 	- CreateDate
 	- [UpdateUser->SystemUser]
@@ -103,6 +114,12 @@
 	- CopyCreQty
 	- OpenQty
 	- OpenCreQty
+	- BaseType
+	- Baseline
+	- MasterOid
+	- IsBeingDelete
+	- [DeleteBy->SystemUser]
+	- DeleteDate
 
 [ClassStockTransferDocument] (class, stock transaction document)
 	- [Company]
@@ -152,6 +169,8 @@
 	- CreateDate
 	- [UpdateUser->SystemUser]
 	- UpdateDate
+	- [DeleteBy->SystemUser]
+	- DeleteDate
 
 [ClassUDFHeader] (class for header UDF, all UDF start with 'U_')
 

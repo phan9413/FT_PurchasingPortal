@@ -118,7 +118,11 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
 
                 if (Session.IsNewObject(this))
                 {
-                    CreateUser = Session.GetObjectByKey<SystemUsers>(SecuritySystem.CurrentUserId);
+                    if (!GeneralValues.IsNetCore)
+                        CreateUser = Session.GetObjectByKey<SystemUsers>(SecuritySystem.CurrentUserId);
+                    else
+                        CreateUser = Session.FindObject<SystemUsers>(CriteriaOperator.Parse("UserName=?", GeneralValues.NetCoreUserName));
+
                     CreateDate = DateTime.Now;
                 }
             }

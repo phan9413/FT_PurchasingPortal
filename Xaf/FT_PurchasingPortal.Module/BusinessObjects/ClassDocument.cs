@@ -40,6 +40,13 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
             if (!GeneralValues.IsNetCore)
             {
                 CreateUser = Session.GetObjectByKey<SystemUsers>(SecuritySystem.CurrentUserId);
+            }
+            else
+            {
+                CreateUser = Session.FindObject<SystemUsers>(CriteriaOperator.Parse("UserName=?", GeneralValues.NetCoreUserName));
+            }
+            if (CreateUser != null)
+            {
                 if (CreateUser.Company != null)
                 {
                     Company = Session.GetObjectByKey<Company>(CreateUser.Company.Oid);
@@ -67,6 +74,10 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
                 {
                     SystemUsers user = Session.GetObjectByKey<SystemUsers>(SecuritySystem.CurrentUserId);
                     Session.ExecuteSproc("sp_AfterDocUpdated", new OperandValue(user.UserName), new OperandValue(this.Oid), new OperandValue(this.DocType.BoCode));
+                }
+                else
+                {
+                    Session.ExecuteSproc("sp_AfterDocUpdated", new OperandValue(GeneralValues.NetCoreUserName), new OperandValue(this.Oid), new OperandValue(this.DocType.BoCode));
                 }
             }
         }
@@ -368,11 +379,126 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
             }
         }
 
-        private decimal _DocTotal;
+        private decimal _DocB4Total;
+        [ImmediatePostData]
+        [XafDisplayName("Total Before Disc.")]
         // hide price
         [EditorAlias("VPDec")]
-        [Appearance("dhpDocTotal", Visibility = DevExpress.ExpressApp.Editors.ViewItemVisibility.Hide, Criteria = "not IsViewItemPriceRole")]
+        [Appearance("dhpDocB4Total", Visibility = DevExpress.ExpressApp.Editors.ViewItemVisibility.Hide, Criteria = "not IsViewItemPriceRole")]
         [Index(200), VisibleInDetailView(true), VisibleInListView(true), VisibleInLookupListView(false)]
+        [Appearance("DocB4Total", Enabled = false)]
+        [ModelDefault("DisplayFormat", "{0:n2}")]
+        [DbType("numeric(19,6)")]
+        public decimal DocB4Total
+        {
+            get { return _DocB4Total; }
+            set
+            {
+                if (SetPropertyValue("DocB4Total", ref _DocB4Total, value))
+                {
+                    if (!IsLoading)
+                    {
+                        AssignDocTotal(DocB4Total);
+                    }
+                }
+
+            }
+        }
+
+        private Double _DiscountPerc;
+        [ImmediatePostData]
+        // hide price
+        [XafDisplayName("Discount %")]
+        [EditorAlias("VPDou")]
+        [Appearance("dhpDiscountPerc", Visibility = DevExpress.ExpressApp.Editors.ViewItemVisibility.Hide, Criteria = "not IsViewItemPriceRole")]
+        [Index(201), VisibleInDetailView(true), VisibleInListView(true), VisibleInLookupListView(false)]
+        [ModelDefault("DisplayFormat", "{0:n3}")]
+        [DbType("numeric(19,6)")]
+        public Double DiscountPerc
+        {
+            get { return _DiscountPerc; }
+            set
+            {
+                if (SetPropertyValue("DiscountPerc", ref _DiscountPerc, value))
+                {
+                    if (!IsLoading)
+                    {
+                        AssignDocTotal(DocB4Total);
+                    }
+                }
+
+            }
+        }
+        private decimal _DiscountAmt;
+        [XafDisplayName("Discount Amount")]
+        // hide price
+        [EditorAlias("VPDec")]
+        [Appearance("dhpDiscountAmt", Visibility = DevExpress.ExpressApp.Editors.ViewItemVisibility.Hide, Criteria = "not IsViewItemPriceRole")]
+        [Index(202), VisibleInDetailView(true), VisibleInListView(true), VisibleInLookupListView(false)]
+        [Appearance("DiscountAmt", Enabled = false)]
+        [ModelDefault("DisplayFormat", "{0:n2}")]
+        [DbType("numeric(19,6)")]
+        public decimal DiscountAmt
+        {
+            get { return _DiscountAmt; }
+            set
+            {
+                SetPropertyValue("DiscountAmt", ref _DiscountAmt, value);
+            }
+        }
+        private decimal _DiscountAdj;
+        [XafDisplayName("Discount Adj.")]
+        // hide price
+        [ImmediatePostData]
+        [EditorAlias("VPDec")]
+        [Appearance("dhpDiscountAdj", Visibility = DevExpress.ExpressApp.Editors.ViewItemVisibility.Hide, Criteria = "not IsViewItemPriceRole")]
+        [Index(203), VisibleInDetailView(true), VisibleInListView(true), VisibleInLookupListView(false)]
+        [ModelDefault("DisplayFormat", "{0:n2}")]
+        [DbType("numeric(19,6)")]
+        public decimal DiscountAdj
+        {
+            get { return _DiscountAdj; }
+            set
+            {
+                if (SetPropertyValue("DiscountAdj", ref _DiscountAdj, value))
+                {
+                    if (!IsLoading)
+                    {
+                        AssignDocTotal(DocB4Total);
+                    }
+                }
+            }
+        }
+
+        private decimal _Rounding;
+        // hide price
+        [ImmediatePostData]
+        [EditorAlias("VPDec")]
+        [Appearance("dhpRounding", Visibility = DevExpress.ExpressApp.Editors.ViewItemVisibility.Hide, Criteria = "not IsViewItemPriceRole")]
+        [Index(210), VisibleInDetailView(true), VisibleInListView(true), VisibleInLookupListView(false)]
+        [ModelDefault("DisplayFormat", "{0:n2}")]
+        [DbType("numeric(19,6)")]
+        public decimal Rounding
+        {
+            get { return _Rounding; }
+            set
+            {
+                if (SetPropertyValue("Rounding", ref _Rounding, value))
+                {
+                    if (!IsLoading)
+                    {
+                        AssignDocTotal(DocB4Total);
+                    }
+                }
+            }
+        }
+
+        private decimal _DocTotal;
+        // hide price
+        [XafDisplayName("Total After Disc.")]
+        [EditorAlias("VPDec")]
+        [Appearance("dhpDocTotal", Visibility = DevExpress.ExpressApp.Editors.ViewItemVisibility.Hide, Criteria = "not IsViewItemPriceRole")]
+        [Index(211), VisibleInDetailView(true), VisibleInListView(true), VisibleInLookupListView(false)]
         [Appearance("DocTotal", Enabled = false)]
         [ModelDefault("DisplayFormat", "{0:n2}")]
         [DbType("numeric(19,6)")]
@@ -384,30 +510,20 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
                 SetPropertyValue("DocTotal", ref _DocTotal, value);
             }
         }
-        private decimal _DocTotalFC;
-        // hide price
-        [EditorAlias("VPDec")]
-        [Appearance("dhpDocTotalFC", Visibility = DevExpress.ExpressApp.Editors.ViewItemVisibility.Hide, Criteria = "not IsViewItemPriceRole")]
-        [Index(201), VisibleInDetailView(true), VisibleInListView(true), VisibleInLookupListView(false)]
-        [Appearance("DocTotalFC", Enabled = false)]
-        [ModelDefault("DisplayFormat", "{0:n2}")]
-        [DbType("numeric(19,6)")]
-        public decimal DocTotalFC
-        {
-            get { return _DocTotalFC; }
-            set
-            {
-                SetPropertyValue("DocTotalFC", ref _DocTotalFC, value);
-            }
-        }
-        //private TrxDocumentAppStage _CurrentAppStage;
-        //[Appearance("CurrentAppStage", Enabled = false)]
-        //public TrxDocumentAppStage CurrentAppStage
+        //private decimal _DocTotalFC;
+        //// hide price
+        //[EditorAlias("VPDec")]
+        //[Appearance("dhpDocTotalFC", Visibility = DevExpress.ExpressApp.Editors.ViewItemVisibility.Hide, Criteria = "not IsViewItemPriceRole")]
+        //[Index(201), VisibleInDetailView(true), VisibleInListView(true), VisibleInLookupListView(false)]
+        //[Appearance("DocTotalFC", Enabled = false)]
+        //[ModelDefault("DisplayFormat", "{0:n2}")]
+        //[DbType("numeric(19,6)")]
+        //public decimal DocTotalFC
         //{
-        //    get { return _CurrentAppStage; }
+        //    get { return _DocTotalFC; }
         //    set
         //    {
-        //        SetPropertyValue("CurrentAppStage", ref _CurrentAppStage, value);
+        //        SetPropertyValue("DocTotalFC", ref _DocTotalFC, value);
         //    }
         //}
         private Employee _DocOwner;
@@ -521,7 +637,13 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
             DocNo = doc.DocTypeSeries.Prefix == null ? DocNum.ToString() : doc.DocTypeSeries.Prefix.Trim() + DocNum.ToString();
             doc.NextDocNo++;
         }
-
+        public void AssignDocTotal(decimal docb4total)
+        {
+            DocB4Total = Math.Round(docb4total, 2, MidpointRounding.AwayFromZero);
+            decimal discountamt = Math.Round(DocB4Total * Convert.ToDecimal(DiscountPerc) / 100, 2, MidpointRounding.AwayFromZero);
+            DiscountAmt = discountamt;
+            DocTotal = DocB4Total - DiscountAmt - DiscountAdj + Rounding;
+        }
         protected override void OnSaving()
         {
             base.OnSaving();
@@ -538,6 +660,8 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
                 {
                     if (!GeneralValues.IsNetCore)
                         UpdateUser = Session.GetObjectByKey<SystemUsers>(SecuritySystem.CurrentUserId);
+                    else
+                        UpdateUser = Session.FindObject<SystemUsers>(CriteriaOperator.Parse("UserName=?", GeneralValues.NetCoreUserName));
                     UpdateDate = DateTime.Now;
                 }
             }

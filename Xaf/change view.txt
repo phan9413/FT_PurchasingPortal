@@ -1,4 +1,11 @@
 
+alter view vwExpenses
+as
+(
+	select '' + ExpnsCode as BoKey, ExpnsCode, ExpnsName, 1 as IsActive, 'HQ' as CompanyCode 
+	from [SBODemoGB]..OEXD
+)
+go
 
 alter view vwAccounts
 as

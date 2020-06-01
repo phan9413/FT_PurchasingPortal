@@ -99,7 +99,7 @@ namespace FT_PurchasingPortal.Web {
         // solve get SecuritySystem.CurrentUserID return emtpy - end
         private void Instance_CustomizeFormattingCulture(object sender, CustomizeFormattingCultureEventArgs e)
         {
-            e.FormattingCulture.NumberFormat.CurrencySymbol = "RM";
+            //e.FormattingCulture.NumberFormat.CurrencySymbol = "MYR";
             e.FormattingCulture.DateTimeFormat.ShortDatePattern = "dd/MM/yyyy";
         }
 

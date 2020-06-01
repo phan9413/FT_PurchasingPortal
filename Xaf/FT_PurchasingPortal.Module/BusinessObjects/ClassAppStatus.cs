@@ -189,12 +189,18 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
 
                 if (Session.IsNewObject(this))
                 {
-                    CreateUser = Session.GetObjectByKey<SystemUsers>(SecuritySystem.CurrentUserId);
+                    if (!GeneralValues.IsNetCore)
+                        CreateUser = Session.GetObjectByKey<SystemUsers>(SecuritySystem.CurrentUserId);
+                    else
+                        CreateUser = Session.FindObject<SystemUsers>(CriteriaOperator.Parse("UserName=?", GeneralValues.NetCoreUserName));
                     CreateDate = DateTime.Now;
                 }
                 else
                 {
-                    UpdateUser = Session.GetObjectByKey<SystemUsers>(SecuritySystem.CurrentUserId);
+                    if (!GeneralValues.IsNetCore)
+                        UpdateUser = Session.GetObjectByKey<SystemUsers>(SecuritySystem.CurrentUserId);
+                    else
+                        UpdateUser = Session.FindObject<SystemUsers>(CriteriaOperator.Parse("UserName=?", GeneralValues.NetCoreUserName));
                     UpdateDate = DateTime.Now;
                 }
             }

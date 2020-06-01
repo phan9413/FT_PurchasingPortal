@@ -260,6 +260,10 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
             {
                 int temp = 0;
 
+                if (Employee != null)
+                    temp++;
+                if (Division != null)
+                    temp++;
                 if (Account != null)
                     temp++;
                 if (Department != null)

@@ -1,0 +1,8 @@
+CREATE TABLE [dbo].[JSONREC](
+	[id] [bigint] IDENTITY(1,1) NOT NULL,
+	[AuthUser] [nvarchar](100) NULL,
+	[LogUserID] [nvarchar](150) NULL,
+	[ObjectType] [nvarchar](50) NULL,
+	[JSONObj] [nvarchar](max) NULL,
+	[UPDDATE] [datetime] NULL
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]

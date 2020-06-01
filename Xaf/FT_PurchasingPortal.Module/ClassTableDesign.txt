@@ -312,6 +312,13 @@
 	- IsActive (active)
 	- CompanyCode (sap databasename)
 
+[vwExpenses] (select from vwExpenses, use companycode to differenciate multi company)
+	- BoKey (concate CompanyCode + PrcCode)
+	- ExpnsCode (dimension code from sap)
+	- ExpnsName (dimension code from sap)
+	- IsActive (active)
+	- CompanyCode (sap databasename)
+
 [Department] (select from ODEP, use companycode to differenciate multi company)
 	- BoCode (code)
 	- BoName (name)

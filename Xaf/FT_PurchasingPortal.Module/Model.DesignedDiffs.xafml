@@ -19,6 +19,7 @@
     <DetailView Id="PermissionPolicyUser_DetailView" AllowDelete="False" />
     <ListView Id="PermissionPolicyUser_ListView" AllowDelete="False" />
     <ListView Id="PermissionPolicyUser_Roles_ListView" AllowDelete="False" AllowNew="False" AllowUnlink="True" AllowLink="True" />
+    <ListView Id="PurchaseRequest_PurchaseRequestDetail_ListView" AllowEdit="False" NewItemRowPosition="None" />
     <DetailView Id="SystemUsers_DetailView_Copy" ClassName="FT_PurchasingPortal.Module.BusinessObjects.SystemUsers" IsNewNode="True">
       <Items IsNewNode="True">
         <PropertyEditor Id="ChangePasswordOnFirstLogon" PropertyName="ChangePasswordOnFirstLogon" IsNewNode="True" />
