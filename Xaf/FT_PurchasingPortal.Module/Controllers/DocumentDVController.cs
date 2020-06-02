@@ -26,6 +26,7 @@ namespace FT_PurchasingPortal.Module.Controllers
         RecordsNavigationController recordnaviator;
         RefreshController refreshCon;
         GenController genCon;
+        SystemUsers user;
         public DocumentDVController()
         {
             InitializeComponent();
@@ -733,6 +734,7 @@ namespace FT_PurchasingPortal.Module.Controllers
 
             this.SubmitDoc.Active.SetItemValue("Enabled", false);
             this.CloseDoc.Active.SetItemValue("Enabled", false);
+            this.ReOpenDoc.Active.SetItemValue("Enabled", false);
             this.PostDoc.Active.SetItemValue("Enabled", false);
             this.CancelDoc.Active.SetItemValue("Enabled", false);
             this.RejectDoc.Active.SetItemValue("Enabled", false);
@@ -744,23 +746,39 @@ namespace FT_PurchasingPortal.Module.Controllers
             if (typeof(ClassDocument).IsAssignableFrom(View.ObjectTypeInfo.Type))
             {
                 this.SubmitDoc.Active.SetItemValue("Enabled", true);
-                this.CloseDoc.Active.SetItemValue("Enabled", true);
-                this.PostDoc.Active.SetItemValue("Enabled", true);
                 this.CancelDoc.Active.SetItemValue("Enabled", true);
-                this.RejectDoc.Active.SetItemValue("Enabled", true);
-                this.ApprovalDoc.Active.SetItemValue("Enabled", true);
-                this.ChangeAppUser.Active.SetItemValue("Enabled", true);
+                if (user.Roles.Where(pp => pp.Name == GeneralValues.CloseRole).Count() > 0)
+                {
+                    this.CloseDoc.Active.SetItemValue("Enabled", true);
+                    this.ReOpenDoc.Active.SetItemValue("Enabled", true);
+                }
+                if (user.Roles.Where(pp => pp.Name == GeneralValues.PostRole).Count() > 0)
+                    this.PostDoc.Active.SetItemValue("PostRole", true);
+                if (user.Roles.Where(pp => pp.Name == GeneralValues.RejectRole).Count() > 0)
+                    this.RejectDoc.Active.SetItemValue("Enabled", true);
+                if (user.Roles.Where(pp => pp.Name == GeneralValues.ApprovalRole).Count() > 0)
+                    this.ApprovalDoc.Active.SetItemValue("Enabled", true);
+                if (user.Roles.Where(pp => pp.Name == GeneralValues.ChangeApprovalRole).Count() > 0)
+                    this.ChangeAppUser.Active.SetItemValue("Enabled", true);
 
             }
             else if (typeof(ClassStockTransferDocument).IsAssignableFrom(View.ObjectTypeInfo.Type))
             {
                 this.SubmitDoc.Active.SetItemValue("Enabled", true);
-                this.CloseDoc.Active.SetItemValue("Enabled", true);
-                this.PostDoc.Active.SetItemValue("Enabled", true);
                 this.CancelDoc.Active.SetItemValue("Enabled", true);
-                this.RejectDoc.Active.SetItemValue("Enabled", true);
-                this.ApprovalDoc.Active.SetItemValue("Enabled", true);
-                this.ChangeAppUser.Active.SetItemValue("Enabled", true);
+                if (user.Roles.Where(pp => pp.Name == GeneralValues.CloseRole).Count() > 0)
+                {
+                    this.CloseDoc.Active.SetItemValue("Enabled", true);
+                    this.ReOpenDoc.Active.SetItemValue("Enabled", true);
+                }
+                if (user.Roles.Where(pp => pp.Name == GeneralValues.PostRole).Count() > 0)
+                    this.PostDoc.Active.SetItemValue("PostRole", true);
+                if (user.Roles.Where(pp => pp.Name == GeneralValues.RejectRole).Count() > 0)
+                    this.RejectDoc.Active.SetItemValue("Enabled", true);
+                if (user.Roles.Where(pp => pp.Name == GeneralValues.ApprovalRole).Count() > 0)
+                    this.ApprovalDoc.Active.SetItemValue("Enabled", true);
+                if (user.Roles.Where(pp => pp.Name == GeneralValues.ChangeApprovalRole).Count() > 0)
+                    this.ChangeAppUser.Active.SetItemValue("Enabled", true);
 
             }
 
@@ -775,6 +793,7 @@ namespace FT_PurchasingPortal.Module.Controllers
             this.SwitchView.Enabled.SetItemValue("EditMode", ((DetailView)View).ViewEditMode == ViewEditMode.Edit);
             this.ApprovalDoc.Enabled.SetItemValue("EditMode", ((DetailView)View).ViewEditMode == ViewEditMode.View);
             this.ChangeAppUser.Enabled.SetItemValue("EditMode", ((DetailView)View).ViewEditMode == ViewEditMode.View);
+            this.ReOpenDoc.Enabled.SetItemValue("EditMode", ((DetailView)View).ViewEditMode == ViewEditMode.View);
         }
         private void GenController_ViewEditModeChanged(object sender, EventArgs e)
         {
@@ -803,6 +822,7 @@ namespace FT_PurchasingPortal.Module.Controllers
             base.OnViewControlsCreated();
             // Access and customize the target View control.
             genCon = Frame.GetController<GenController>();
+            user = (SystemUsers)SecuritySystem.CurrentUser;
         }
         protected override void OnDeactivated()
         {
@@ -842,6 +862,11 @@ namespace FT_PurchasingPortal.Module.Controllers
             else if (View.ObjectTypeInfo.Type == typeof(PurchaseOrder))
             {
                 PurchaseOrder selectedObject = (PurchaseOrder)e.CurrentObject;
+                if (!selectedObject.IsCardCodeSelected)
+                {
+                    genCon.showMsg("Error", "Card Code not selected.", InformationType.Error);
+                    return;
+                }
                 docstatus = selectedObject.DocStatus.CurrDocStatus;
 
                 //if (selectedObject.AppStatus.AppStatus.Count > 0)
@@ -883,6 +908,11 @@ namespace FT_PurchasingPortal.Module.Controllers
             else if (View.ObjectTypeInfo.Type == typeof(PurchaseDelivery))
             {
                 PurchaseDelivery selectedObject = (PurchaseDelivery)e.CurrentObject;
+                if (!selectedObject.IsCardCodeSelected)
+                {
+                    genCon.showMsg("Error", "Card Code not selected.", InformationType.Error);
+                    return;
+                }
                 docstatus = selectedObject.DocStatus.CurrDocStatus;
 
                 //if (selectedObject.AppStatus.AppStatus.Count > 0)
@@ -1174,35 +1204,38 @@ namespace FT_PurchasingPortal.Module.Controllers
                 StockTransferRequest selectedObject = (StockTransferRequest)View.CurrentObject;
                 docstatus = selectedObject.DocStatus.CurrDocStatus;
                 apptatus = selectedObject.AppStatus.ApprovalStatus;
+                if (docstatus == DocStatus.Submited && apptatus == ApprovalStatus.Required_Approval)
+                {
 
-                if (selectedObject.AppStatus.CurrApproval.ApprovalBy == ApprovalBy.User)
-                {
-                    if (selectedObject.AppStatus.CurrApproval.ApproveUser.Where(x => x.SystemUser.Oid == user.Oid).Count() > 0)
-                    { }
-                    else
+                    if (selectedObject.AppStatus.CurrApproval.ApprovalBy == ApprovalBy.User)
                     {
-                        err = true;
-                        actionMessage = "Approval not allowed by this user.";
+                        if (selectedObject.AppStatus.CurrApproval.ApproveUser.Where(x => x.SystemUser.Oid == user.Oid).Count() > 0)
+                        { }
+                        else
+                        {
+                            err = true;
+                            actionMessage = "Approval not allowed by this user.";
+                        }
                     }
-                }
-                else if (selectedObject.AppStatus.CurrApproval.ApprovalBy == ApprovalBy.Position)
-                {
-                    if (user.Employee != null && user.Employee.Position != null && selectedObject.AppStatus.CurrApproval.ApprovePosition.Where(x => x.Oid == user.Employee.Position.Oid).Count() > 0)
-                    { }
-                    else
+                    else if (selectedObject.AppStatus.CurrApproval.ApprovalBy == ApprovalBy.Position)
                     {
-                        err = true;
-                        actionMessage = "Approval not allowed by this position";
+                        if (user.Employee != null && user.Employee.Position != null && selectedObject.AppStatus.CurrApproval.ApprovePosition.Where(x => x.Oid == user.Employee.Position.Oid).Count() > 0)
+                        { }
+                        else
+                        {
+                            err = true;
+                            actionMessage = "Approval not allowed by this position";
+                        }
                     }
-                }
-                else if (selectedObject.AppStatus.CurrApproval.ApprovalBy == ApprovalBy.Appointed_User)
-                {
-                    if (selectedObject.AppStatus.CurrAppointedUser != null && selectedObject.AppStatus.CurrAppointedUser.Oid == user.Employee.Oid)
-                    { }
-                    else
+                    else if (selectedObject.AppStatus.CurrApproval.ApprovalBy == ApprovalBy.Appointed_User)
                     {
-                        err = true;
-                        actionMessage = "Approval not allowed by this appointed user.";
+                        if (selectedObject.AppStatus.CurrAppointedUser != null && selectedObject.AppStatus.CurrAppointedUser.Oid == user.Employee.Oid)
+                        { }
+                        else
+                        {
+                            err = true;
+                            actionMessage = "Approval not allowed by this appointed user.";
+                        }
                     }
                 }
             }
@@ -1211,73 +1244,76 @@ namespace FT_PurchasingPortal.Module.Controllers
                 PurchaseOrder selectedObject = (PurchaseOrder)View.CurrentObject;
                 docstatus = selectedObject.DocStatus.CurrDocStatus;
                 apptatus = selectedObject.AppStatus.ApprovalStatus;
-
-                if (selectedObject.AppStatus.CurrApproval.ApprovalBy == ApprovalBy.User)
+                if (docstatus == DocStatus.Submited && apptatus == ApprovalStatus.Required_Approval)
                 {
-                    if (selectedObject.AppStatus.CurrApproval.ApproveUser.Where(x => x.SystemUser.Oid == user.Oid).Count() > 0)
-                    { }
-                    else
+                    if (selectedObject.AppStatus.CurrApproval.ApprovalBy == ApprovalBy.User)
                     {
-                        err = true;
-                        actionMessage = "Approval not allowed by this user.";
+                        if (selectedObject.AppStatus.CurrApproval.ApproveUser.Where(x => x.SystemUser.Oid == user.Oid).Count() > 0)
+                        { }
+                        else
+                        {
+                            err = true;
+                            actionMessage = "Approval not allowed by this user.";
+                        }
+                    }
+                    else if (selectedObject.AppStatus.CurrApproval.ApprovalBy == ApprovalBy.Position)
+                    {
+                        if (user.Employee != null && user.Employee.Position != null && selectedObject.AppStatus.CurrApproval.ApprovePosition.Where(x => x.Oid == user.Employee.Position.Oid).Count() > 0)
+                        { }
+                        else
+                        {
+                            err = true;
+                            actionMessage = "Approval not allowed by this position";
+                        }
+                    }
+                    else if (selectedObject.AppStatus.CurrApproval.ApprovalBy == ApprovalBy.Appointed_User)
+                    {
+                        if (selectedObject.AppStatus.CurrAppointedUser != null && selectedObject.AppStatus.CurrAppointedUser.Oid == user.Employee.Oid)
+                        { }
+                        else
+                        {
+                            err = true;
+                            actionMessage = "Approval not allowed by this appointed user.";
+                        }
                     }
                 }
-                else if (selectedObject.AppStatus.CurrApproval.ApprovalBy == ApprovalBy.Position)
-                {
-                    if (user.Employee != null && user.Employee.Position != null && selectedObject.AppStatus.CurrApproval.ApprovePosition.Where(x => x.Oid == user.Employee.Position.Oid).Count() > 0)
-                    { }
-                    else
-                    {
-                        err = true;
-                        actionMessage = "Approval not allowed by this position";
-                    }
-                }
-                else if (selectedObject.AppStatus.CurrApproval.ApprovalBy == ApprovalBy.Appointed_User)
-                {
-                    if (selectedObject.AppStatus.CurrAppointedUser != null && selectedObject.AppStatus.CurrAppointedUser.Oid == user.Employee.Oid)
-                    { }
-                    else
-                    {
-                        err = true;
-                        actionMessage = "Approval not allowed by this appointed user.";
-                    }
-                }
-
             }
             else if (View.ObjectTypeInfo.Type == typeof(PurchaseRequest))
             {
                 PurchaseRequest selectedObject = (PurchaseRequest)View.CurrentObject;
                 docstatus = selectedObject.DocStatus.CurrDocStatus;
                 apptatus = selectedObject.AppStatus.ApprovalStatus;
-
-                if (selectedObject.AppStatus.CurrApproval.ApprovalBy == ApprovalBy.User)
+                if (docstatus == DocStatus.Submited && apptatus == ApprovalStatus.Required_Approval)
                 {
-                    if (selectedObject.AppStatus.CurrApproval.ApproveUser.Where(x => x.SystemUser.Oid == user.Oid).Count() > 0)
-                    { }
-                    else
+                    if (selectedObject.AppStatus.CurrApproval.ApprovalBy == ApprovalBy.User)
                     {
-                        err = true;
-                        actionMessage = "Approval not allowed by this user.";
+                        if (selectedObject.AppStatus.CurrApproval.ApproveUser.Where(x => x.SystemUser.Oid == user.Oid).Count() > 0)
+                        { }
+                        else
+                        {
+                            err = true;
+                            actionMessage = "Approval not allowed by this user.";
+                        }
                     }
-                }
-                else if (selectedObject.AppStatus.CurrApproval.ApprovalBy == ApprovalBy.Position)
-                {
-                    if (user.Employee != null && user.Employee.Position != null && selectedObject.AppStatus.CurrApproval.ApprovePosition.Where(x => x.Oid == user.Employee.Position.Oid).Count() > 0)
-                    { }
-                    else
+                    else if (selectedObject.AppStatus.CurrApproval.ApprovalBy == ApprovalBy.Position)
                     {
-                        err = true;
-                        actionMessage = "Approval not allowed by this position";
+                        if (user.Employee != null && user.Employee.Position != null && selectedObject.AppStatus.CurrApproval.ApprovePosition.Where(x => x.Oid == user.Employee.Position.Oid).Count() > 0)
+                        { }
+                        else
+                        {
+                            err = true;
+                            actionMessage = "Approval not allowed by this position";
+                        }
                     }
-                }
-                else if (selectedObject.AppStatus.CurrApproval.ApprovalBy == ApprovalBy.Appointed_User)
-                {
-                    if (selectedObject.AppStatus.CurrAppointedUser != null && selectedObject.AppStatus.CurrAppointedUser.Oid == user.Employee.Oid)
-                    { }
-                    else
+                    else if (selectedObject.AppStatus.CurrApproval.ApprovalBy == ApprovalBy.Appointed_User)
                     {
-                        err = true;
-                        actionMessage = "Approval not allowed by this appointed user.";
+                        if (selectedObject.AppStatus.CurrAppointedUser != null && selectedObject.AppStatus.CurrAppointedUser.Oid == user.Employee.Oid)
+                        { }
+                        else
+                        {
+                            err = true;
+                            actionMessage = "Approval not allowed by this appointed user.";
+                        }
                     }
                 }
             }
@@ -1286,35 +1322,37 @@ namespace FT_PurchasingPortal.Module.Controllers
                 PurchaseDelivery selectedObject = (PurchaseDelivery)View.CurrentObject;
                 docstatus = selectedObject.DocStatus.CurrDocStatus;
                 apptatus = selectedObject.AppStatus.ApprovalStatus;
-
-                if (selectedObject.AppStatus.CurrApproval.ApprovalBy == ApprovalBy.User)
+                if (docstatus == DocStatus.Submited && apptatus == ApprovalStatus.Required_Approval)
                 {
-                    if (selectedObject.AppStatus.CurrApproval.ApproveUser.Where(x => x.SystemUser.Oid == user.Oid).Count() > 0)
-                    { }
-                    else
+                    if (selectedObject.AppStatus.CurrApproval.ApprovalBy == ApprovalBy.User)
                     {
-                        err = true;
-                        actionMessage = "Approval not allowed by this user.";
+                        if (selectedObject.AppStatus.CurrApproval.ApproveUser.Where(x => x.SystemUser.Oid == user.Oid).Count() > 0)
+                        { }
+                        else
+                        {
+                            err = true;
+                            actionMessage = "Approval not allowed by this user.";
+                        }
                     }
-                }
-                else if (selectedObject.AppStatus.CurrApproval.ApprovalBy == ApprovalBy.Position)
-                {
-                    if (user.Employee != null && user.Employee.Position != null && selectedObject.AppStatus.CurrApproval.ApprovePosition.Where(x => x.Oid == user.Employee.Position.Oid).Count() > 0)
-                    { }
-                    else
+                    else if (selectedObject.AppStatus.CurrApproval.ApprovalBy == ApprovalBy.Position)
                     {
-                        err = true;
-                        actionMessage = "Approval not allowed by this position";
+                        if (user.Employee != null && user.Employee.Position != null && selectedObject.AppStatus.CurrApproval.ApprovePosition.Where(x => x.Oid == user.Employee.Position.Oid).Count() > 0)
+                        { }
+                        else
+                        {
+                            err = true;
+                            actionMessage = "Approval not allowed by this position";
+                        }
                     }
-                }
-                else if (selectedObject.AppStatus.CurrApproval.ApprovalBy == ApprovalBy.Appointed_User)
-                {
-                    if (selectedObject.AppStatus.CurrAppointedUser != null && selectedObject.AppStatus.CurrAppointedUser.Oid == user.Employee.Oid)
-                    { }
-                    else
+                    else if (selectedObject.AppStatus.CurrApproval.ApprovalBy == ApprovalBy.Appointed_User)
                     {
-                        err = true;
-                        actionMessage = "Approval not allowed by this appointed user.";
+                        if (selectedObject.AppStatus.CurrAppointedUser != null && selectedObject.AppStatus.CurrAppointedUser.Oid == user.Employee.Oid)
+                        { }
+                        else
+                        {
+                            err = true;
+                            actionMessage = "Approval not allowed by this appointed user.";
+                        }
                     }
                 }
             }
@@ -1572,6 +1610,100 @@ namespace FT_PurchasingPortal.Module.Controllers
             //View.BreakLinksToControls();
             //View.CreateControls();
             resetButton();
+        }
+
+        private void ReOpenDoc_CustomizePopupWindowParams(object sender, CustomizePopupWindowParamsEventArgs e)
+        {
+            bool err = false;
+            string actionMessage = "Press OK to CONFIRM the action and SAVE, else press Cancel.";
+
+            DocStatus docstatus = DocStatus.Accepted;
+            if (View.ObjectTypeInfo.Type == typeof(StockTransferRequest))
+            {
+                StockTransferRequest selectedObject = (StockTransferRequest)View.CurrentObject;
+                docstatus = selectedObject.DocStatus.CurrDocStatus;
+            }
+            else if (View.ObjectTypeInfo.Type == typeof(PurchaseOrder))
+            {
+                PurchaseOrder selectedObject = (PurchaseOrder)View.CurrentObject;
+                docstatus = selectedObject.DocStatus.CurrDocStatus;
+            }
+            else if (View.ObjectTypeInfo.Type == typeof(PurchaseRequest))
+            {
+                PurchaseRequest selectedObject = (PurchaseRequest)View.CurrentObject;
+                docstatus = selectedObject.DocStatus.CurrDocStatus;
+            }
+            else if (View.ObjectTypeInfo.Type == typeof(PurchaseDelivery))
+            {
+                PurchaseDelivery selectedObject = (PurchaseDelivery)View.CurrentObject;
+                docstatus = selectedObject.DocStatus.CurrDocStatus;
+            }
+            if (docstatus == DocStatus.Closed)
+            { }
+            else
+            {
+                err = true;
+                actionMessage = "Document invalid.";
+            }
+
+            IObjectSpace os = Application.CreateObjectSpace();
+            DetailView dv = Application.CreateDetailView(os, os.CreateObject<StringParameters>(), true);
+            dv.ViewEditMode = DevExpress.ExpressApp.Editors.ViewEditMode.Edit;
+            ((StringParameters)dv.CurrentObject).IsErr = err;
+            ((StringParameters)dv.CurrentObject).ActionMessage = actionMessage;
+
+            e.View = dv;
+
+        }
+
+        private void ReOpenDoc_Execute(object sender, PopupWindowShowActionExecuteEventArgs e)
+        {
+            StringParameters p = (StringParameters)e.PopupWindow.View.CurrentObject;
+            if (p.IsErr)
+            {
+                genCon.showMsg("Failed", "Process failed. No changes done.", InformationType.Error);
+                return;
+            }
+
+            if (!ReOpenDocAction(e.CurrentObject, p.ParamString)) return;
+            View.ObjectSpace.CommitChanges();
+            //RefreshController refreshCon = Frame.GetController<RefreshController>();
+            if (refreshCon != null)
+                refreshCon.RefreshAction.DoExecute();
+            genCon.showMsg("Successful", "Cancel Done.", InformationType.Success);
+        }
+        public bool ReOpenDocAction(Object e, string paramString)
+        {
+            if (e.GetType() == typeof(StockTransferRequest))
+            {
+                StockTransferRequest selectedObject = (StockTransferRequest)e;
+
+                selectedObject.DocStatus.AddDocStatus(DocStatus.Accepted, paramString);
+                selectedObject.DocStatus.CurrDocStatus = DocStatus.Accepted;
+            }
+            else if (e.GetType() == typeof(PurchaseOrder))
+            {
+                PurchaseOrder selectedObject = (PurchaseOrder)e;
+
+                selectedObject.DocStatus.AddDocStatus(DocStatus.Accepted, paramString);
+                selectedObject.DocStatus.CurrDocStatus = DocStatus.Accepted;
+            }
+            else if (e.GetType() == typeof(PurchaseRequest))
+            {
+                PurchaseRequest selectedObject = (PurchaseRequest)e;
+
+                selectedObject.DocStatus.AddDocStatus(DocStatus.Accepted, paramString);
+                selectedObject.DocStatus.CurrDocStatus = DocStatus.Accepted;
+            }
+            else if (e.GetType() == typeof(PurchaseDelivery))
+            {
+                PurchaseDelivery selectedObject = (PurchaseDelivery)e;
+
+                selectedObject.DocStatus.AddDocStatus(DocStatus.Accepted, paramString);
+                selectedObject.DocStatus.CurrDocStatus = DocStatus.Accepted;
+            }
+
+            return true;
         }
     }
 }

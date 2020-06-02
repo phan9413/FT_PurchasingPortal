@@ -31,12 +31,18 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
     [Appearance("CloseDocRecord", AppearanceItemType = "Action", TargetItems = "CloseDoc", Context = "DetailView", Visibility = DevExpress.ExpressApp.Editors.ViewItemVisibility.Hide, Criteria = "not (DocStatus.CurrDocStatus in (4, 7))")]
     //if (selectedObject.DocStatus.CurrDocStatus == DocStatus.Draft || selectedObject.DocStatus.CurrDocStatus == DocStatus.Rejected)
     [Appearance("CancelDocRecord", AppearanceItemType = "Action", TargetItems = "CancelDoc", Context = "DetailView", Visibility = DevExpress.ExpressApp.Editors.ViewItemVisibility.Hide, Criteria = "not (DocStatus.CurrDocStatus in (0, 2))")]
-    //if (selectedObject.DocStatus.CurrDocStatus == DocStatus.Submited || selectedObject.DocStatus.CurrDocStatus == DocStatus.Accepted || selectedObject.DocStatus.CurrDocStatus == DocStatus.Closed || selectedObject.DocStatus.CurrDocStatus == DocStatus.PostedCancel)
-    [Appearance("RejectDocRecord", AppearanceItemType = "Action", TargetItems = "RejectDoc", Context = "DetailView", Visibility = DevExpress.ExpressApp.Editors.ViewItemVisibility.Hide, Criteria = "not (DocStatus.CurrDocStatus in (3, 4, 5, 7))")]
+    //if (selectedObject.DocStatus.CurrDocStatus == DocStatus.Submited || selectedObject.DocStatus.CurrDocStatus == DocStatus.Accepted)
+    [Appearance("RejectDocRecord", AppearanceItemType = "Action", TargetItems = "RejectDoc", Context = "DetailView", Visibility = DevExpress.ExpressApp.Editors.ViewItemVisibility.Hide, Criteria = "not (DocStatus.CurrDocStatus in (3, 4))")]
     //if (selectedObject.DocStatus.CurrDocStatus == DocStatus.Draft || selectedObject.DocStatus.CurrDocStatus == DocStatus.Rejected || selectedObject.DocStatus.CurrDocStatus == DocStatus.Accepted)
     [Appearance("SaveDocRecord", AppearanceItemType = "Action", TargetItems = "Save", Context = "DetailView", Visibility = DevExpress.ExpressApp.Editors.ViewItemVisibility.Hide, Criteria = "not (DocStatus.CurrDocStatus in (0, 2, 4))")]
     //if (selectedObject.DocStatus.CurrDocStatus == DocStatus.Draft || selectedObject.DocStatus.CurrDocStatus == DocStatus.Rejected)
     [Appearance("EditRecord", AppearanceItemType = "Action", TargetItems = "SwitchToEditMode;Edit", Context = "Any", Visibility = DevExpress.ExpressApp.Editors.ViewItemVisibility.Hide, Criteria = "not (DocStatus.CurrDocStatus in (0, 2))")]
+    //if (selectedObject.DocStatus.CurrDocStatus == DocStatus.Submited && AppStatus.ApprovalStatus == ApprovalStatus.Required_Approval)
+    [Appearance("ApprovalDocRecord", AppearanceItemType = "Action", TargetItems = "ApprovalDoc", Context = "DetailView", Visibility = DevExpress.ExpressApp.Editors.ViewItemVisibility.Hide, Criteria = "not (DocStatus.CurrDocStatus = 3 and AppStatus.ApprovalStatus = 2)")]
+    //if (selectedObject.DocStatus.CurrDocStatus == DocStatus.Submited && AppStatus.ApprovalStatus == ApprovalStatus.Required_Approval)
+    [Appearance("ChangeAppUserRecord", AppearanceItemType = "Action", TargetItems = "ChangeAppUser", Context = "DetailView", Visibility = DevExpress.ExpressApp.Editors.ViewItemVisibility.Hide, Criteria = "not (DocStatus.CurrDocStatus = 3 and AppStatus.ApprovalStatus = 2)")]
+    //if (selectedObject.DocStatus.CurrDocStatus == DocStatus.Closed)
+    [Appearance("ReOpenDocRecord", AppearanceItemType = "Action", TargetItems = "ReOpenDoc", Context = "DetailView", Visibility = DevExpress.ExpressApp.Editors.ViewItemVisibility.Hide, Criteria = "not (DocStatus.CurrDocStatus in (5))")]
 
     [Persistent("OPRE")]
     public class PurchaseRequest : ClassDocument
@@ -75,13 +81,6 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
                         this.IsViewItemPriceRole = CreateUser.CheckAccessVP(DocType.BoCode);
                     }
                 }
-            }
-        }
-        public bool IsCanEdit
-        {
-            get
-            {
-                return true;
             }
         }
         private PurchaseRequestDoc _DocStatus;
@@ -154,6 +153,36 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
             : base(session)
         {
         }
+        public override void AfterConstruction()
+        {
+            base.AfterConstruction();
+            // Place your initialization code here (https://documentation.devexpress.com/eXpressAppFramework/CustomDocument112834.aspx).
+            UDFs = new PurchaseRequestDetailUDF(Session);
+            ObjType = Session.FindObject<DocType>(CriteriaOperator.Parse("BoCode=?", DocTypeCodes.PurchaseRequest));
+            if (CreateUser != null)
+            {
+                this.IsViewItemPriceRole = CreateUser.CheckAccessVP(ObjType.BoCode);
+            }
+            if (!string.IsNullOrEmpty(Company.InputTax))
+                TaxCode = Session.FindObject<vwTaxes>(CriteriaOperator.Parse("CompanyCode=? and Code=?", Company.BoCode, Company.InputTax));
+            if (CreateUser.Employee.WhsCode != null)
+                WhsCode = Session.FindObject<vwWarehouses>(CriteriaOperator.Parse("CompanyCode=? and WhsCode=?", Company.BoCode, CreateUser.Employee.WhsCode.WhsCode));
+            else if (!string.IsNullOrEmpty(Company.WhsCode))
+                    WhsCode = Session.FindObject<vwWarehouses>(CriteriaOperator.Parse("CompanyCode=? and WhsCode=?", Company.BoCode, Company.WhsCode));
+        }
+        protected override void OnLoaded()
+        {
+            base.OnLoaded();
+
+            if (!GeneralValues.IsNetCore)
+            {
+                SystemUsers user = Session.GetObjectByKey<SystemUsers>(SecuritySystem.CurrentUserId);
+                if (user != null)
+                {
+                    this.IsViewItemPriceRole = CreateUser.CheckAccessVP(ObjType.BoCode);
+                }
+            }
+        }
         protected override void OnDeleting()
         {
             base.OnDeleting();
@@ -184,36 +213,6 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
                         this.PurchaseRequest.DocB4Total = this.PurchaseRequest.PurchaseRequestDetail.Sum(pp => pp.LineTotal);
                     else
                         this.PurchaseRequest.DocB4Total = 0;
-                }
-            }
-        }
-        public override void AfterConstruction()
-        {
-            base.AfterConstruction();
-            // Place your initialization code here (https://documentation.devexpress.com/eXpressAppFramework/CustomDocument112834.aspx).
-            UDFs = new PurchaseRequestDetailUDF(Session);
-            ObjType = Session.FindObject<DocType>(CriteriaOperator.Parse("BoCode=?", DocTypeCodes.PurchaseRequest));
-            if (CreateUser != null)
-            {
-                this.IsViewItemPriceRole = CreateUser.CheckAccessVP(ObjType.BoCode);
-            }
-            if (!string.IsNullOrEmpty(Company.InputTax))
-                TaxCode = Session.FindObject<vwTaxes>(CriteriaOperator.Parse("CompanyCode=? and Code=?", Company.BoCode, Company.InputTax));
-            if (CreateUser.Employee.WhsCode != null)
-                WhsCode = Session.FindObject<vwWarehouses>(CriteriaOperator.Parse("CompanyCode=? and WhsCode=?", Company.BoCode, CreateUser.Employee.WhsCode.WhsCode));
-            else if (!string.IsNullOrEmpty(Company.WhsCode))
-                    WhsCode = Session.FindObject<vwWarehouses>(CriteriaOperator.Parse("CompanyCode=? and WhsCode=?", Company.BoCode, Company.WhsCode));
-        }
-        protected override void OnLoaded()
-        {
-            base.OnLoaded();
-
-            if (!GeneralValues.IsNetCore)
-            {
-                SystemUsers user = Session.GetObjectByKey<SystemUsers>(SecuritySystem.CurrentUserId);
-                if (user != null)
-                {
-                    this.IsViewItemPriceRole = CreateUser.CheckAccessVP(ObjType.BoCode);
                 }
             }
         }

@@ -596,7 +596,7 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
             { return Session.IsNewObject(this); }
         }
         [Browsable(false)]
-        private bool IsCardCodeSelected
+        public bool IsCardCodeSelected
         {
             get
             {

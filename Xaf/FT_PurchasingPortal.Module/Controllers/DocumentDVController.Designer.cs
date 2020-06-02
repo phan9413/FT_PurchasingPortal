@@ -30,6 +30,7 @@
         {
             this.components = new System.ComponentModel.Container();
             this.CloseDoc = new DevExpress.ExpressApp.Actions.PopupWindowShowAction(this.components);
+            this.ReOpenDoc = new DevExpress.ExpressApp.Actions.PopupWindowShowAction(this.components);
             this.SubmitDoc = new DevExpress.ExpressApp.Actions.SimpleAction(this.components);
             this.PostDoc = new DevExpress.ExpressApp.Actions.SimpleAction(this.components);
             this.CancelDoc = new DevExpress.ExpressApp.Actions.PopupWindowShowAction(this.components);
@@ -49,6 +50,17 @@
             this.CloseDoc.CustomizePopupWindowParams += new DevExpress.ExpressApp.Actions.CustomizePopupWindowParamsEventHandler(this.CloseDoc_CustomizePopupWindowParams);
             this.CloseDoc.Execute += new DevExpress.ExpressApp.Actions.PopupWindowShowActionExecuteEventHandler(this.CloseDoc_Execute);
             this.CloseDoc.Cancel += new System.EventHandler(this.CloseDoc_Cancel);
+            // 
+            // ReOpenDoc
+            // 
+            this.ReOpenDoc.AcceptButtonCaption = null;
+            this.ReOpenDoc.CancelButtonCaption = null;
+            this.ReOpenDoc.Caption = "Re-open";
+            this.ReOpenDoc.ConfirmationMessage = null;
+            this.ReOpenDoc.Id = "ReOpenDoc";
+            this.ReOpenDoc.ToolTip = null;
+            this.ReOpenDoc.CustomizePopupWindowParams += new DevExpress.ExpressApp.Actions.CustomizePopupWindowParamsEventHandler(this.ReOpenDoc_CustomizePopupWindowParams);
+            this.ReOpenDoc.Execute += new DevExpress.ExpressApp.Actions.PopupWindowShowActionExecuteEventHandler(this.ReOpenDoc_Execute);
             // 
             // SubmitDoc
             // 
@@ -132,12 +144,14 @@
             this.Actions.Add(this.SwitchView);
             this.Actions.Add(this.ApprovalDoc);
             this.Actions.Add(this.ChangeAppUser);
+            this.Actions.Add(this.ReOpenDoc);
 
         }
 
         #endregion
 
         private DevExpress.ExpressApp.Actions.PopupWindowShowAction CloseDoc;
+        private DevExpress.ExpressApp.Actions.PopupWindowShowAction ReOpenDoc;
         private DevExpress.ExpressApp.Actions.SimpleAction SubmitDoc;
         private DevExpress.ExpressApp.Actions.SimpleAction PostDoc;
         private DevExpress.ExpressApp.Actions.PopupWindowShowAction CancelDoc;

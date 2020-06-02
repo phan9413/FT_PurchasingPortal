@@ -8,6 +8,7 @@ using DevExpress.ExpressApp.Web.Editors.ASPx;
 using DevExpress.Web;
 using System.Web.UI;
 using System;
+using FT_PurchasingPortal.Module.BusinessObjects;
 // ...
 namespace FT_PurchasingPortal.Module.Web.Controllers
 {
@@ -28,45 +29,51 @@ namespace FT_PurchasingPortal.Module.Web.Controllers
             {
                 grid.DataBound += Grid_DataBound;
             }
-
-            if (!genCon.GetCurrentUserViewPriceStatus())
+            if (typeof(ClassDocument).IsAssignableFrom(View.ObjectTypeInfo.Type)
+                || typeof(ClassDocumentDetail).IsAssignableFrom(View.ObjectTypeInfo.Type)
+                || typeof(ClassStockTransferDocument).IsAssignableFrom(View.ObjectTypeInfo.Type)
+                || typeof(ClassStockTransferDocumentDetail).IsAssignableFrom(View.ObjectTypeInfo.Type)
+                )
             {
-                ColumnsListEditor listEditor = View.Editor as ColumnsListEditor;
-
-                if (listEditor != null)
+                if (!genCon.GetCurrentUserViewPriceStatus())
                 {
-                    foreach (ColumnWrapper column in listEditor.Columns)
-                    {
-                        if (!string.IsNullOrEmpty(column.Id))
-                        {
-                            string temp = View.Model.Columns[column.Id].ModelMember.PropertyEditorType.Name;
-                            //IModelPropertyEditor prop = (IModelPropertyEditor)View.Model.Columns[column.Id].ModelMember.PropertyEditorType.GetType();
-                            IModelMemberShowInCustomizationForm modelMember = (IModelMemberShowInCustomizationForm)View.Model.Columns[column.Id].ModelMember;
-                            //if (temp == "MyDecPropertyEditorVP" || temp == "MyDouPropertyEditorVP")
-                            if (temp.Contains("PropertyEditorVP"))
-                            {
-                                column.ShowInCustomizationForm = false;
-                            }
-                            else
-                            {
-                                column.ShowInCustomizationForm = modelMember.ShowInCustomizationForm;
-                            }
+                    ColumnsListEditor listEditor = View.Editor as ColumnsListEditor;
 
-                            //switch (column.Id)
-                            //{
-                            //    case "UnitPrice":
-                            //    case "LineTotal":
-                            //    case "TotalBeforeDiscount":
-                            //    case "Discount":
-                            //    case "TripCost":
-                            //    case "GST":
-                            //    case "GrandTotal":
-                            //        column.ShowInCustomizationForm = false;
-                            //        break;
-                            //    default:
-                            //        column.ShowInCustomizationForm = modelMember.ShowInCustomizationForm;
-                            //        break;
-                            //}
+                    if (listEditor != null)
+                    {
+                        foreach (ColumnWrapper column in listEditor.Columns)
+                        {
+                            if (!string.IsNullOrEmpty(column.Id))
+                            {
+                                string temp = View.Model.Columns[column.Id].ModelMember.PropertyEditorType.Name;
+                                //IModelPropertyEditor prop = (IModelPropertyEditor)View.Model.Columns[column.Id].ModelMember.PropertyEditorType.GetType();
+                                IModelMemberShowInCustomizationForm modelMember = (IModelMemberShowInCustomizationForm)View.Model.Columns[column.Id].ModelMember;
+                                //if (temp == "MyDecPropertyEditorVP" || temp == "MyDouPropertyEditorVP")
+                                if (temp.Contains("PropertyEditorVP"))
+                                {
+                                    column.ShowInCustomizationForm = false;
+                                }
+                                else
+                                {
+                                    column.ShowInCustomizationForm = modelMember.ShowInCustomizationForm;
+                                }
+
+                                //switch (column.Id)
+                                //{
+                                //    case "UnitPrice":
+                                //    case "LineTotal":
+                                //    case "TotalBeforeDiscount":
+                                //    case "Discount":
+                                //    case "TripCost":
+                                //    case "GST":
+                                //    case "GrandTotal":
+                                //        column.ShowInCustomizationForm = false;
+                                //        break;
+                                //    default:
+                                //        column.ShowInCustomizationForm = modelMember.ShowInCustomizationForm;
+                                //        break;
+                                //}
+                            }
                         }
                     }
                 }
@@ -76,30 +83,37 @@ namespace FT_PurchasingPortal.Module.Web.Controllers
         private void Grid_DataBound(object sender, System.EventArgs e)
         {
             genCon = Frame.GetController<GenController>();
-            if (!genCon.GetCurrentUserViewPriceStatus())
+            if (typeof(ClassDocument).IsAssignableFrom(View.ObjectTypeInfo.Type)
+                || typeof(ClassDocumentDetail).IsAssignableFrom(View.ObjectTypeInfo.Type)
+                || typeof(ClassStockTransferDocument).IsAssignableFrom(View.ObjectTypeInfo.Type)
+                || typeof(ClassStockTransferDocumentDetail).IsAssignableFrom(View.ObjectTypeInfo.Type)
+                )
             {
-                ASPxGridListEditor listEditor = View.Editor as ASPxGridListEditor;
-
-                if (listEditor != null)
+                if (!genCon.GetCurrentUserViewPriceStatus())
                 {
-                    foreach (GridViewColumn column in listEditor.Grid.VisibleColumns)
+                    ASPxGridListEditor listEditor = View.Editor as ASPxGridListEditor;
+
+                    if (listEditor != null)
                     {
-                        if (column is GridViewDataColumn)
+                        foreach (GridViewColumn column in listEditor.Grid.VisibleColumns)
                         {
-                            GridViewDataColumn col = (GridViewDataColumn)column;
-                            if (!string.IsNullOrEmpty(col.FieldName))
+                            if (column is GridViewDataColumn)
                             {
-                                try
+                                GridViewDataColumn col = (GridViewDataColumn)column;
+                                if (!string.IsNullOrEmpty(col.FieldName))
                                 {
-                                    string temp = View.Model.Columns[col.FieldName].ModelMember.PropertyEditorType.Name;
-                                    //if (temp == "MyDecPropertyEditorVP" || temp == "MyDouPropertyEditorVP")
-                                    if (temp.Contains("PropertyEditorVP"))
+                                    try
                                     {
-                                        column.Visible = false;
+                                        string temp = View.Model.Columns[col.FieldName].ModelMember.PropertyEditorType.Name;
+                                        //if (temp == "MyDecPropertyEditorVP" || temp == "MyDouPropertyEditorVP")
+                                        if (temp.Contains("PropertyEditorVP"))
+                                        {
+                                            column.Visible = false;
+                                        }
                                     }
-                                }
-                                catch
-                                {
+                                    catch
+                                    {
+                                    }
                                 }
                             }
                         }

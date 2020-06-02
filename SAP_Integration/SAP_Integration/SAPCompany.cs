@@ -872,7 +872,6 @@ where isnull(T0.SAPPosted,0) = 0 and T0.Status = @status";
 
         public bool CreateDocuments(Models.Documents doc, ref string docentry)
         {
-            return false;
             //if (!generateLog(doc, doc.DocObject, doc.LogUserID)) return false;
 
             oCom.StartTransaction();
@@ -1183,6 +1182,177 @@ where isnull(T0.SAPPosted,0) = 0 and T0.Status = @status";
             return true;
         }
 
+        public bool CreateStockTransferDocuments(Models.StockTransfer doc, ref string docentry)
+        {
+            //if (!generateLog(doc, doc.DocObject, doc.LogUserID)) return false;
+
+            oCom.StartTransaction();
+            try
+            {
+                SAPbobsCOM.StockTransfer oDoc = (SAPbobsCOM.StockTransfer)oCom.GetBusinessObject((SAPbobsCOM.BoObjectTypes)Enum.Parse(typeof(SAPbobsCOM.BoObjectTypes), doc.DocObjectCode));
+
+                #region Header
+                if (doc.Series > 0) oDoc.Series = doc.Series;
+
+                oDoc.DocDate = doc.DocDate;
+                if (!String.IsNullOrEmpty(doc.CardCode))
+                    oDoc.CardCode = doc.CardCode;
+
+                if (doc.DueDate != DateTime.MinValue) oDoc.DueDate = doc.DueDate;
+                if (doc.TaxDate != DateTime.MinValue) oDoc.TaxDate = doc.TaxDate;
+
+                if (!String.IsNullOrEmpty(doc.Address)) oDoc.Address = doc.Address;
+                if (!String.IsNullOrEmpty(doc.ATDocumentType)) oDoc.ATDocumentType = doc.ATDocumentType;
+                if (!String.IsNullOrEmpty(doc.AuthorizationCode)) oDoc.AuthorizationCode = doc.AuthorizationCode;
+                if (!String.IsNullOrEmpty(doc.Comments)) oDoc.Comments = doc.Comments;
+                if (doc.FolioNumber > 0) oDoc.FolioNumber = doc.FolioNumber;
+                if (!String.IsNullOrEmpty(doc.JournalMemo)) oDoc.JournalMemo = doc.JournalMemo;
+                if (!String.IsNullOrEmpty(doc.Reference1)) oDoc.Reference1 = doc.Reference1;
+                if (!String.IsNullOrEmpty(doc.Reference2)) oDoc.Reference2 = doc.Reference2;
+                if (doc.SalesPersonCode > 0) oDoc.SalesPersonCode = doc.SalesPersonCode;
+                if (!String.IsNullOrEmpty(doc.FromWarehouse)) oDoc.FromWarehouse = doc.FromWarehouse;
+                if (!String.IsNullOrEmpty(doc.ToWarehouse)) oDoc.ToWarehouse = doc.ToWarehouse;
+
+                foreach (PropertyInfo info in doc.UserFields.GetType().GetProperties())
+                {
+                    if (doc.UserFields.GetType().GetProperty(info.Name).GetValue(doc.UserFields) != null)
+                    {
+                        oDoc.UserFields.Fields.Item(info.Name).Value = doc.UserFields.GetType().GetProperty(info.Name).GetValue(doc.UserFields);
+                    }
+                }
+                #endregion
+                #region Details
+                if (doc.Lines != null)
+                {
+                    for (int i = 0; i < doc.Lines.Count; i++)
+                    {
+
+                        if (i > 0) oDoc.Lines.Add();
+                        oDoc.Lines.SetCurrentLine(i);
+                        if (doc.Lines[i].BaseEntry > 0)
+                        {
+                            oDoc.Lines.BaseEntry = doc.Lines[i].BaseEntry;
+                            oDoc.Lines.BaseLine = doc.Lines[i].BaseLine;
+                            //oDoc.Lines.BaseType = doc.Lines[i].BaseType;
+                        }
+                        if (!String.IsNullOrEmpty(doc.Lines[i].FromWarehouseCode)) oDoc.Lines.FromWarehouseCode = doc.Lines[i].FromWarehouseCode;
+                        if (!String.IsNullOrEmpty(doc.Lines[i].WarehouseCode)) oDoc.Lines.WarehouseCode = doc.Lines[i].WarehouseCode;
+                        if (doc.Lines[i].DiscountPercent != 0) oDoc.Lines.DiscountPercent = doc.Lines[i].DiscountPercent;
+                        if (!String.IsNullOrEmpty(doc.Lines[i].ItemCode)) oDoc.Lines.ItemCode = doc.Lines[i].ItemCode;
+                        if (!String.IsNullOrEmpty(doc.Lines[i].ItemDescription)) oDoc.Lines.ItemDescription = doc.Lines[i].ItemDescription;
+                        //if (doc.Lines[i].LineTotal > 0 && doc.DocType > 0) oDoc.Lines.LineTotal = doc.Lines[i].LineTotal;
+                        if (doc.Lines[i].Price > 0) oDoc.Lines.Price = doc.Lines[i].Price;
+                        if (!String.IsNullOrEmpty(doc.Lines[i].ProjectCode)) oDoc.Lines.ProjectCode = doc.Lines[i].ProjectCode;
+                        if (doc.Lines[i].Quantity > 0) oDoc.Lines.Quantity = doc.Lines[i].Quantity;
+                        if (doc.Lines[i].UnitPrice > 0) oDoc.Lines.UnitPrice = doc.Lines[i].UnitPrice;
+
+                        foreach (PropertyInfo info in doc.Lines[i].UserFields.GetType().GetProperties())
+                        {
+                            if (doc.Lines[i].UserFields.GetType().GetProperty(info.Name).GetValue(doc.Lines[i].UserFields) != null)
+                            {
+                                oDoc.Lines.UserFields.Fields.Item(info.Name).Value = doc.Lines[i].UserFields.GetType().GetProperty(info.Name).GetValue(doc.Lines[i].UserFields);
+                            }
+                        }
+
+                        #region Serial Numbers
+                        if (doc.Lines[i].Serials != null)
+                        {
+                            for (int j = 0; j < doc.Lines[i].Serials.Count; j++)
+                            {
+                                if (j > 0) oDoc.Lines.SerialNumbers.Add();
+                                oDoc.Lines.SerialNumbers.SetCurrentLine(j);
+                                if (!String.IsNullOrEmpty(doc.Lines[i].Serials[j].InternalSerialNumber)) oDoc.Lines.SerialNumbers.InternalSerialNumber = doc.Lines[i].Serials[j].InternalSerialNumber;
+                                if (!String.IsNullOrEmpty(doc.Lines[i].Serials[j].ManufacturerSerialNumber)) oDoc.Lines.SerialNumbers.ManufacturerSerialNumber = doc.Lines[i].Serials[j].ManufacturerSerialNumber;
+                                if (doc.Lines[i].Serials[j].ExpiryDate != DateTime.MinValue) oDoc.Lines.SerialNumbers.ExpiryDate = doc.Lines[i].Serials[j].ExpiryDate;
+                                if (!String.IsNullOrEmpty(doc.Lines[i].Serials[j].Location)) oDoc.Lines.SerialNumbers.Location = doc.Lines[i].Serials[j].Location;
+                                if (doc.Lines[i].Serials[j].ManufactureDate != DateTime.MinValue) oDoc.Lines.SerialNumbers.ManufactureDate = doc.Lines[i].Serials[j].ManufactureDate;
+                                if (!String.IsNullOrEmpty(doc.Lines[i].Serials[j].Notes)) oDoc.Lines.SerialNumbers.Notes = doc.Lines[i].Serials[j].Notes;
+                                if (doc.Lines[i].Serials[j].WarrantyStart != DateTime.MinValue) oDoc.Lines.SerialNumbers.WarrantyStart = doc.Lines[i].Serials[j].WarrantyStart;
+                                if (doc.Lines[i].Serials[j].WarrantyEnd != DateTime.MinValue) oDoc.Lines.SerialNumbers.WarrantyEnd = doc.Lines[i].Serials[j].WarrantyEnd;
+
+                                foreach (PropertyInfo info in doc.Lines[i].Serials[j].UserFields.GetType().GetProperties())
+                                {
+                                    if (doc.Lines[i].Serials[j].UserFields.GetType().GetProperty(info.Name).GetValue(doc.Lines[i].Serials[j].UserFields) != null)
+                                    {
+                                        oDoc.Lines.SerialNumbers.UserFields.Fields.Item(info.Name).Value = doc.Lines[i].Serials[j].UserFields.GetType().GetProperty(info.Name).GetValue(doc.Lines[i].Serials[j].UserFields);
+                                    }
+                                }
+                            }
+                        }
+                        #endregion
+
+                        #region Batch Numbers
+                        if (doc.Lines[i].Batches != null)
+                        {
+                            for (int j = 0; j < doc.Lines[i].Batches.Count; j++)
+                            {
+                                if (j > 0) oDoc.Lines.BatchNumbers.Add();
+                                oDoc.Lines.BatchNumbers.SetCurrentLine(j);
+                                if (!String.IsNullOrEmpty(doc.Lines[i].Batches[j].InternalSerialNumber)) oDoc.Lines.BatchNumbers.InternalSerialNumber = doc.Lines[i].Batches[j].InternalSerialNumber;
+                                if (!String.IsNullOrEmpty(doc.Lines[i].Batches[j].BatchNumber)) oDoc.Lines.BatchNumbers.BatchNumber = doc.Lines[i].Batches[j].BatchNumber;
+                                if (doc.Lines[i].Batches[j].Quantity > 0) oDoc.Lines.BatchNumbers.Quantity = doc.Lines[i].Batches[j].Quantity;
+                                if (doc.Lines[i].Batches[j].AddmisionDate != DateTime.MinValue) oDoc.Lines.BatchNumbers.AddmisionDate = doc.Lines[i].Batches[j].AddmisionDate;
+                                if (doc.Lines[i].Batches[j].ExpiryDate != DateTime.MinValue) oDoc.Lines.BatchNumbers.ExpiryDate = doc.Lines[i].Batches[j].ExpiryDate;
+                                if (!String.IsNullOrEmpty(doc.Lines[i].Batches[j].Location)) oDoc.Lines.BatchNumbers.Location = doc.Lines[i].Batches[j].Location;
+                                if (doc.Lines[i].Batches[j].ManufacturingDate != DateTime.MinValue) oDoc.Lines.BatchNumbers.ManufacturingDate = doc.Lines[i].Batches[j].ManufacturingDate;
+                                if (!String.IsNullOrEmpty(doc.Lines[i].Batches[j].ManufacturerSerialNumber)) oDoc.Lines.BatchNumbers.ManufacturerSerialNumber = doc.Lines[i].Batches[j].ManufacturerSerialNumber;
+                                if (!String.IsNullOrEmpty(doc.Lines[i].Batches[j].Notes)) oDoc.Lines.BatchNumbers.Notes = doc.Lines[i].Batches[j].Notes;
+
+                                foreach (PropertyInfo info in doc.Lines[i].Batches[j].UserFields.GetType().GetProperties())
+                                {
+                                    if (doc.Lines[i].Batches[j].UserFields.GetType().GetProperty(info.Name).GetValue(doc.Lines[i].Batches[j].UserFields) != null)
+                                    {
+                                        oDoc.Lines.BatchNumbers.UserFields.Fields.Item(info.Name).Value = doc.Lines[i].Batches[j].UserFields.GetType().GetProperty(info.Name).GetValue(doc.Lines[i].Batches[j].UserFields);
+                                    }
+                                }
+                            }
+                        }
+
+                        #endregion
+
+                    }
+                }
+                #endregion
+
+                if (oDoc.Add() != 0)
+                {
+                    errMsg = oCom.GetLastErrorDescription();
+                    if (oCom.InTransaction) oCom.EndTransaction(SAPbobsCOM.BoWfTransOpt.wf_RollBack);
+                    oDoc = null;
+                    return false;
+                }
+                oCom.GetNewObjectCode(out docentry);
+                if (docentry == "")
+                {
+                    errMsg = "Unknown Error! Please try again!";
+                    if (oCom.InTransaction) oCom.EndTransaction(SAPbobsCOM.BoWfTransOpt.wf_RollBack);
+                    oDoc = null;
+                    return false;
+                }
+
+                SAPbobsCOM.StockTransfer getDoc = (SAPbobsCOM.StockTransfer)oCom.GetBusinessObject((SAPbobsCOM.BoObjectTypes)Enum.Parse(typeof(SAPbobsCOM.BoObjectTypes), doc.DocObjectCode));
+
+                if (!getDoc.GetByKey(int.Parse(docentry)))
+                {
+                    errMsg = "Unknown Error! Please try again!";
+                    if (oCom.InTransaction) oCom.EndTransaction(SAPbobsCOM.BoWfTransOpt.wf_RollBack);
+                    oDoc = null;
+                    return false;
+                }
+                if (oCom.InTransaction) oCom.EndTransaction(SAPbobsCOM.BoWfTransOpt.wf_Commit);
+                System.Runtime.InteropServices.Marshal.ReleaseComObject(oDoc);
+                System.Runtime.InteropServices.Marshal.ReleaseComObject(getDoc);
+                oDoc = null;
+                getDoc = null;
+            }
+            catch (Exception ex)
+            {
+                if (oCom.InTransaction) oCom.EndTransaction(SAPbobsCOM.BoWfTransOpt.wf_RollBack);
+                errMsg = ex.Message;
+                return false;
+            }
+            return true;
+        }
 
         public bool UpdateDataSource(DataSource ds)
         {

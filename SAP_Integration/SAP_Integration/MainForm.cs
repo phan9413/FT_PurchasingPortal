@@ -80,6 +80,8 @@ namespace SAP_Integration
             IList<PurchaseOrder> polist = ios.GetObjects<PurchaseOrder>().ToList();
             Code obj = new Code(Security, ObjectSpaceProvider);
 
+            txtUserID.Enabled = true;
+            txtPassword.Enabled = true;
         }
     }
 }

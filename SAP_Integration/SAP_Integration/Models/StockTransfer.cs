@@ -1,4 +1,5 @@
-﻿using SAP_Integration.SAPModels;
+﻿using FT_PurchasingPortal.Module.BusinessObjects;
+using SAP_Integration.SAPModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,6 +9,7 @@ namespace SAP_Integration.Models
 {
     public class StockTransfer : InventoryTransfer
     {
+        public string DocObjectCode { get; set; }
         public List<StockTransferLines> Lines { get; set; }
         public IUserFields UserFields { get; set; }
 
@@ -19,7 +21,8 @@ namespace SAP_Integration.Models
 
     public class StockTransferLines : InventoryTransferLines
     {
-        
+        public List<DocumentSerials> Serials { get; set; }
+        public List<DocumentBatchs> Batches { get; set; }
         public IUserFields UserFields { get; set; }
 
         public StockTransferLines()

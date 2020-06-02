@@ -38,8 +38,16 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
         {
             base.AfterConstruction();
             // Place your initialization code here (https://documentation.devexpress.com/eXpressAppFramework/CustomDocument112834.aspx).
-            SystemUsers usr = Session.GetObjectByKey<SystemUsers>(SecuritySystem.CurrentUserId);
-            if (usr.Company != null)
+            SystemUsers usr = null;
+            if (!GeneralValues.IsNetCore)
+            {
+                usr = Session.GetObjectByKey<SystemUsers>(SecuritySystem.CurrentUserId);
+            }
+            else
+            {
+                usr = Session.FindObject<SystemUsers>(CriteriaOperator.Parse("UserName=?", GeneralValues.NetCoreUserName));
+            }
+            if (usr != null && usr.Company != null)
             {
                 Company = Session.FindObject<Company>(new BinaryOperator("BoCode", usr.Company.BoCode, BinaryOperatorType.Equal));
             }

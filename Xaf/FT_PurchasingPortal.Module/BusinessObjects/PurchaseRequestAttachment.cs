@@ -36,7 +36,14 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
         {
             base.AfterConstruction();
             // Place your initialization code here (https://documentation.devexpress.com/eXpressAppFramework/CustomDocument112834.aspx).
-            CreateUser = Session.GetObjectByKey<SystemUsers>(SecuritySystem.CurrentUserId);
+            if (!GeneralValues.IsNetCore)
+            {
+                CreateUser = Session.GetObjectByKey<SystemUsers>(SecuritySystem.CurrentUserId);
+            }
+            else
+            {
+                CreateUser = Session.FindObject<SystemUsers>(CriteriaOperator.Parse("UserName=?", GeneralValues.NetCoreUserName));
+            }
             CreateDate = DateTime.Now;
 
         }
@@ -139,7 +146,14 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
                     && (Session.ObjectLayer is SimpleObjectLayer)
                         )
             {
-                UpdateUser = Session.GetObjectByKey<SystemUsers>(SecuritySystem.CurrentUserId);
+                if (!GeneralValues.IsNetCore)
+                {
+                    UpdateUser = Session.GetObjectByKey<SystemUsers>(SecuritySystem.CurrentUserId);
+                }
+                else
+                {
+                    UpdateUser = Session.FindObject<SystemUsers>(CriteriaOperator.Parse("UserName=?", GeneralValues.NetCoreUserName));
+                }
                 UpdateDate = DateTime.Now;
 
                 if (Session.IsNewObject(this))

@@ -76,7 +76,10 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
                     StockTransferRequestDocStatus ds = new StockTransferRequestDocStatus(Session);
                     ds.DocStatus = DocStatus.Draft;
                     ds.DocStatusRemarks = "";
-                    ds.CreateUser = Session.GetObjectByKey<SystemUsers>(SecuritySystem.CurrentUserId);
+                    if (!GeneralValues.IsNetCore)
+                        ds.CreateUser = Session.GetObjectByKey<SystemUsers>(SecuritySystem.CurrentUserId);
+                    else
+                        ds.CreateUser = Session.FindObject<SystemUsers>(CriteriaOperator.Parse("UserName=?", GeneralValues.NetCoreUserName));
                     ds.CreateDate = DateTime.Now;
                     this.DocumentStatus.Add(ds);
                 }

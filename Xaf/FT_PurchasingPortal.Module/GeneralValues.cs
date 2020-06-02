@@ -35,13 +35,12 @@ namespace FT_PurchasingPortal.Module
         public static string deflocalcurrency = "01";
 
         public static string TempFolder = "";
-        public const string claimsuperrole = "ClaimSuperRole";
-        public const string claimrole = "ClaimUserRole";
-        public const string verifyrole = "VerifyUserRole";
-        public const string Acceptancerole = "AcceptanceUserRole";
-        public const string postrole = "PostUserRole";
+
+        public const string RejectRole = "RejectUserRole";
+        public const string CloseRole = "CloseUserRole";
+        public const string PostRole = "PostUserRole";
         public const string ApprovalRole = "ApprovalUserRole";
-        public const string RejectApproveRole = "RejectApproveRole";
+        public const string ChangeApprovalRole = "ChangeApprovalUserRole";
 
         public static string definputtax = "X1";
         public static string defoutputtax = "X0";

@@ -230,6 +230,43 @@ namespace FT_PurchasingPortal.Module.DatabaseUpdate {
             PermissionPolicyRole newrole = null;
             string rolename = "";
             string viewpricerole = GeneralValues.viewpricestring;
+
+            rolename = GeneralValues.RejectRole;
+            newrole = ObjectSpace.FindObject<PermissionPolicyRole>(new BinaryOperator("Name", rolename));
+            if (newrole == null)
+            {
+                newrole = ObjectSpace.CreateObject<PermissionPolicyRole>();
+                newrole.Name = rolename;
+            }
+            rolename = GeneralValues.CloseRole;
+            newrole = ObjectSpace.FindObject<PermissionPolicyRole>(new BinaryOperator("Name", rolename));
+            if (newrole == null)
+            {
+                newrole = ObjectSpace.CreateObject<PermissionPolicyRole>();
+                newrole.Name = rolename;
+            }
+            rolename = GeneralValues.PostRole;
+            newrole = ObjectSpace.FindObject<PermissionPolicyRole>(new BinaryOperator("Name", rolename));
+            if (newrole == null)
+            {
+                newrole = ObjectSpace.CreateObject<PermissionPolicyRole>();
+                newrole.Name = rolename;
+            }
+            rolename = GeneralValues.ApprovalRole;
+            newrole = ObjectSpace.FindObject<PermissionPolicyRole>(new BinaryOperator("Name", rolename));
+            if (newrole == null)
+            {
+                newrole = ObjectSpace.CreateObject<PermissionPolicyRole>();
+                newrole.Name = rolename;
+            }
+            rolename = GeneralValues.ChangeApprovalRole;
+            newrole = ObjectSpace.FindObject<PermissionPolicyRole>(new BinaryOperator("Name", rolename));
+            if (newrole == null)
+            {
+                newrole = ObjectSpace.CreateObject<PermissionPolicyRole>();
+                newrole.Name = rolename;
+            }
+
             #region PurchaseDelivery
             rolename = DocTypeCodes.PurchaseDelivery;
             newrole = ObjectSpace.FindObject<PermissionPolicyRole>(new BinaryOperator("Name", rolename));

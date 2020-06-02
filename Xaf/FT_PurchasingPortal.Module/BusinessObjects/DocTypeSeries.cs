@@ -48,10 +48,18 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
         {
             base.AfterConstruction();
             // Place your initialization code here (https://documentation.devexpress.com/eXpressAppFramework/CustomDocument112834.aspx).
-            SystemUsers user = Session.GetObjectByKey<SystemUsers>(SecuritySystem.CurrentUserId);
-            if (user.Company != null)
+            SystemUsers usr = null;
+            if (!GeneralValues.IsNetCore)
             {
-                Company = Session.GetObjectByKey<Company>(user.Company.Oid);
+                usr = Session.GetObjectByKey<SystemUsers>(SecuritySystem.CurrentUserId);
+            }
+            else
+            {
+                usr = Session.FindObject<SystemUsers>(CriteriaOperator.Parse("UserName=?", GeneralValues.NetCoreUserName));
+            }
+            if (usr != null && usr.Company != null)
+            {
+                Company = Session.GetObjectByKey<Company>(usr.Company.Oid);
             }
             PostToDocument = PostToDocument.Draft;
 

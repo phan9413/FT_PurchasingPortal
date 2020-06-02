@@ -74,47 +74,82 @@ namespace SAP_Integration
             try
             {
                 string LocalCurrency = ConfigurationManager.AppSettings["LocalCurrency"].ToString();
+                string temp = "";
 
                 IObjectSpace securedObjectSpace = ObjectSpaceProvider.CreateObjectSpace();
-                IList<PurchaseRequest> prlist = securedObjectSpace.GetObjects<PurchaseRequest>(CriteriaOperator.Parse("DocStatus.IsSAPPosted=0 and DocStatus.CurrDocStatus=?", DocStatus.Posted));
-                IList<PurchaseOrder> polist = securedObjectSpace.GetObjects<PurchaseOrder>(CriteriaOperator.Parse("DocStatus.IsSAPPosted=0 and DocStatus.CurrDocStatus=?", DocStatus.Posted));
-
                 int cnt = 0;
                 string key = "";
-                foreach (PurchaseRequest obj in prlist)
+
+                temp = ConfigurationManager.AppSettings["PRPost"].ToString().ToUpper();
+                if (temp == "Y" || temp == "YES" || temp == "TRUE" || temp == "1")
                 {
-                    cnt++;
-                    obj.JrnMemo = cnt.ToString();
-                    Documents oDoc = new Documents();
-                    if (sap.CreateDocuments(oDoc, ref key))
+                    IList<PurchaseRequest> prlist = securedObjectSpace.GetObjects<PurchaseRequest>(CriteriaOperator.Parse("DocStatus.IsSAPPosted=0 and DocStatus.CurrDocStatus=?", DocStatus.Posted));
+                    foreach (PurchaseRequest obj in prlist)
                     {
-                        WriteLog("[Log]", "PR OID:[" + obj.Oid.ToString() + "] add Success:[" + key + "] Time:[" + DateTime.Now.ToString("hh:mm:ss tt") + "]");
-                        obj.DocStatus.IsSAPPosted = true;
-                    }
-                    else
-                    {
-                        WriteLog("[Log]", "PR OID:[" + obj.Oid.ToString() + "] add Failed:[" + sap.errMsg + "] Time:[" + DateTime.Now.ToString("hh:mm:ss tt") + "]");
-                        obj.DocStatus.AddDocStatus(DocStatus.PostedCancel, sap.errMsg);
-                        obj.DocStatus.CurrDocStatus = DocStatus.PostedCancel;
-                        obj.DocStatus.SAPPostCancelRemarks = sap.errMsg;
+                        cnt++;
+                        obj.JrnMemo = cnt.ToString();
+                        Documents oDoc = new Documents();
+                        if (sap.CreateDocuments(oDoc, ref key))
+                        {
+                            WriteLog("[Log]", "PR OID:[" + obj.Oid.ToString() + "] add Success:[" + key + "] Time:[" + DateTime.Now.ToString("hh:mm:ss tt") + "]");
+                            obj.DocStatus.IsSAPPosted = true;
+                        }
+                        else
+                        {
+                            WriteLog("[Log]", "PR OID:[" + obj.Oid.ToString() + "] add Failed:[" + sap.errMsg + "] Time:[" + DateTime.Now.ToString("hh:mm:ss tt") + "]");
+                            obj.DocStatus.AddDocStatus(DocStatus.PostedCancel, sap.errMsg);
+                            obj.DocStatus.CurrDocStatus = DocStatus.PostedCancel;
+                            obj.DocStatus.SAPPostCancelRemarks = sap.errMsg;
+                        }
                     }
                 }
-                foreach (PurchaseOrder obj in polist)
+
+                temp = ConfigurationManager.AppSettings["POPost"].ToString().ToUpper();
+                if (temp == "Y" || temp == "YES" || temp == "TRUE" || temp == "1")
                 {
-                    cnt++;
-                    obj.JrnMemo = cnt.ToString();
-                    Documents oDoc = new Documents();
-                    if (sap.CreateDocuments(oDoc, ref key))
+                    IList<PurchaseOrder> polist = securedObjectSpace.GetObjects<PurchaseOrder>(CriteriaOperator.Parse("DocStatus.IsSAPPosted=0 and DocStatus.CurrDocStatus=?", DocStatus.Posted));
+                    foreach (PurchaseOrder obj in polist)
                     {
-                        WriteLog("[Log]", "PO OID:[" + obj.Oid.ToString() + "] add Success:[" + key + "] Time:[" + DateTime.Now.ToString("hh:mm:ss tt") + "]");
-                        obj.DocStatus.IsSAPPosted = true;
+                        cnt++;
+                        obj.JrnMemo = cnt.ToString();
+                        Documents oDoc = new Documents();
+                        if (sap.CreateDocuments(oDoc, ref key))
+                        {
+                            WriteLog("[Log]", "PO OID:[" + obj.Oid.ToString() + "] add Success:[" + key + "] Time:[" + DateTime.Now.ToString("hh:mm:ss tt") + "]");
+                            obj.DocStatus.IsSAPPosted = true;
+                        }
+                        else
+                        {
+                            WriteLog("[Log]", "PO OID:[" + obj.Oid.ToString() + "] add Failed:[" + sap.errMsg + "] Time:[" + DateTime.Now.ToString("hh:mm:ss tt") + "]");
+                            obj.DocStatus.AddDocStatus(DocStatus.PostedCancel, sap.errMsg);
+                            obj.DocStatus.CurrDocStatus = DocStatus.PostedCancel;
+                            obj.DocStatus.SAPPostCancelRemarks = sap.errMsg;
+                        }
                     }
-                    else
+                }
+                temp = ConfigurationManager.AppSettings["STRPost"].ToString().ToUpper();
+                if (temp == "Y" || temp == "YES" || temp == "TRUE" || temp == "1")
+                {
+                    IList<StockTransferRequest> polist = securedObjectSpace.GetObjects<StockTransferRequest>(CriteriaOperator.Parse("DocStatus.IsSAPPosted=0 and DocStatus.CurrDocStatus=?", DocStatus.Posted));
+                    foreach (StockTransferRequest obj in polist)
                     {
-                        WriteLog("[Log]", "PO OID:[" + obj.Oid.ToString() + "] add Failed:[" + sap.errMsg + "] Time:[" + DateTime.Now.ToString("hh:mm:ss tt") + "]");
-                        obj.DocStatus.AddDocStatus(DocStatus.PostedCancel, sap.errMsg);
-                        obj.DocStatus.CurrDocStatus = DocStatus.PostedCancel;
-                        obj.DocStatus.SAPPostCancelRemarks = sap.errMsg;
+                        cnt++;
+                        obj.JrnMemo = cnt.ToString();
+                        StockTransfer oDoc = new StockTransfer();
+                        oDoc.DocObjectCode = "oInventoryTransferRequest";
+
+                        if (sap.CreateStockTransferDocuments(oDoc, ref key))
+                        {
+                            WriteLog("[Log]", "PO OID:[" + obj.Oid.ToString() + "] add Success:[" + key + "] Time:[" + DateTime.Now.ToString("hh:mm:ss tt") + "]");
+                            obj.DocStatus.IsSAPPosted = true;
+                        }
+                        else
+                        {
+                            WriteLog("[Log]", "PO OID:[" + obj.Oid.ToString() + "] add Failed:[" + sap.errMsg + "] Time:[" + DateTime.Now.ToString("hh:mm:ss tt") + "]");
+                            obj.DocStatus.AddDocStatus(DocStatus.PostedCancel, sap.errMsg);
+                            obj.DocStatus.CurrDocStatus = DocStatus.PostedCancel;
+                            obj.DocStatus.SAPPostCancelRemarks = sap.errMsg;
+                        }
                     }
                 }
 
