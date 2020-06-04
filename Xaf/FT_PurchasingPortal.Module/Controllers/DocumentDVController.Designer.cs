@@ -43,7 +43,7 @@
             // 
             this.CloseDoc.AcceptButtonCaption = null;
             this.CloseDoc.CancelButtonCaption = null;
-            this.CloseDoc.Caption = "Confirm Doc";
+            this.CloseDoc.Caption = "Close Doc";
             this.CloseDoc.ConfirmationMessage = null;
             this.CloseDoc.Id = "CloseDoc";
             this.CloseDoc.ToolTip = null;
@@ -137,6 +137,7 @@
             // DocumentDVController
             // 
             this.Actions.Add(this.CloseDoc);
+            this.Actions.Add(this.ReOpenDoc);
             this.Actions.Add(this.SubmitDoc);
             this.Actions.Add(this.PostDoc);
             this.Actions.Add(this.CancelDoc);
@@ -144,7 +145,6 @@
             this.Actions.Add(this.SwitchView);
             this.Actions.Add(this.ApprovalDoc);
             this.Actions.Add(this.ChangeAppUser);
-            this.Actions.Add(this.ReOpenDoc);
 
         }
 

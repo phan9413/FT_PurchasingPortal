@@ -33,6 +33,8 @@ namespace SAP_Integration.Models
     }
     public class StockTransferUDF : IUserFields
     {
+        public int U_P_ID { get; set; }
+        public string U_P_DOCNO { get; set; }
     }
     public class StockTransferLinesUDF : IUserFields
     {

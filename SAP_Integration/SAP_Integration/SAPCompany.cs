@@ -892,7 +892,10 @@ where isnull(T0.SAPPosted,0) = 0 and T0.Status = @status";
                     if (doc.Series > 0) oDoc.Series = doc.Series;
                 }
                 oDoc.DocDate = doc.DocDate;
-                oDoc.CardCode = doc.CardCode;
+                if (doc.TaxDate != DateTime.MinValue) oDoc.TaxDate = doc.TaxDate;
+                if (doc.DocDueDate != DateTime.MinValue) oDoc.DocDueDate = doc.DocDueDate;
+
+                if (!String.IsNullOrEmpty(doc.CardCode)) oDoc.CardCode = doc.CardCode;
                 if (!String.IsNullOrEmpty(doc.Address)) oDoc.Address = doc.Address;
                 if (!String.IsNullOrEmpty(doc.Address2)) oDoc.Address2 = doc.Address2;
                 if (!String.IsNullOrEmpty(doc.AgentCode)) oDoc.AgentCode = doc.AgentCode;
@@ -917,7 +920,6 @@ where isnull(T0.SAPPosted,0) = 0 and T0.Status = @status";
                 if (doc.DeferredTax) oDoc.DeferredTax = SAPbobsCOM.BoYesNoEnum.tYES;
                 if (doc.DiscountPercent != 0) oDoc.DiscountPercent = doc.DiscountPercent;
                 if (!String.IsNullOrEmpty(doc.DocCurrency)) oDoc.DocCurrency = doc.DocCurrency;
-                if (doc.DocDueDate != DateTime.MinValue) oDoc.DocDueDate = doc.DocDueDate;
                 if (doc.DocRate > 0) oDoc.DocRate = doc.DocRate;
                 if (doc.DocumentsOwner > 0) oDoc.DocumentsOwner = doc.DocumentsOwner;
                 if (doc.DocType > 0) oDoc.DocType = SAPbobsCOM.BoDocumentTypes.dDocument_Service; else oDoc.DocType = SAPbobsCOM.BoDocumentTypes.dDocument_Items;
@@ -982,7 +984,6 @@ where isnull(T0.SAPPosted,0) = 0 and T0.Status = @status";
                 if (doc.SpecifiedClosingDate != DateTime.MinValue) oDoc.SpecifiedClosingDate = doc.SpecifiedClosingDate;
                 if (!String.IsNullOrEmpty(doc.SubSeriesString)) oDoc.SubSeriesString = doc.SubSeriesString;
                 if (!String.IsNullOrEmpty(doc.Supplier)) oDoc.Supplier = doc.Supplier;
-                if (doc.TaxDate != DateTime.MinValue) oDoc.TaxDate = doc.TaxDate;
                 if (!String.IsNullOrEmpty(doc.TaxExemptionLetterNum)) oDoc.TaxExemptionLetterNum = doc.TaxExemptionLetterNum;
                 if (!String.IsNullOrEmpty(doc.TrackingNumber)) oDoc.TrackingNumber = doc.TrackingNumber;
                 if (doc.TransportationCode > 0) oDoc.TransportationCode = doc.TransportationCode;
@@ -1017,6 +1018,7 @@ where isnull(T0.SAPPosted,0) = 0 and T0.Status = @status";
                             oDoc.Lines.BaseLine = doc.Lines[i].BaseLine;
                             oDoc.Lines.BaseType = doc.Lines[i].BaseType;
                         }
+                        if (!String.IsNullOrEmpty(doc.Lines[i].LineVendor)) oDoc.Lines.LineVendor = doc.Lines[i].LineVendor;
                         if (!String.IsNullOrEmpty(doc.Lines[i].WarehouseCode)) oDoc.Lines.WarehouseCode = doc.Lines[i].WarehouseCode;
                         if (!String.IsNullOrEmpty(doc.Lines[i].CostingCode)) oDoc.Lines.CostingCode = doc.Lines[i].CostingCode;
                         if (!String.IsNullOrEmpty(doc.Lines[i].CostingCode2)) oDoc.Lines.CostingCode2 = doc.Lines[i].CostingCode2;

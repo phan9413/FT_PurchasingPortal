@@ -753,7 +753,7 @@ namespace FT_PurchasingPortal.Module.Controllers
                     this.ReOpenDoc.Active.SetItemValue("Enabled", true);
                 }
                 if (user.Roles.Where(pp => pp.Name == GeneralValues.PostRole).Count() > 0)
-                    this.PostDoc.Active.SetItemValue("PostRole", true);
+                    this.PostDoc.Active.SetItemValue("Enabled", true);
                 if (user.Roles.Where(pp => pp.Name == GeneralValues.RejectRole).Count() > 0)
                     this.RejectDoc.Active.SetItemValue("Enabled", true);
                 if (user.Roles.Where(pp => pp.Name == GeneralValues.ApprovalRole).Count() > 0)
@@ -772,7 +772,7 @@ namespace FT_PurchasingPortal.Module.Controllers
                     this.ReOpenDoc.Active.SetItemValue("Enabled", true);
                 }
                 if (user.Roles.Where(pp => pp.Name == GeneralValues.PostRole).Count() > 0)
-                    this.PostDoc.Active.SetItemValue("PostRole", true);
+                    this.PostDoc.Active.SetItemValue("Enabled", true);
                 if (user.Roles.Where(pp => pp.Name == GeneralValues.RejectRole).Count() > 0)
                     this.RejectDoc.Active.SetItemValue("Enabled", true);
                 if (user.Roles.Where(pp => pp.Name == GeneralValues.ApprovalRole).Count() > 0)

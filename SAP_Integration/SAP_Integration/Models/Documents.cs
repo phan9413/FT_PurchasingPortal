@@ -31,6 +31,7 @@ namespace SAP_Integration.Models
         public DocumentLines()
         {
             UserFields = new DocumentLinesUDF();
+            Expenses = new List<DocumentLinesExpenses>();
         }
     }
 
@@ -71,20 +72,15 @@ namespace SAP_Integration.Models
         //public string TypeCode { get; set; }
         //public string TypeName { get; set; }
         public int U_P_ID { get; set; }
-        public string U_P_MANUAL_DOCNUM { get; set; }
-        public string U_P_PRNO { get; set; }
-        public string U_P_REFNUM { get; set; }
+        //public string U_P_DOCNO { get; set; }
+        //public string U_PersistentProperty1 { get; set; }
     }
     public class DocumentSerialsUDF : IUserFields
     {
     }
     public class DocumentLinesUDF : IUserFields
     {
-        public String U_P_ID { get; set; }
-        public double U_P_QUANTITY { get; set; }
-        public double U_P_LENGTH { get; set; }
-        public double U_P_WIDTH { get; set; }
-        public String U_PRICE_UOM { get; set; }
+        public int U_P_ID { get; set; }
     }
     public class DocumentBatchsUDF : IUserFields
     {

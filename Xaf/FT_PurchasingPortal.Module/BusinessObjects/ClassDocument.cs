@@ -60,6 +60,7 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
             DocDate = DateTime.Today;
             DocDueDate = DateTime.Today;
             TaxDate = DateTime.Today;
+            ReqDate = DateTime.Today;
             IsCopy = false;
         }
         protected override void OnSaved()
@@ -196,6 +197,18 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
             set
             {
                 SetPropertyValue("TaxDate", ref _TaxDate, value);
+            }
+        }
+        private DateTime _ReqDate;
+        [Index(7), VisibleInListView(true), VisibleInDetailView(true), VisibleInLookupListView(true)]
+        [XafDisplayName("Required Date")]
+        [RuleRequiredField(DefaultContexts.Save)]
+        public DateTime ReqDate
+        {
+            get { return _ReqDate; }
+            set
+            {
+                SetPropertyValue("ReqDate", ref _ReqDate, value);
             }
         }
 

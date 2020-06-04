@@ -75,11 +75,12 @@ namespace SAP_Integration
             {
                 string LocalCurrency = ConfigurationManager.AppSettings["LocalCurrency"].ToString();
                 string temp = "";
-
+                string draft = "";
                 IObjectSpace securedObjectSpace = ObjectSpaceProvider.CreateObjectSpace();
                 int cnt = 0;
                 string key = "";
 
+                draft = ConfigurationManager.AppSettings["PRDraft"].ToString().ToUpper();
                 temp = ConfigurationManager.AppSettings["PRPost"].ToString().ToUpper();
                 if (temp == "Y" || temp == "YES" || temp == "TRUE" || temp == "1")
                 {
@@ -89,10 +90,155 @@ namespace SAP_Integration
                         cnt++;
                         obj.JrnMemo = cnt.ToString();
                         Documents oDoc = new Documents();
+                        if (draft == "Y" || draft == "YES" || draft == "TRUE" || draft == "1")
+                        {
+                            oDoc.DocObject = "oDrafts";
+                            oDoc.DocObjectCode = "oPurchaseRequest";
+                        }
+                        else
+                            oDoc.DocObject = "oPurchaseRequest";
+
+                        #region posttosap
+                        if (obj.DocTypeSeries.SAPSeries > 0)
+                            oDoc.Series = obj.DocTypeSeries.SAPSeries;
+
+                        oDoc.DocDate = obj.DocDate;
+                        oDoc.DocDueDate = obj.DocDueDate;
+                        oDoc.TaxDate = obj.TaxDate;
+                        oDoc.RequriedDate = obj.ReqDate;
+
+                        if (!string.IsNullOrEmpty(obj.NumAtCard))
+                            oDoc.NumAtCard = obj.NumAtCard;
+
+                        if (obj.CncttCode != null)
+                            oDoc.ContactPersonCode = int.Parse(obj.CncttCode.CntctCode);
+                        if (obj.SlpCode != null)
+                            oDoc.SalesPersonCode = int.Parse(obj.SlpCode.SlpCode);
+
+                        if (obj.ShipToCode != null)
+                            oDoc.ShipToCode = obj.ShipToCode.Address;
+                        if (!string.IsNullOrEmpty(obj.Address2))
+                            oDoc.Address2 = obj.Address2;
+
+                        if (obj.ShipToCode != null)
+                            oDoc.ShipToCode = obj.ShipToCode.Address;
+                        if (!string.IsNullOrEmpty(obj.Address))
+                            oDoc.Address = obj.Address;
+
+                        if (!string.IsNullOrEmpty(obj.JrnMemo))
+                            oDoc.JournalMemo = obj.JrnMemo;
+                        if (!string.IsNullOrEmpty(obj.Comments))
+                            oDoc.Comments = obj.Comments;
+
+                        if (obj.Rounding != 0)
+                        {
+                            oDoc.Rounding = true;
+                            oDoc.RoundingDiffAmount = Convert.ToDouble(obj.Rounding);
+                        }
+                        oDoc.DocTotal = Convert.ToDouble(obj.DocTotal);
+
+
+                        #region assignhdrudf
+                        DocumentsUDF oDocUDF = new DocumentsUDF();
+                        System.Reflection.PropertyInfo[] properties = typeof(DocumentsUDF).GetProperties();
+                        foreach (System.Reflection.PropertyInfo property in properties)
+                        {
+                            if (property.Name == "U_P_ID")
+                                property.SetValue(oDocUDF, obj.Oid, null);
+                            else if (property.Name == "U_P_DOCNO")
+                                property.SetValue(oDocUDF, obj.DocNo, null);
+                            else if (property.Name.Contains("U_"))
+                            {
+                                System.Reflection.PropertyInfo[] sproperties = typeof(ClassUDFHeader).GetProperties();
+                                foreach (System.Reflection.PropertyInfo sproperty in sproperties)
+                                {
+                                    if (property.Name == sproperty.Name)
+                                        property.SetValue(oDocUDF, sproperty.GetValue(obj.UDFs, null), null);
+                                }
+                            }
+                        }
+                        oDoc.UserFields = oDocUDF;
+                        oDoc.Lines = new List<DocumentLines>();
+                        #endregion
+
+                        foreach (PurchaseRequestDetail dtl in obj.PurchaseRequestDetail)
+                        {
+                            DocumentLines oDocLine = new DocumentLines();
+                            oDocLine.ItemCode = dtl.ItemCode.ItemCode;
+                            oDocLine.ItemDescription = dtl.Dscription;
+                            oDocLine.ItemDetails = dtl.ItemDetails;
+
+                            if (dtl.LineVendor != null)
+                                oDocLine.LineVendor = dtl.LineVendor.CardCode;
+                            else if (obj.CardCode != null)
+                                oDocLine.LineVendor = obj.CardCode.CardCode;
+
+                            if (dtl.WhsCode != null)
+                                oDocLine.WarehouseCode = dtl.WhsCode.WhsCode;
+                            if (dtl.OcrCode != null)
+                                oDocLine.CostingCode = dtl.OcrCode.PrcCode;
+                            if (dtl.OcrCode2 != null)
+                                oDocLine.CostingCode2 = dtl.OcrCode2.PrcCode;
+                            if (dtl.OcrCode3 != null)
+                                oDocLine.CostingCode3 = dtl.OcrCode3.PrcCode;
+                            if (dtl.OcrCode4 != null)
+                                oDocLine.CostingCode4 = dtl.OcrCode4.PrcCode;
+                            if (dtl.OcrCode5 != null)
+                                oDocLine.CostingCode5 = dtl.OcrCode5.PrcCode;
+                            if (dtl.PrjCode != null)
+                                oDocLine.ProjectCode = dtl.PrjCode.PrjCode;
+                            if (dtl.AcctCode != null)
+                                oDocLine.AccountCode = dtl.AcctCode.AcctCode;
+
+                            oDocLine.Quantity = dtl.Quantity;
+                            oDocLine.UnitPrice = Convert.ToDouble(dtl.UnitPrice);
+
+                            if (dtl.TaxCode != null)
+                                oDocLine.TaxCode = dtl.TaxCode.Code;
+
+                            if (dtl.TaxAmt != 0)
+                                oDocLine.NetTaxAmount = Convert.ToDouble(dtl.TaxAmt);
+
+                            if (dtl.FreightCharge != null)
+                            {
+                                oDocLine.Expenses.Add(new DocumentLinesExpenses()
+                                {
+                                    ExpenseCode = int.Parse(dtl.FreightCharge.ExpnsCode),
+                                    LineTotal = Convert.ToDouble(dtl.FreightAmt)
+                                });
+                            }
+
+                            oDocLine.LineTotal = Convert.ToDouble(dtl.LineTotal);
+
+                            #region assigndtludf
+                            DocumentLinesUDF oDocLineUDF = new DocumentLinesUDF();
+                            System.Reflection.PropertyInfo[] propertiesl = typeof(DocumentLinesUDF).GetProperties();
+                            foreach (System.Reflection.PropertyInfo property in propertiesl)
+                            {
+                                if (property.Name == "U_P_ID")
+                                    property.SetValue(oDocLineUDF, dtl.Oid, null);
+                                else if (property.Name.Contains("U_"))
+                                {
+                                    System.Reflection.PropertyInfo[] spropertiesl = typeof(ClassUDFDetail).GetProperties();
+                                    foreach (System.Reflection.PropertyInfo sproperty in spropertiesl)
+                                    {
+                                        if (property.Name == sproperty.Name)
+                                            property.SetValue(oDocLineUDF, sproperty.GetValue(dtl.UDFs, null), null);
+                                    }
+                                }
+                            }
+                            oDocLine.UserFields = oDocLineUDF;
+                            oDoc.Lines.Add(oDocLine);
+                            #endregion
+                        }
+
+                        #endregion
+
                         if (sap.CreateDocuments(oDoc, ref key))
                         {
                             WriteLog("[Log]", "PR OID:[" + obj.Oid.ToString() + "] add Success:[" + key + "] Time:[" + DateTime.Now.ToString("hh:mm:ss tt") + "]");
                             obj.DocStatus.IsSAPPosted = true;
+                            securedObjectSpace.CommitChanges();
                         }
                         else
                         {
@@ -104,6 +250,7 @@ namespace SAP_Integration
                     }
                 }
 
+                draft = ConfigurationManager.AppSettings["PODraft"].ToString().ToUpper();
                 temp = ConfigurationManager.AppSettings["POPost"].ToString().ToUpper();
                 if (temp == "Y" || temp == "YES" || temp == "TRUE" || temp == "1")
                 {
@@ -113,10 +260,152 @@ namespace SAP_Integration
                         cnt++;
                         obj.JrnMemo = cnt.ToString();
                         Documents oDoc = new Documents();
+                        if (draft == "Y" || draft == "YES" || draft == "TRUE" || draft == "1")
+                        {
+                            oDoc.DocObject = "oDrafts";
+                            oDoc.DocObjectCode = "oPurchaseOrders";
+                        }
+                        else
+                            oDoc.DocObject = "oPurchaseOrders";
+
+                        #region posttosap
+                        if (obj.DocTypeSeries.SAPSeries > 0)
+                            oDoc.Series = obj.DocTypeSeries.SAPSeries;
+
+                        oDoc.CardCode = obj.CardCode.CardCode;
+                        oDoc.CardName = obj.CardName;
+
+                        oDoc.DocDate = obj.DocDate;
+                        oDoc.DocDueDate = obj.DocDueDate;
+                        oDoc.TaxDate = obj.TaxDate;
+
+                        if (!string.IsNullOrEmpty(obj.NumAtCard))
+                            oDoc.NumAtCard = obj.NumAtCard;
+
+                        if (obj.CncttCode != null)
+                            oDoc.ContactPersonCode = int.Parse(obj.CncttCode.CntctCode);
+                        if (obj.SlpCode != null)
+                            oDoc.SalesPersonCode = int.Parse(obj.SlpCode.SlpCode);
+
+                        if (obj.ShipToCode != null)
+                            oDoc.ShipToCode = obj.ShipToCode.Address;
+                        if (!string.IsNullOrEmpty(obj.Address2))
+                            oDoc.Address2 = obj.Address2;
+
+                        if (obj.ShipToCode != null)
+                            oDoc.ShipToCode = obj.ShipToCode.Address;
+                        if (!string.IsNullOrEmpty(obj.Address))
+                            oDoc.Address = obj.Address;
+
+                        if (!string.IsNullOrEmpty(obj.JrnMemo))
+                            oDoc.JournalMemo = obj.JrnMemo;
+                        if (!string.IsNullOrEmpty(obj.Comments))
+                            oDoc.Comments = obj.Comments;
+
+                        if (obj.Rounding != 0)
+                        {
+                            oDoc.Rounding = true;
+                            oDoc.RoundingDiffAmount = Convert.ToDouble(obj.Rounding);
+                        }
+                        oDoc.DocTotal = Convert.ToDouble(obj.DocTotal);
+
+
+                        #region assignhdrudf
+                        DocumentsUDF oDocUDF = new DocumentsUDF();
+                        System.Reflection.PropertyInfo[] properties = typeof(DocumentsUDF).GetProperties();
+                        foreach (System.Reflection.PropertyInfo property in properties)
+                        {
+                            if (property.Name == "U_P_ID")
+                                property.SetValue(oDocUDF, obj.Oid, null);
+                            else if (property.Name == "U_P_DOCNO")
+                                property.SetValue(oDocUDF, obj.DocNo, null);
+                            else if (property.Name.Contains("U_"))
+                            {
+                                System.Reflection.PropertyInfo[] sproperties = typeof(ClassUDFHeader).GetProperties();
+                                foreach (System.Reflection.PropertyInfo sproperty in sproperties)
+                                {
+                                    if (property.Name == sproperty.Name)
+                                        property.SetValue(oDocUDF, sproperty.GetValue(obj.UDFs, null), null);
+                                }
+                            }
+                        }
+                        oDoc.UserFields = oDocUDF;
+                        oDoc.Lines = new List<DocumentLines>();
+                        #endregion
+
+                        foreach (PurchaseOrderDetail dtl in obj.PurchaseOrderDetail)
+                        {
+                            DocumentLines oDocLine = new DocumentLines();
+                            oDocLine.ItemCode = dtl.ItemCode.ItemCode;
+                            oDocLine.ItemDescription = dtl.Dscription;
+                            oDocLine.ItemDetails = dtl.ItemDetails;
+
+                            if (dtl.WhsCode != null)
+                                oDocLine.WarehouseCode = dtl.WhsCode.WhsCode;
+                            if (dtl.OcrCode != null)
+                                oDocLine.CostingCode = dtl.OcrCode.PrcCode;
+                            if (dtl.OcrCode2 != null)
+                                oDocLine.CostingCode2 = dtl.OcrCode2.PrcCode;
+                            if (dtl.OcrCode3 != null)
+                                oDocLine.CostingCode3 = dtl.OcrCode3.PrcCode;
+                            if (dtl.OcrCode4 != null)
+                                oDocLine.CostingCode4 = dtl.OcrCode4.PrcCode;
+                            if (dtl.OcrCode5 != null)
+                                oDocLine.CostingCode5 = dtl.OcrCode5.PrcCode;
+                            if (dtl.PrjCode != null)
+                                oDocLine.ProjectCode = dtl.PrjCode.PrjCode;
+                            if (dtl.AcctCode != null)
+                                oDocLine.AccountCode = dtl.AcctCode.AcctCode;
+
+                            oDocLine.Quantity = dtl.Quantity;
+                            oDocLine.UnitPrice = Convert.ToDouble(dtl.UnitPrice);
+
+                            if (dtl.TaxCode != null)
+                                oDocLine.TaxCode = dtl.TaxCode.Code;
+
+                            if (dtl.TaxAmt != 0)
+                                oDocLine.NetTaxAmount = Convert.ToDouble(dtl.TaxAmt);
+
+                            if (dtl.FreightCharge != null)
+                            {
+                                oDocLine.Expenses.Add(new DocumentLinesExpenses()
+                                {
+                                    ExpenseCode = int.Parse(dtl.FreightCharge.ExpnsCode),
+                                    LineTotal = Convert.ToDouble(dtl.FreightAmt)
+                                });
+                            }
+
+                            oDocLine.LineTotal = Convert.ToDouble(dtl.LineTotal);
+
+                            #region assigndtludf
+                            DocumentLinesUDF oDocLineUDF = new DocumentLinesUDF();
+                            System.Reflection.PropertyInfo[] propertiesl = typeof(DocumentLinesUDF).GetProperties();
+                            foreach (System.Reflection.PropertyInfo property in propertiesl)
+                            {
+                                if (property.Name == "U_P_ID")
+                                    property.SetValue(oDocLineUDF, dtl.Oid, null);
+                                else if (property.Name.Contains("U_"))
+                                {
+                                    System.Reflection.PropertyInfo[] spropertiesl = typeof(ClassUDFDetail).GetProperties();
+                                    foreach (System.Reflection.PropertyInfo sproperty in spropertiesl)
+                                    {
+                                        if (property.Name == sproperty.Name)
+                                            property.SetValue(oDocLineUDF, sproperty.GetValue(dtl.UDFs, null), null);
+                                    }
+                                }
+                            }
+                            oDocLine.UserFields = oDocLineUDF;
+                            oDoc.Lines.Add(oDocLine);
+                            #endregion
+                        }
+
+                        #endregion
+
                         if (sap.CreateDocuments(oDoc, ref key))
                         {
                             WriteLog("[Log]", "PO OID:[" + obj.Oid.ToString() + "] add Success:[" + key + "] Time:[" + DateTime.Now.ToString("hh:mm:ss tt") + "]");
                             obj.DocStatus.IsSAPPosted = true;
+                            securedObjectSpace.CommitChanges();
                         }
                         else
                         {
@@ -127,6 +416,8 @@ namespace SAP_Integration
                         }
                     }
                 }
+
+                draft = ConfigurationManager.AppSettings["STRDraft"].ToString().ToUpper();
                 temp = ConfigurationManager.AppSettings["STRPost"].ToString().ToUpper();
                 if (temp == "Y" || temp == "YES" || temp == "TRUE" || temp == "1")
                 {
@@ -136,12 +427,18 @@ namespace SAP_Integration
                         cnt++;
                         obj.JrnMemo = cnt.ToString();
                         StockTransfer oDoc = new StockTransfer();
-                        oDoc.DocObjectCode = "oInventoryTransferRequest";
+                        if (draft == "Y" || draft == "YES" || draft == "TRUE" || draft == "1")
+                            oDoc.DocObjectCode = "oStockTransferDraft";
+                        else
+                            oDoc.DocObjectCode = "oInventoryTransferRequest";
+
+
 
                         if (sap.CreateStockTransferDocuments(oDoc, ref key))
                         {
                             WriteLog("[Log]", "PO OID:[" + obj.Oid.ToString() + "] add Success:[" + key + "] Time:[" + DateTime.Now.ToString("hh:mm:ss tt") + "]");
                             obj.DocStatus.IsSAPPosted = true;
+                            securedObjectSpace.CommitChanges();
                         }
                         else
                         {
@@ -152,198 +449,6 @@ namespace SAP_Integration
                         }
                     }
                 }
-
-                securedObjectSpace.CommitChanges();
-                /*
-                DataSet ds = sap.getDataSet(LocalCurrency);
-                DataTable dtDoc = ds.Tables["SalesInvoice"];
-                DataTable dtDocLine = ds.Tables["SalesInvoiceDetails"];
-                string temp = "";
-                double doutemp = 0;
-                double Quantity = 0, UnitPrice = 0, LineTotal = 0, Rounding = 0;
-                int slittingChargeFreightCode = 1, transportChargeFreightCode = 2;
-                double slittingCharge = 0, transportCharge = 0;
-                int masterOID = 0;
-                string sql = "";
-                double linetotal = 0;
-                double doctotal = 0;
-                #region SalesInvoice
-                foreach (DataRow docRow in dtDoc.Rows)
-                {
-                    if (docRow["DocObject"].ToString() == "0")
-                        continue;
-
-                    bool dtlfound = false;
-                    
-                    Documents oDoc = new Documents();
-                    masterOID = int.Parse(docRow["OID"].ToString());
-
-                    DataRow[] selectedRows = dtDocLine.Select("MasterBO = " + masterOID.ToString());
-
-                    foreach (DataRow docLine in selectedRows)
-                    {
-                        if (!dtlfound)
-                        {
-                            if (docRow["DocObject"].ToString() == "1")
-                            {
-                                oDoc.DocObject = "oDrafts";
-                                oDoc.DocObjectCode = "oInvoices";
-                            }
-                            else if (docRow["DocObject"].ToString() == "2")
-                                oDoc.DocObject = "oInvoices";
-
-                            if ((int)docRow["DocSeries"] > 0)
-                                oDoc.Series = (int)docRow["DocSeries"];
-
-                            oDoc.DocType = 0;
-                            oDoc.CardCode = docRow["CardCode"].ToString();
-                            oDoc.CardName = docRow["CardName"].ToString();
-                            temp = docRow["MarketingExecutive"] == null ? "0" : docRow["MarketingExecutive"].ToString();
-                            if (temp.Trim().Length == 0) temp = "0";
-                            if (int.Parse(temp) > 0)
-                                oDoc.SalesPersonCode = int.Parse(temp);
-                            oDoc.DocDate = (DateTime)docRow["DocumentDate"];
-                            oDoc.TaxDate = (DateTime)docRow["PostingDate"];
-                            oDoc.NumAtCard = docRow["DocNo"].ToString();
-                            if (LocalCurrency != docRow["Currency"].ToString())
-                            {
-                                oDoc.DocRate = double.Parse(docRow["CurrencyRate"].ToString());
-                            }
-                            temp = docRow["Project"] == null ? "" : docRow["Project"].ToString();
-                            if (temp.Trim().Length > 0)
-                                oDoc.Project = temp;
-
-                            doutemp = double.Parse(docRow["Discount"].ToString());
-                            if (doutemp != 0)
-                            {
-                                oDoc.Rounding = true;
-                                oDoc.RoundingDiffAmount = doutemp * -1;
-                            }
-                            string ToDef = docRow["BillToDef"] == null ? "" : docRow["BillToDef"].ToString();
-                            string ToAdress1 = docRow["BillToAdress1"] == null ? "" : docRow["BillToAdress1"].ToString();
-                            string ToAdress2 = docRow["BillToAdress2"] == null ? "" : docRow["BillToAdress2"].ToString();
-                            string ToAdress3 = docRow["BillToAdress3"] == null ? "" : docRow["BillToAdress3"].ToString();
-                            string ToAdress4 = docRow["BillToAdress4"] == null ? "" : docRow["BillToAdress4"].ToString();
-                            string ToCountry = docRow["BillToCountry"] == null ? "" : docRow["BillToCountry"].ToString();
-                            oDoc.Address = getfulladdress(ToDef, ToAdress1, ToAdress2, ToAdress3, ToAdress4, ToCountry);
-
-                            ToDef = docRow["ShipToDef"] == null ? "" : docRow["ShipToDef"].ToString();
-                            ToAdress1 = docRow["ShipToAdress1"] == null ? "" : docRow["ShipToAdress1"].ToString();
-                            ToAdress2 = docRow["ShipToAdress2"] == null ? "" : docRow["ShipToAdress2"].ToString();
-                            ToAdress3 = docRow["ShipToAdress3"] == null ? "" : docRow["ShipToAdress3"].ToString();
-                            ToAdress4 = docRow["ShipToAdress4"] == null ? "" : docRow["ShipToAdress4"].ToString();
-                            ToCountry = docRow["ShipToCountry"] == null ? "" : docRow["ShipToCountry"].ToString();
-                            oDoc.Address2 = getfulladdress(ToDef, ToAdress1, ToAdress2, ToAdress3, ToAdress4, ToCountry);
-
-                            DocumentsUDF oDocUDF = new DocumentsUDF();
-                            oDocUDF.U_P_ID = masterOID;
-                            oDocUDF.U_P_MANUAL_DOCNUM = docRow["ManualDocumentNo"].ToString();
-                            oDocUDF.U_P_PRNO = docRow["PRNo"].ToString();
-                            oDocUDF.U_P_REFNUM = docRow["RefNo"].ToString();
-
-                            oDoc.UserFields = oDocUDF;
-
-                            oDoc.Lines = new List<DocumentLines>();
-                        }
-                        dtlfound = true;
-
-                        DocumentLines oDocLine = new DocumentLines();
-                        oDocLine.ItemCode = docLine["ItemCode"].ToString();
-                        oDocLine.ItemDescription = docLine["ItemName"].ToString();
-                        oDocLine.ItemDetails = docLine["DocumentDescription"].ToString();
-
-                        Quantity = double.Parse(docLine["Quantity"].ToString());
-                        UnitPrice = double.Parse(docLine["UnitPrice"].ToString());
-                        LineTotal = double.Parse(docLine["LineTotal"].ToString());
-                        oDocLine.Quantity = UnitPrice == 0 ? Quantity : Math.Round(LineTotal / UnitPrice, 3, MidpointRounding.AwayFromZero);
-                        oDocLine.UnitPrice = UnitPrice;
-                        oDocLine.LineTotal = LineTotal;
-
-                        oDocLine.TaxCode = docLine["TaxCode"].ToString();
-
-                        temp = docLine["WH"] == null ? "" : docLine["WH"].ToString();
-                        if (temp.Trim().Length > 0)
-                            oDocLine.WarehouseCode = temp;
-                        temp = docLine["ProductionLocation"] == null ? "" : docLine["ProductionLocation"].ToString();
-                        if (temp.Trim().Length > 0)
-                            oDocLine.CostingCode = temp;
-                        temp = docLine["U_ITEM_FAMILY_CODE"] == null ? "" : docLine["U_ITEM_FAMILY_CODE"].ToString();
-                        if (temp.Trim().Length > 0)
-                            oDocLine.CostingCode2 = temp;
-                        temp = docLine["Project"] == null ? "" : docLine["Project"].ToString();
-                        if (temp.Trim().Length > 0)
-                            oDocLine.ProjectCode = temp;
-
-                        DocumentLinesUDF oDocLineUDF = new DocumentLinesUDF();
-                        oDocLineUDF.U_P_ID = docLine["OID"].ToString();
-                        oDocLineUDF.U_P_QUANTITY = double.Parse(docLine["Quantity"].ToString());
-                        oDocLineUDF.U_P_LENGTH = double.Parse(docLine["LenghtMM"].ToString());
-                        oDocLineUDF.U_P_WIDTH = double.Parse(docLine["WidthMM"].ToString());
-                        oDocLineUDF.U_PRICE_UOM = docLine["SalesUom"].ToString();
-
-                        oDocLine.UserFields = oDocLineUDF;
-
-                        oDoc.Lines.Add(oDocLine);
-                        
-                    }
-
-                    doutemp = double.Parse(docRow["TripCost"].ToString());
-                    if (doutemp != 0)
-                    {
-                        DocumentLines oDocLineTrip = new DocumentLines();
-                        oDocLineTrip.ItemCode = docRow["TripItemCode"].ToString();
-                        oDocLineTrip.TaxCode = docRow["TripTaxCode"].ToString();
-                        oDocLineTrip.Quantity = 1;
-                        oDocLineTrip.UnitPrice = doutemp;
-                        temp = docRow["TripCostCenter"] == null ? "" : docRow["TripCostCenter"].ToString();
-                        if (temp.Trim().Length > 0)
-                            oDocLineTrip.CostingCode = temp;
-                        temp = docRow["U_ITEM_FAMILY_CODE"] == null ? "" : docRow["U_ITEM_FAMILY_CODE"].ToString();
-                        if (temp.Trim().Length > 0)
-                            oDocLineTrip.CostingCode2 = temp;
-                        temp = docRow["Project"] == null ? "" : docRow["Project"].ToString();
-                        if (temp.Trim().Length > 0)
-                            oDocLineTrip.ProjectCode = temp;
-
-                        oDoc.Lines.Add(oDocLineTrip);
-                    }
-
-                    if (dtlfound)
-                    {
-                        sql = "";
-                        if (sap.CreateDocuments(oDoc, ref key))
-                        {
-                            WriteLog("[Log]", "SalesInvoice  OID:[" + masterOID.ToString() + "] add Success:[" + key + "] Time:[" + DateTime.Now.ToString("hh:mm:ss tt") + "]");
-
-                            sql = "update SalesInvoice set SAPPosted = 1, PostCancelRemarks = '" + key + "' where OID = " + masterOID.ToString();
-                        }
-                        else
-                        {
-                            WriteLog("[Log]", "SalesInvoice OID:[" + masterOID.ToString() + "] add Failed:[" + sap.errMsg + "] Time:[" + DateTime.Now.ToString("hh:mm:ss tt") + "]");
-
-                            sql = "update SalesInvoice set Status = 7, PostCancelRemarks = '" + sap.errMsg + "' where OID = " + masterOID.ToString();
-                        }
-                        if (sql != "")
-                        {
-                            SqlCommand mycmd = new SqlCommand();
-                            mycmd.CommandText = sql;
-                            mycmd.Connection = sap.sqlCon;
-                            mycmd.ExecuteNonQuery();
-                        }
-                    }
-                    else
-                    {
-                        WriteLog("[Log]", "SalesInvoice OID:[" + masterOID.ToString() + "] add Failed:[No details found] Time:[" + DateTime.Now.ToString("hh:mm:ss tt") + "]");
-
-                        sql = "update SalesInvoice set Status = 7, PostCancelRemarks = 'No details found' where OID = " + masterOID.ToString();
-                        SqlCommand mycmd = new SqlCommand();
-                        mycmd.CommandText = sql;
-                        mycmd.Connection = sap.sqlCon;
-                        mycmd.ExecuteNonQuery();
-                    }
-                }
-                #endregion
-                */
 
                 GC.Collect();
 

@@ -192,6 +192,33 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
                 SetPropertyValue("Dscription", ref _Dscription, value);
             }
         }
+        private string _ItemDetails;
+        [Index(12), VisibleInListView(true), VisibleInDetailView(true), VisibleInLookupListView(true)]
+        [XafDisplayName("Item Details")]
+        [DbType("nvarchar(max)")]
+        public string ItemDetails
+        {
+            get { return _ItemDetails; }
+            set
+            {
+                SetPropertyValue("ItemDetails", ref _ItemDetails, value);
+            }
+        }
+        private vwBusinessPartners _LineVendor;
+        [Index(13), VisibleInListView(true), VisibleInDetailView(true), VisibleInLookupListView(true)]
+        [XafDisplayName("Vendor")]
+        [DataSourceCriteria("CompanyCode = '@This.Company.BoCode' and IsActive and CardType = '@This.ObjType.CardType'")]
+        [NoForeignKey]
+        //[RuleRequiredField(DefaultContexts.Save)]
+        public vwBusinessPartners LineVendor
+        {
+            get { return _LineVendor; }
+            set
+            {
+                SetPropertyValue("LineVendor", ref _LineVendor, value);
+            }
+        }
+
         private vwWarehouses _WhsCode;
         [Index(21), VisibleInListView(true), VisibleInDetailView(true), VisibleInLookupListView(true)]
         [XafDisplayName("Warehouse")]

@@ -55,6 +55,7 @@
 	- DocDate (posting date)
 	- DocDueDate (due date)
 	- TaxDate (doc date)
+	- ReqDate (req date)
 	- CardType (bp type)
 	- [CardCode->vwBusinessPartners]
 	- CardName (bp name)
@@ -85,6 +86,8 @@
 	- VisOrder
 	- [ItemCode->vwItemMasters]
 	- Dscription
+	- ItemDetails
+	- [LineVendor->vwBusinessPartners]
 	- [WhsCode->vwWarehouses]
 	- [OcrCode1->vwDimension1]
 	- [OcrCode2->vwDimension2]
