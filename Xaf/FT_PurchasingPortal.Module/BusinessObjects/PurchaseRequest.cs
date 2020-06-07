@@ -68,8 +68,8 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
         protected override void OnLoaded()
         {
             base.OnLoaded();
-            //if (DocStatus.CurrDocStatus != BusinessObjects.DocStatus.Draft)
-            //    IsCopy = true;
+            if (PurchaseRequestDetail.Count > 0)
+                IsCopy = true;
 
             if (!GeneralValues.IsNetCore)
             {
@@ -209,6 +209,8 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
             {
                 if (this.PurchaseRequest != null)
                 {
+                    if (!this.PurchaseRequest.IsCopy) this.PurchaseRequest.IsCopy = true;
+
                     if (this.PurchaseRequest.PurchaseRequestDetail.Count > 0)
                         this.PurchaseRequest.DocB4Total = this.PurchaseRequest.PurchaseRequestDetail.Sum(pp => pp.LineTotal);
                     else
@@ -229,7 +231,8 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
         }
 
         private PurchaseRequest _PurchaseRequest;
-        [Browsable(false)]
+        [VisibleInDetailView(false), VisibleInListView(false), VisibleInLookupListView(true)]
+        [Appearance("PurchaseRequest", Enabled = false)]
         [Association("PurchaseRequest-Detail")]
         public PurchaseRequest PurchaseRequest
         {

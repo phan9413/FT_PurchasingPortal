@@ -23,6 +23,7 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
     [DefaultClassOptions]
     [Persistent("ODIV")]
     [NavigationItem("Setup")]
+    [DefaultProperty("BoName")]
     //[DefaultListViewOptions(MasterDetailMode.ListViewOnly, false, NewItemRowPosition.None)]
     //[Appearance("NewRecord", AppearanceItemType = "Action", TargetItems = "New", Context = "Any", Visibility = DevExpress.ExpressApp.Editors.ViewItemVisibility.Hide)]
     //[Appearance("EditRecord", AppearanceItemType = "Action", TargetItems = "SwitchToEditMode;Edit", Context = "Any", Visibility = DevExpress.ExpressApp.Editors.ViewItemVisibility.Hide)]
@@ -41,6 +42,8 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
         {
             base.AfterConstruction();
             // Place your initialization code here (https://documentation.devexpress.com/eXpressAppFramework/CustomDocument112834.aspx).
+            BoCode = "";
+            BoName = "";
             SystemUsers usr = null;
             if (!GeneralValues.IsNetCore)
             {
@@ -99,6 +102,12 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
             {
                 SetPropertyValue("BoName", ref _BoName, value);
             }
+        }
+        [PersistentAlias("concat(BoCode, '::', BoName)")]
+        [Index(2), VisibleInDetailView(false), VisibleInListView(false), VisibleInLookupListView(false)]
+        public string BoFullName
+        {
+            get { return EvaluateAlias("BoFullName").ToString(); }
         }
         private bool _IsActive;
         [XafDisplayName("Active")]

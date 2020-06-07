@@ -33,6 +33,7 @@
             this.txtUserID = new System.Windows.Forms.TextBox();
             this.txtPassword = new System.Windows.Forms.TextBox();
             this.Login = new System.Windows.Forms.Button();
+            this.Post = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // label1
@@ -78,11 +79,22 @@
             this.Login.UseVisualStyleBackColor = true;
             this.Login.Click += new System.EventHandler(this.Login_Click);
             // 
+            // Post
+            // 
+            this.Post.Location = new System.Drawing.Point(223, 91);
+            this.Post.Name = "Post";
+            this.Post.Size = new System.Drawing.Size(75, 23);
+            this.Post.TabIndex = 5;
+            this.Post.Text = "Post";
+            this.Post.UseVisualStyleBackColor = true;
+            this.Post.Click += new System.EventHandler(this.Post_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.Post);
             this.Controls.Add(this.Login);
             this.Controls.Add(this.txtPassword);
             this.Controls.Add(this.txtUserID);
@@ -104,5 +116,6 @@
         private System.Windows.Forms.TextBox txtUserID;
         private System.Windows.Forms.TextBox txtPassword;
         private System.Windows.Forms.Button Login;
+        private System.Windows.Forms.Button Post;
     }
 }

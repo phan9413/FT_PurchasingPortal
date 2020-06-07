@@ -120,8 +120,8 @@ namespace SAP_Integration
                         if (!string.IsNullOrEmpty(obj.Address2))
                             oDoc.Address2 = obj.Address2;
 
-                        if (obj.ShipToCode != null)
-                            oDoc.ShipToCode = obj.ShipToCode.Address;
+                        if (obj.BillToCode != null)
+                            oDoc.PayToCode = obj.BillToCode.Address;
                         if (!string.IsNullOrEmpty(obj.Address))
                             oDoc.Address = obj.Address;
 
@@ -272,9 +272,11 @@ namespace SAP_Integration
                         if (obj.DocTypeSeries.SAPSeries > 0)
                             oDoc.Series = obj.DocTypeSeries.SAPSeries;
 
-                        oDoc.CardCode = obj.CardCode.CardCode;
-                        oDoc.CardName = obj.CardName;
-
+                        if (obj.CardCode != null)
+                        {
+                            oDoc.CardCode = obj.CardCode.CardCode;
+                            oDoc.CardName = obj.CardName;
+                        }
                         oDoc.DocDate = obj.DocDate;
                         oDoc.DocDueDate = obj.DocDueDate;
                         oDoc.TaxDate = obj.TaxDate;
@@ -292,8 +294,8 @@ namespace SAP_Integration
                         if (!string.IsNullOrEmpty(obj.Address2))
                             oDoc.Address2 = obj.Address2;
 
-                        if (obj.ShipToCode != null)
-                            oDoc.ShipToCode = obj.ShipToCode.Address;
+                        if (obj.BillToCode != null)
+                            oDoc.PayToCode = obj.BillToCode.Address;
                         if (!string.IsNullOrEmpty(obj.Address))
                             oDoc.Address = obj.Address;
 
@@ -432,6 +434,100 @@ namespace SAP_Integration
                         else
                             oDoc.DocObjectCode = "oInventoryTransferRequest";
 
+                        #region posttosap
+                        if (obj.DocTypeSeries.SAPSeries > 0)
+                            oDoc.Series = obj.DocTypeSeries.SAPSeries;
+
+                        if (obj.CardCode != null)
+                        {
+                            oDoc.CardCode = obj.CardCode.CardCode;
+                            oDoc.CardName = obj.CardName;
+                        }
+
+                        oDoc.DocDate = obj.DocDate;
+                        oDoc.DueDate = obj.DocDueDate;
+                        oDoc.TaxDate = obj.TaxDate;
+
+                        if (obj.SlpCode != null)
+                            oDoc.SalesPersonCode = int.Parse(obj.SlpCode.SlpCode);
+
+                        //if (obj.ShipToCode != null)
+                        //    oDoc.ShipToCode = obj.ShipToCode.Address;
+                        //if (!string.IsNullOrEmpty(obj.Address2))
+                        //    oDoc.Address2 = obj.Address2;
+
+                        //if (obj.ShipToCode != null)
+                        //    oDoc.PayToCode = obj.ShipToCode.Address;
+                        if (!string.IsNullOrEmpty(obj.Address))
+                            oDoc.Address = obj.Address;
+
+                        if (!string.IsNullOrEmpty(obj.JrnMemo))
+                            oDoc.JournalMemo = obj.JrnMemo;
+                        if (!string.IsNullOrEmpty(obj.Comments))
+                            oDoc.Comments = obj.Comments;
+
+
+                        #region assignhdrudf
+                        DocumentsUDF oDocUDF = new DocumentsUDF();
+                        System.Reflection.PropertyInfo[] properties = typeof(DocumentsUDF).GetProperties();
+                        foreach (System.Reflection.PropertyInfo property in properties)
+                        {
+                            if (property.Name == "U_P_ID")
+                                property.SetValue(oDocUDF, obj.Oid, null);
+                            else if (property.Name == "U_P_DOCNO")
+                                property.SetValue(oDocUDF, obj.DocNo, null);
+                            else if (property.Name.Contains("U_"))
+                            {
+                                System.Reflection.PropertyInfo[] sproperties = typeof(ClassUDFHeader).GetProperties();
+                                foreach (System.Reflection.PropertyInfo sproperty in sproperties)
+                                {
+                                    if (property.Name == sproperty.Name)
+                                        property.SetValue(oDocUDF, sproperty.GetValue(obj.UDFs, null), null);
+                                }
+                            }
+                        }
+                        oDoc.UserFields = oDocUDF;
+                        oDoc.Lines = new List<StockTransferLines>();
+                        #endregion
+
+                        foreach (StockTransferRequestDetail dtl in obj.StockTransferRequestDetail)
+                        {
+                            StockTransferLines oDocLine = new StockTransferLines();
+                            oDocLine.ItemCode = dtl.ItemCode.ItemCode;
+                            oDocLine.ItemDescription = dtl.Dscription;
+
+                            if (dtl.FromWhsCod != null)
+                                oDocLine.FromWarehouseCode = dtl.FromWhsCod.WhsCode;
+                            if (dtl.WhsCode != null)
+                                oDocLine.WarehouseCode = dtl.WhsCode.WhsCode;
+                            if (dtl.PrjCode != null)
+                                oDocLine.ProjectCode = dtl.PrjCode.PrjCode;
+
+                            oDocLine.Quantity = dtl.Quantity;
+
+                            #region assigndtludf
+                            DocumentLinesUDF oDocLineUDF = new DocumentLinesUDF();
+                            System.Reflection.PropertyInfo[] propertiesl = typeof(DocumentLinesUDF).GetProperties();
+                            foreach (System.Reflection.PropertyInfo property in propertiesl)
+                            {
+                                if (property.Name == "U_P_ID")
+                                    property.SetValue(oDocLineUDF, dtl.Oid, null);
+                                else if (property.Name.Contains("U_"))
+                                {
+                                    System.Reflection.PropertyInfo[] spropertiesl = typeof(ClassUDFDetail).GetProperties();
+                                    foreach (System.Reflection.PropertyInfo sproperty in spropertiesl)
+                                    {
+                                        if (property.Name == sproperty.Name)
+                                            property.SetValue(oDocLineUDF, sproperty.GetValue(dtl.UDFs, null), null);
+                                    }
+                                }
+                            }
+                            oDocLine.UserFields = oDocLineUDF;
+                            oDoc.Lines.Add(oDocLine);
+                            #endregion
+                        }
+
+                        #endregion
 
 
                         if (sap.CreateStockTransferDocuments(oDoc, ref key))

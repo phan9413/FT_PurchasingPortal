@@ -78,6 +78,8 @@ as
 	, BuyUnitMsr
 	, SalUnitMsr
 	, InvntryUOM
+	, LastPurPrc
+	, LastPurCur
 	,'HQ' as CompanyCode 
 	from [SBODemoGB]..OITM
 )

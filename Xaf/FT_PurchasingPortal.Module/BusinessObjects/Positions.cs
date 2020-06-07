@@ -23,6 +23,7 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
     [DefaultClassOptions]
     [Persistent("OPOS")]
     [NavigationItem("Setup")]
+    [DefaultProperty("BoName")]
     //[ImageName("BO_Contact")]
     //[DefaultListViewOptions(MasterDetailMode.ListViewOnly, false, NewItemRowPosition.None)]
     //[Appearance("NewRecord", AppearanceItemType = "Action", TargetItems = "New", Context = "Any", Visibility = DevExpress.ExpressApp.Editors.ViewItemVisibility.Hide)]
@@ -42,6 +43,8 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
         {
             base.AfterConstruction();
             // Place your initialization code here (https://documentation.devexpress.com/eXpressAppFramework/CustomDocument112834.aspx).
+            BoCode = "";
+            BoName = "";
             IsActive = true;
         }
         //private string _PersistentProperty;
@@ -89,10 +92,11 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
             }
         }
 
+        [PersistentAlias("concat(BoCode, '::', BoName)")]
         [Index(2), VisibleInDetailView(false), VisibleInListView(false), VisibleInLookupListView(false)]
         public string BoFullName
         {
-            get { return BoCode + "-" + BoName; }
+            get { return EvaluateAlias("BoFullName").ToString(); }
         }
 
         private bool _IsActive;

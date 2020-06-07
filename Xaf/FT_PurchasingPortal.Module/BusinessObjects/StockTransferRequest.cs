@@ -228,7 +228,8 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
         }
 
         private StockTransferRequest _StockTransferRequest;
-        [Browsable(false)]
+        [VisibleInDetailView(false), VisibleInListView(false), VisibleInLookupListView(true)]
+        [Appearance("StockTransferRequest", Enabled = false)]
         [Association("StockTransferRequest-Detail")]
         public StockTransferRequest StockTransferRequest
         {

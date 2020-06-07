@@ -59,6 +59,7 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
                 }
             }
             IsDuplicated = false;
+            Quantity = 1;
         }
         protected override void OnLoaded()
         {
@@ -135,17 +136,6 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
                 SetPropertyValue("Company", ref _Company, value);
             }
         }
-        private vwCurrency _DocCur;
-        [Browsable(false)]
-        [NoForeignKey]
-        public vwCurrency DocCur
-        {
-            get { return _DocCur; }
-            set
-            {
-                SetPropertyValue("DocCur", ref _DocCur, value);
-            }
-        }
 
         private int _VisOrder;
         [Index(0), VisibleInListView(true), VisibleInDetailView(true), VisibleInLookupListView(true)]
@@ -175,7 +165,13 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
                         if (ObjType.SellItem == "Y")
                             UnitMsr = value.SalUnitMsr;
                         else if (ObjType.PrchseItem == "Y")
+                        {
                             UnitMsr = value.BuyUnitMsr;
+                            if (DocCur.CurrCode == value.LastPurCur)
+                                UnitPrice = value.LastPurPrc;
+                            else
+                                UnitPrice = 0;
+                        }
                     }
                 }
             }
@@ -205,9 +201,11 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
             }
         }
         private vwBusinessPartners _LineVendor;
+        [ImmediatePostData]
         [Index(13), VisibleInListView(true), VisibleInDetailView(true), VisibleInLookupListView(true)]
         [XafDisplayName("Vendor")]
         [DataSourceCriteria("CompanyCode = '@This.Company.BoCode' and IsActive and CardType = '@This.ObjType.CardType'")]
+        [Appearance("LineVendor", Visibility = DevExpress.ExpressApp.Editors.ViewItemVisibility.Hide, Criteria = "not ObjType.IsReq")]
         [NoForeignKey]
         //[RuleRequiredField(DefaultContexts.Save)]
         public vwBusinessPartners LineVendor
@@ -215,7 +213,50 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
             get { return _LineVendor; }
             set
             {
-                SetPropertyValue("LineVendor", ref _LineVendor, value);
+                if (SetPropertyValue("LineVendor", ref _LineVendor, value))
+                {
+                    if (!IsLoading)
+                    {
+                        if (value != null)
+                        {
+                            DocCur = Session.FindObject<vwCurrency>(CriteriaOperator.Parse("BoKey=?", value.Currency));
+                            if (ItemCode != null)
+                            {
+                                if (DocCur.CurrCode == ItemCode.LastPurCur)
+                                    UnitPrice = ItemCode.LastPurPrc;
+                                else
+                                    UnitPrice = 0;
+                            }
+                        }
+                        else
+                        {
+                            DocCur = Session.FindObject<vwCurrency>(CriteriaOperator.Parse("CompanyCode=? and CurrCode=?", Company.BoCode, Company.LocalCurreny));
+                            if (ItemCode != null)
+                            {
+                                if (DocCur.CurrCode == ItemCode.LastPurCur)
+                                    UnitPrice = ItemCode.LastPurPrc;
+                                else
+                                    UnitPrice = 0;
+                            }
+                        }
+
+                    }
+                }
+            }
+        }
+        private vwCurrency _DocCur;
+        [Index(14), VisibleInListView(true), VisibleInDetailView(true), VisibleInLookupListView(true)]
+        [XafDisplayName("Currency")]
+        [DataSourceCriteria("CompanyCode = '@This.Company.BoCode' and IsActive")]
+        [Appearance("DocCur", Enabled = false)]
+        [Appearance("DocCur2", Visibility = DevExpress.ExpressApp.Editors.ViewItemVisibility.Hide, Criteria = "not ObjType.IsReq")]
+        [NoForeignKey]
+        public vwCurrency DocCur
+        {
+            get { return _DocCur; }
+            set
+            {
+                SetPropertyValue("DocCur", ref _DocCur, value);
             }
         }
 
@@ -341,7 +382,7 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
                 SetPropertyValue("UnitMsr", ref _UnitMsr, value);
             }
         }
-        private decimal _UnitPrice;
+        private double _UnitPrice;
         [ImmediatePostData]
         // hide price
         [EditorAlias("VPDec")]
@@ -349,7 +390,7 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
         [Index(92), VisibleInDetailView(true), VisibleInListView(true), VisibleInLookupListView(false)]
         [ModelDefault("DisplayFormat", "{0:n4}")]
         [DbType("numeric(19,6)")]
-        public decimal UnitPrice
+        public double UnitPrice
         {
             get { return _UnitPrice; }
             set
@@ -705,12 +746,12 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
         }
         public void AssignTaxAmt()
         {
-            TaxAmt = Math.Round((Convert.ToDecimal(Quantity) * UnitPrice) * Convert.ToDecimal(TaxPerc) / 100, 2, MidpointRounding.AwayFromZero);
+            TaxAmt = Math.Round(Convert.ToDecimal(Quantity * UnitPrice) * Convert.ToDecimal(TaxPerc) / 100, 2, MidpointRounding.AwayFromZero);
             AssignLineTotal();
         }
         public void AssignLineTotal()
         {
-            LineTotal = Math.Round((Convert.ToDecimal(Quantity) * UnitPrice) - DiscountAmt + FreightAmt + TaxAmt, 2, MidpointRounding.AwayFromZero);
+            LineTotal = Math.Round(Convert.ToDecimal(Quantity * UnitPrice) - DiscountAmt + FreightAmt + TaxAmt, 2, MidpointRounding.AwayFromZero);
         }
 
         [Browsable(false)]

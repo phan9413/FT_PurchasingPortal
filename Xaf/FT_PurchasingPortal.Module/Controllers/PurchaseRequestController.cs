@@ -86,7 +86,7 @@ namespace FT_PurchasingPortal.Module.Controllers
                 default:
                     if (user.Roles.Where(pp => pp.Name == DocTypeCodes.PurchaseOrder).Count() > 0)
                     {
-                        this.CopyToPO.Active.SetItemValue("Enabled", true);
+                        //this.CopyToPO.Active.SetItemValue("Enabled", true);
                     }
                     break;
             }

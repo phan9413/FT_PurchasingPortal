@@ -25,7 +25,7 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
     //[ImageName("BO_Contact")]
     [NavigationItem("Setup")]
     [XafDisplayName("Company")]
-    [DefaultProperty("BoFullName")]
+    [DefaultProperty("BoName")]
     //[DefaultListViewOptions(MasterDetailMode.ListViewOnly, false, NewItemRowPosition.None)]
     [Appearance("NewRecord", AppearanceItemType = "Action", TargetItems = "New", Context = "Any", Visibility = DevExpress.ExpressApp.Editors.ViewItemVisibility.Hide)]
     //[Appearance("EditRecord", AppearanceItemType = "Action", TargetItems = "Edit", Context = "Any", Visibility = DevExpress.ExpressApp.Editors.ViewItemVisibility.Hide)]
@@ -46,6 +46,8 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
             base.AfterConstruction();
             // Place your initialization code here (https://documentation.devexpress.com/eXpressAppFramework/CustomDocument112834.aspx).
 
+            BoCode = "";
+            BoName = "";
             ApprovalBy = ApprovalBy.User;
             AppType = ApprovalType.Document;
 
@@ -150,10 +152,11 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
             }
         }
 
+        [PersistentAlias("concat(BoCode, '::', BoName)")]
         [Index(2), VisibleInDetailView(false), VisibleInListView(false), VisibleInLookupListView(false)]
         public string BoFullName
         {
-            get { return BoCode + "-" + BoName; }
+            get { return EvaluateAlias("BoFullName").ToString(); }
         }
 
         //private bool _IsPassAccept;

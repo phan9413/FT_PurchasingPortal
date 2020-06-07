@@ -1029,8 +1029,7 @@ where isnull(T0.SAPPosted,0) = 0 and T0.Status = @status";
                         if (!String.IsNullOrEmpty(doc.Lines[i].ItemCode)) oDoc.Lines.ItemCode = doc.Lines[i].ItemCode;
                         if (!String.IsNullOrEmpty(doc.Lines[i].ItemDescription)) oDoc.Lines.ItemDescription = doc.Lines[i].ItemDescription;
                         if (!String.IsNullOrEmpty(doc.Lines[i].ItemDetails)) oDoc.Lines.ItemDetails = doc.Lines[i].ItemDetails;
-                        //if (doc.Lines[i].LineTotal > 0 && doc.DocType > 0) oDoc.Lines.LineTotal = doc.Lines[i].LineTotal;
-                        if (doc.Lines[i].LineTotal > 0) oDoc.Lines.LineTotal = doc.Lines[i].LineTotal; // ajiya special request
+                        if (doc.Lines[i].LineTotal > 0 && doc.DocType > 0) oDoc.Lines.LineTotal = doc.Lines[i].LineTotal;
                         if (doc.Lines[i].LocationCode > 0) oDoc.Lines.LocationCode = doc.Lines[i].LocationCode;
                         if (doc.Lines[i].Price > 0) oDoc.Lines.Price = doc.Lines[i].Price;
                         if (doc.Lines[i].PriceAfterVAT > 0) oDoc.Lines.PriceAfterVAT = doc.Lines[i].PriceAfterVAT;
@@ -1242,7 +1241,6 @@ where isnull(T0.SAPPosted,0) = 0 and T0.Status = @status";
                         if (doc.Lines[i].DiscountPercent != 0) oDoc.Lines.DiscountPercent = doc.Lines[i].DiscountPercent;
                         if (!String.IsNullOrEmpty(doc.Lines[i].ItemCode)) oDoc.Lines.ItemCode = doc.Lines[i].ItemCode;
                         if (!String.IsNullOrEmpty(doc.Lines[i].ItemDescription)) oDoc.Lines.ItemDescription = doc.Lines[i].ItemDescription;
-                        //if (doc.Lines[i].LineTotal > 0 && doc.DocType > 0) oDoc.Lines.LineTotal = doc.Lines[i].LineTotal;
                         if (doc.Lines[i].Price > 0) oDoc.Lines.Price = doc.Lines[i].Price;
                         if (!String.IsNullOrEmpty(doc.Lines[i].ProjectCode)) oDoc.Lines.ProjectCode = doc.Lines[i].ProjectCode;
                         if (doc.Lines[i].Quantity > 0) oDoc.Lines.Quantity = doc.Lines[i].Quantity;

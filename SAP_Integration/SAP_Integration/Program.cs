@@ -56,11 +56,18 @@ namespace SAP_Integration
 
             mainForm.defuserid = ConfigurationManager.AppSettings["DataSourceUserID"].ToString();
             mainForm.defpassword = ConfigurationManager.AppSettings["DataSourcePassword"].ToString();
-            string temp = ConfigurationManager.AppSettings["AutoPost"].ToString().ToUpper();
+            string temp = ConfigurationManager.AppSettings["AutoPostAfterLogin"].ToString().ToUpper();
             if (temp == "Y" || temp == "YES" || temp == "TRUE" || temp == "1")
-                mainForm.autopost = true;
+                mainForm.autopostafterlogin = true;
             else
-                mainForm.autopost = false;
+                mainForm.autopostafterlogin = false;
+
+            temp = "";
+            temp = ConfigurationManager.AppSettings["AutoLogin"].ToString().ToUpper();
+            if (temp == "Y" || temp == "YES" || temp == "TRUE" || temp == "1")
+                mainForm.autologin = true;
+            else
+                mainForm.autologin = false;
 
             Application.Run(mainForm);
 

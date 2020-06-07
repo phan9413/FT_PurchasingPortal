@@ -22,6 +22,7 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
 {
     [MemberDesignTimeVisibility(true)]
     [NonPersistent]
+    [DefaultProperty("DocNo")]
     [Appearance("SaveAndNewDocRecord", AppearanceItemType = "Action", TargetItems = "SaveAndNew", Context = "DetailView", Visibility = DevExpress.ExpressApp.Editors.ViewItemVisibility.Hide)]
     [Appearance("SaveAndCloseDocRecord", AppearanceItemType = "Action", TargetItems = "SaveAndClose", Context = "DetailView", Visibility = DevExpress.ExpressApp.Editors.ViewItemVisibility.Hide)]
     [Appearance("ClassDocumentDeleteRecord", AppearanceItemType = "Action", TargetItems = "Delete", Context = "Any", Visibility = DevExpress.ExpressApp.Editors.ViewItemVisibility.Hide)]
@@ -50,6 +51,7 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
                 if (CreateUser.Company != null)
                 {
                     Company = Session.GetObjectByKey<Company>(CreateUser.Company.Oid);
+                    DocCur = Session.FindObject<vwCurrency>(CriteriaOperator.Parse("CompanyCode=? and CurrCode=?", Company.BoCode, Company.LocalCurreny));
                 }
                 DocOwner = Session.FindObject<Employee>(new BinaryOperator("SystemUser.Oid", CreateUser.Oid, BinaryOperatorType.Equal));
             }
@@ -217,6 +219,7 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
         [ImmediatePostData]
         [XafDisplayName("Business Partner")]
         [Appearance("CardCode", Enabled = false, Criteria = "IsCopy")]
+        [Appearance("CardCode2", Visibility = DevExpress.ExpressApp.Editors.ViewItemVisibility.Hide, Criteria = "DocType.IsReq")]
         [DataSourceCriteria("CompanyCode = '@This.Company.BoCode' and IsActive and CardType = '@This.DocType.CardType'")]
         [NoForeignKey]
         //[RuleRequiredField(DefaultContexts.Save)]
@@ -227,13 +230,20 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
             {
                 if (SetPropertyValue("CardCode", ref _CardCode, value))
                 {
-                    if (!IsLoading && value != null)
+                    if (!IsLoading)
                     {
-                        CardName = value.CardName;
-                        CncttCode = null;
-                        ShipToCode = null;
-                        BillToCode = null;
-                        DocCur = Session.FindObject<vwCurrency>(CriteriaOperator.Parse("CurrCode=?", value.Currency));
+                        if (value != null)
+                        {
+                            CardName = value.CardName;
+                            CncttCode = null;
+                            ShipToCode = null;
+                            BillToCode = null;
+                            DocCur = Session.FindObject<vwCurrency>(CriteriaOperator.Parse("CompanyCode=? and CurrCode=?", Company.BoCode, value.Currency));
+                        }
+                        else
+                        {
+                            DocCur = Session.FindObject<vwCurrency>(CriteriaOperator.Parse("CompanyCode=? and CurrCode=?", Company.BoCode, Company.LocalCurreny));
+                        }
                     }
                 }
             }
@@ -243,6 +253,7 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
         [Index(11), VisibleInListView(true), VisibleInDetailView(true), VisibleInLookupListView(true)]
         [XafDisplayName("Name")]
         [DbType("nvarchar(100)")]
+        [Appearance("CardName", Visibility = DevExpress.ExpressApp.Editors.ViewItemVisibility.Hide, Criteria = "DocType.IsReq")]
         public string CardName
         {
             get { return _CardName; }
@@ -282,6 +293,7 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
         [XafDisplayName("Currency Code")]
         //[RuleRequiredField(DefaultContexts.Save)]
         [Appearance("DocCur", Enabled = false)]
+        [Appearance("DocCur2", Visibility = DevExpress.ExpressApp.Editors.ViewItemVisibility.Hide, Criteria = "DocType.IsReq")]
         public vwCurrency DocCur
         {
             get { return _DocCur; }

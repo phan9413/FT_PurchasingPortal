@@ -253,6 +253,8 @@
 	- BuyUnitMsr (item purchase uom)
 	- SalUnitMsr (item sales uom)
 	- InvntryUOM (item inventory uom)
+	- LastPurPrc (item last purchase price)
+	- LastPurCur (item last purchase currency)
 	- CompanyCode (sap databasename)
 
 [vwPriceList] (select from vwPriceList, use companycode to differenciate multi company)
@@ -339,6 +341,7 @@
 	- [AppType] (enum)
 	- ApprovalCnt (number of approval)
 	- ApprovalLevel (approval level, in descending sequence)
+	- [DocCur->vwCurrency]
 	- DocAmount (minimum doc value to trigger approval, when [AppType] = Document)
 	- IsActive (active)
 	- IsOverride (when true skip lower level approval stage)
@@ -363,6 +366,7 @@
 	- [Account->vwAccounts] (For Approval)
 	- [Project->vwProjects] (For Approval)
 	- [BudgetType] (enum)
+	- [DocCur->vwCurrency]
 	- Amount (minimum doc value to trigger approval, when [BudgetType] = Document)
 	----- <[Budget]> (1 to many)
 

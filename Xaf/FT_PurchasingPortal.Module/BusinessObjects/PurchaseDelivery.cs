@@ -70,7 +70,7 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
         protected override void OnLoaded()
         {
             base.OnLoaded();
-            if (DocStatus.CurrDocStatus != BusinessObjects.DocStatus.Draft)
+            if (PurchaseDeliveryDetail.Count > 0)
                 IsCopy = true;
 
             if (!GeneralValues.IsNetCore)
@@ -234,7 +234,8 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
         }
 
         private PurchaseDelivery _PurchaseDelivery;
-        [Browsable(false)]
+        [VisibleInDetailView(false), VisibleInListView(false), VisibleInLookupListView(true)]
+        [Appearance("PurchaseDelivery", Enabled = false)]
         [Association("PurchaseDelivery-Detail")]
         public PurchaseDelivery PurchaseDelivery
         {

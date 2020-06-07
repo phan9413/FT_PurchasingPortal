@@ -95,7 +95,8 @@ namespace FT_PurchasingPortal.Module.Controllers
                 {
                     dtlobj.FromWhsCod = os.FindObject<vwWarehouses>(CriteriaOperator.Parse("WhsCode=? and CompanyCode=?", dtl.WhsCode, company));
                     //dtlobj.WhsCode = os.FindObject<vwWarehouses>(CriteriaOperator.Parse("WhsCode=? and CompanyCode=?", obj.ToWhsCode.WhsCode, company));
-                    dtlobj.Quantity = dtl.OnHand + dtl.IsCommited + dtl.OnOrder;
+                    if (dtl.OnHand - dtl.IsCommited + dtl.OnOrder > 0)
+                        dtlobj.Quantity = dtl.OnHand - dtl.IsCommited + dtl.OnOrder;
                 }
                 else if (p.ParamAction == CopyToEnum.CopyOnhandQty)
                 {

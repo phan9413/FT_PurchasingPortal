@@ -1,5 +1,5 @@
 
-/****** Object:  StoredProcedure [dbo].[sp_GetApproval]    Script Date: 28/4/2020 3:15:43 PM ******/
+/****** Object:  StoredProcedure [dbo].[sp_GetApproval]    Script Date: 7/6/2020 12:33:27 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -46,6 +46,7 @@ begin
 	declare @datefrom datetime
 	declare @dateto datetime
 	declare @newapprovalstatus int
+	declare @doccur nvarchar(100)
 
 	select @useroid = Oid from PermissionPolicyUser where UserName = @usercode
 	select @cnt = 0
@@ -57,6 +58,7 @@ begin
 	CREATE TABLE #doctable
 	(
 		DocDate datetime,
+		DocCur nvarchar(100),
 		Amt numeric(19,6),
 		Employee int,
 		Department int,
@@ -69,6 +71,7 @@ begin
 	CREATE TABLE #periodtable
 	(
 		DocDate datetime,
+		DocCur nvarchar(100),
 		Amt numeric(19,6),
 		Employee int,
 		Department int,
@@ -121,31 +124,31 @@ begin
 		if @isReqApp = 1
 		begin
 			insert into #doctable
-			(Amt, DocDate, Employee, Department, Position, Division, Account, Project)
-			select sum(isnull(T1.LineTotal,0)), T0.DocDate, T0.DocOwner, T3.Department, T3.Position, T3.Division, T1.AcctCode, T1.PrjCode
+			(Amt, DocCur, DocDate, Employee, Department, Position, Division, Account, Project)
+			select sum(isnull(T1.LineTotal,0)), T0.DocCur, T0.DocDate, T0.DocOwner, T3.Department, T3.Position, T3.Division, T1.AcctCode, T1.PrjCode
 			from OPRQ T0 inner join OPRQ1 T1 on T0.OID = T1.PurchaseOrder
 			inner join OPRQD T2 on T0.DocStatus = T2.OID
 			inner join OEMP T3 on T0.DocOwner = T3.OID
 			where T0.OID = @docid
-			group by T0.DocDate, T0.DocOwner, T3.Department, T3.Position, T3.Division, T1.AcctCode, T1.PrjCode
+			group by T0.DocCur, T0.DocDate, T0.DocOwner, T3.Department, T3.Position, T3.Division, T1.AcctCode, T1.PrjCode
 
 			insert into #periodtable
-			(Amt, DocDate, Employee, Department, Position, Division, Account, Project)
-			select sum(isnull(T1.LineTotal,0)), T0.DocDate, T0.DocOwner, T3.Department, T3.Position, T3.Division, T1.AcctCode, T1.PrjCode
+			(Amt, DocCur, DocDate, Employee, Department, Position, Division, Account, Project)
+			select sum(isnull(T1.LineTotal,0)), T0.DocCur, T0.DocDate, T0.DocOwner, T3.Department, T3.Position, T3.Division, T1.AcctCode, T1.PrjCode
 			from OPRQ T0 inner join OPRQ1 T1 on T0.OID = T1.PurchaseOrder
 			inner join OPRQD T2 on T0.DocStatus = T2.OID
 			inner join OEMP T3 on T0.DocOwner = T3.OID
 			where T0.OID <> @docid and T2.CurrDocStatus > 2 --in (3,4,5,6,7)
-			group by T0.DocDate, T0.DocOwner, T3.Department, T3.Position, T3.Division, T1.AcctCode, T1.PrjCode
+			group by T0.DocCur, T0.DocDate, T0.DocOwner, T3.Department, T3.Position, T3.Division, T1.AcctCode, T1.PrjCode
 
 			insert into #periodtable
-			(Amt, DocDate, Employee, Department, Position, Division, Account, Project)
-			select sum(isnull(T1.LineTotal,0)), T0.DocDate, T0.DocOwner, T3.Department, T3.Position, T3.Division, T1.AcctCode, T1.PrjCode
+			(Amt, DocCur, DocDate, Employee, Department, Position, Division, Account, Project)
+			select sum(isnull(T1.LineTotal,0)), T0.DocCur, T0.DocDate, T0.DocOwner, T3.Department, T3.Position, T3.Division, T1.AcctCode, T1.PrjCode
 			from OPRQ T0 inner join OPRQ1 T1 on T0.OID = T1.PurchaseOrder
 			inner join OPRQD T2 on T0.DocStatus = T2.OID
 			inner join OEMP T3 on T0.DocOwner = T3.OID
 			where T0.OID = @docid
-			group by T0.DocDate, T0.DocOwner, T3.Department, T3.Position, T3.Division, T1.AcctCode, T1.PrjCode
+			group by T0.DocCur, T0.DocDate, T0.DocOwner, T3.Department, T3.Position, T3.Division, T1.AcctCode, T1.PrjCode
 
 		end
 	end
@@ -170,31 +173,31 @@ begin
 		if @isReqApp = 1
 		begin
 			insert into #doctable
-			(Amt, DocDate, Employee, Department, Position, Division, Account, Project)
-			select sum(isnull(T1.LineTotal,0)), T0.DocDate, T0.DocOwner, T3.Department, T3.Position, T3.Division, T1.AcctCode, T1.PrjCode
+			(Amt, DocCur, DocDate, Employee, Department, Position, Division, Account, Project)
+			select sum(isnull(T1.LineTotal,0)), T0.DocCur, T0.DocDate, T0.DocOwner, T3.Department, T3.Position, T3.Division, T1.AcctCode, T1.PrjCode
 			from OPRE T0 inner join OPRE1 T1 on T0.OID = T1.PurchaseRequest
 			inner join OPRED T2 on T0.DocStatus = T2.OID
 			inner join OEMP T3 on T0.DocOwner = T3.OID
 			where T0.OID = @docid
-			group by T0.DocDate, T0.DocOwner, T3.Department, T3.Position, T3.Division, T1.AcctCode, T1.PrjCode
+			group by T0.DocCur, T0.DocDate, T0.DocOwner, T3.Department, T3.Position, T3.Division, T1.AcctCode, T1.PrjCode
 
 			insert into #periodtable
-			(Amt, DocDate, Employee, Department, Position, Division, Account, Project)
-			select sum(isnull(T1.LineTotal,0)), T0.DocDate, T0.DocOwner, T3.Department, T3.Position, T3.Division, T1.AcctCode, T1.PrjCode
+			(Amt, DocCur, DocDate, Employee, Department, Position, Division, Account, Project)
+			select sum(isnull(T1.LineTotal,0)), T0.DocCur, T0.DocDate, T0.DocOwner, T3.Department, T3.Position, T3.Division, T1.AcctCode, T1.PrjCode
 			from OPRE T0 inner join OPRE1 T1 on T0.OID = T1.PurchaseRequest
 			inner join OPRED T2 on T0.DocStatus = T2.OID
 			inner join OEMP T3 on T0.DocOwner = T3.OID
 			where T0.OID <> @docid and T2.CurrDocStatus > 2 --in (3,4,5,6,7)
-			group by T0.DocDate, T0.DocOwner, T3.Department, T3.Position, T3.Division, T1.AcctCode, T1.PrjCode
+			group by T0.DocCur, T0.DocDate, T0.DocOwner, T3.Department, T3.Position, T3.Division, T1.AcctCode, T1.PrjCode
 
 			insert into #periodtable
-			(Amt, DocDate, Employee, Department, Position, Division, Account, Project)
-			select sum(isnull(T1.LineTotal,0)), T0.DocDate, T0.DocOwner, T3.Department, T3.Position, T3.Division, T1.AcctCode, T1.PrjCode
+			(Amt, DocCur, DocDate, Employee, Department, Position, Division, Account, Project)
+			select sum(isnull(T1.LineTotal,0)), T0.DocCur, T0.DocDate, T0.DocOwner, T3.Department, T3.Position, T3.Division, T1.AcctCode, T1.PrjCode
 			from OPRE T0 inner join OPRE1 T1 on T0.OID = T1.PurchaseRequest
 			inner join OPRED T2 on T0.DocStatus = T2.OID
 			inner join OEMP T3 on T0.DocOwner = T3.OID
 			where T0.OID = @docid
-			group by T0.DocDate, T0.DocOwner, T3.Department, T3.Position, T3.Division, T1.AcctCode, T1.PrjCode
+			group by T0.DocCur, T0.DocDate, T0.DocOwner, T3.Department, T3.Position, T3.Division, T1.AcctCode, T1.PrjCode
 
 		end
 
@@ -204,12 +207,12 @@ begin
 	begin
 
 		DECLARE db_cursor CURSOR FOR 
-		select OID, AppType, DocAmount, IsOverride, IsReject, ApprovalBy, isnull(Division,0), ApprovalLevel
+		select OID, AppType, DocAmount, IsOverride, IsReject, ApprovalBy, isnull(Division,0), ApprovalLevel, DocCur
 		from OAPP where IsActive = 1 and DocType = @doctypeoid and Company = @companyoid
 		order by AppType, ApprovalLevel desc
 
 		OPEN db_cursor  
-		FETCH NEXT FROM db_cursor INTO @approvaloid, @apptype, @appdocamount, @isoverride, @isreject, @approvalby, @approvaldivision, @approvallevel
+		FETCH NEXT FROM db_cursor INTO @approvaloid, @apptype, @appdocamount, @isoverride, @isreject, @approvalby, @approvaldivision, @approvallevel, @doccur
 
 		WHILE @@FETCH_STATUS = 0  
 		BEGIN
@@ -232,6 +235,7 @@ begin
 				((T8.Project is not null and T8.Project = T5.Project) or T8.Project is null) and 
 				((T8.Position is not null and T8.Position = T5.Position) or T8.Position is null) and
 				((T8.Division is not null and T8.Division = T5.Division) or T8.Division is null)
+				and (T5.DocCur = T8.DocCur)
 				where T8.IsActive = 1
 				and T8.BudgetType = 0 -- 0 = Period
 				order by T9.DateFrom, T9.OID
@@ -250,6 +254,7 @@ begin
 					((T8.Project is not null and T8.Project = T5.Project) or T8.Project is null) and 
 					((T8.Position is not null and T8.Position = T5.Position) or T8.Position is null) and
 					((T8.Division is not null and T8.Division = T5.Division) or T8.Division is null)
+					and (T5.DocCur = T8.DocCur)
 					where T8.IsActive = 1
 					and T5.DocDate >= @datefrom and 
 						T5.DocDate <= @dateto
@@ -273,6 +278,7 @@ begin
 					((T8.Project is not null and T8.Project = T5.Project) or T8.Project is null) and 
 					((T8.Position is not null and T8.Position = T5.Position) or T8.Position is null) and
 					((T8.Division is not null and T8.Division = T5.Division) or T8.Division is null)
+					and (T5.DocCur = T8.DocCur)
 					where T8.IsActive = 1
 					and T8.BudgetType = 1 -- 0 = Document
 					and T8.Amount <= @total
@@ -294,7 +300,7 @@ begin
 				select @total = sum(Amt)
 				from
 				#doctable
-
+				where DocCur = @doccur
 			end
 
 
@@ -430,7 +436,7 @@ begin
 				end
 			end
 
-			FETCH NEXT FROM db_cursor INTO @approvaloid, @apptype, @appdocamount, @isoverride, @isreject, @approvalby, @approvaldivision, @approvallevel
+			FETCH NEXT FROM db_cursor INTO @approvaloid, @apptype, @appdocamount, @isoverride, @isreject, @approvalby, @approvaldivision, @approvallevel, @doccur
 
 		end
 

@@ -24,7 +24,7 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
     [Persistent("OBUM")]
     //[ImageName("BO_Contact")]
     [NavigationItem("Setup")]
-    [DefaultProperty("BoFullName")]
+    [DefaultProperty("BoName")]
     //[DefaultListViewOptions(MasterDetailMode.ListViewOnly, false, NewItemRowPosition.None)]
     //[Appearance("NewRecord", AppearanceItemType = "Action", TargetItems = "New", Context = "Any", Visibility = DevExpress.ExpressApp.Editors.ViewItemVisibility.Hide)]
     //[Appearance("EditRecord", AppearanceItemType = "Action", TargetItems = "SwitchToEditMode;Edit", Context = "Any", Visibility = DevExpress.ExpressApp.Editors.ViewItemVisibility.Hide)]
@@ -47,6 +47,8 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
         {
             base.AfterConstruction();
             // Place your initialization code here (https://documentation.devexpress.com/eXpressAppFramework/CustomDocument112834.aspx).
+            BoCode = "";
+            BoName = "";
             IsActive = true;
             BudgetType = BudgetType.Document;
             SystemUsers usr = null;
@@ -61,6 +63,7 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
             if (usr != null && usr.Company != null)
             {
                 Company = Session.FindObject<Company>(new BinaryOperator("BoCode", usr.Company.BoCode, BinaryOperatorType.Equal));
+                DocCur = Session.FindObject<vwCurrency>(CriteriaOperator.Parse("CompanyCode=? and CurrCode=?", Company.BoCode, Company.LocalCurreny));
             }
         }
         //private string _PersistentProperty;
@@ -118,10 +121,11 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
             }
         }
 
+        [PersistentAlias("concat(BoCode, '::', BoName)")]
         [Index(2), VisibleInDetailView(false), VisibleInListView(false), VisibleInLookupListView(false)]
         public string BoFullName
         {
-            get { return Company == null ? BoCode : Company.BoCode + "-" + BoCode; }
+            get { return EvaluateAlias("BoFullName").ToString(); }
         }
 
         private bool _IsActive;
@@ -238,6 +242,20 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
             set
             {
                 SetPropertyValue("BudgetType", ref _BudgetType, value);
+            }
+        }
+        private vwCurrency _DocCur;
+        [Index(59), VisibleInListView(true), VisibleInDetailView(true), VisibleInLookupListView(true)]
+        [NoForeignKey]
+        [DataSourceCriteria("CompanyCode = '@This.Company.BoCode' and IsActive")]
+        [XafDisplayName("Currency Code")]
+        [RuleRequiredField(DefaultContexts.Save)]
+        public vwCurrency DocCur
+        {
+            get { return _DocCur; }
+            set
+            {
+                SetPropertyValue("DocCur", ref _DocCur, value);
             }
         }
 

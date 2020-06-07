@@ -70,6 +70,8 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
         public string BuyUnitMsr { get; set; }
         public string SalUnitMsr { get; set; }
         public string InvntryUOM { get; set; }
+        public double LastPurPrc { get; set; }
+        public string LastPurCur { get; set; }
         public string CompanyCode { get; set; }
     }
 }

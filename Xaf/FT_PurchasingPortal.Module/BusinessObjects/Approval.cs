@@ -25,7 +25,7 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
     [Persistent("OAPP")]
     //[ImageName("BO_Contact")]
     [NavigationItem("Approval")]
-    [DefaultProperty("BoFullName")]
+    [DefaultProperty("BoName")]
     //[DefaultListViewOptions(MasterDetailMode.ListViewOnly, false, NewItemRowPosition.None)]
     //[Appearance("NewRecord", AppearanceItemType = "Action", TargetItems = "New", Context = "Any", Visibility = DevExpress.ExpressApp.Editors.ViewItemVisibility.Hide)]
     //[Appearance("EditRecord", AppearanceItemType = "Action", TargetItems = "SwitchToEditMode;Edit", Context = "Any", Visibility = DevExpress.ExpressApp.Editors.ViewItemVisibility.Hide)]
@@ -72,6 +72,7 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
                 Company = Session.FindObject<Company>(new BinaryOperator("BoCode", usr.Company.BoCode, BinaryOperatorType.Equal));
                 AppType = Company.AppType;
                 ApprovalBy = Company.ApprovalBy;
+                DocCur = Session.FindObject<vwCurrency>(CriteriaOperator.Parse("CompanyCode=? and CurrCode=?", Company.BoCode, Company.LocalCurreny));
             }
         }
         protected override void OnLoaded()
@@ -150,10 +151,11 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
             }
         }
 
-        [Index(2), VisibleInDetailView(false), VisibleInListView(true), VisibleInLookupListView(false)]
+        [PersistentAlias("concat(BoCode, '::', BoName)")]
+        [Index(2), VisibleInDetailView(false), VisibleInListView(false), VisibleInLookupListView(false)]
         public string BoFullName
         {
-            get { return Company == null? BoCode: Company.BoCode + "-" + BoCode; }
+            get { return EvaluateAlias("BoFullName").ToString(); }
         }
 
         private DocType _DocType;
@@ -222,10 +224,25 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
                 SetPropertyValue("ApprovalLevel", ref _ApprovalLevel, value);
             }
         }
+        private vwCurrency _DocCur;
+        [Index(7), VisibleInListView(true), VisibleInDetailView(true), VisibleInLookupListView(true)]
+        [NoForeignKey]
+        [DataSourceCriteria("CompanyCode = '@This.Company.BoCode' and IsActive")]
+        [XafDisplayName("Currency Code")]
+        [RuleRequiredField(DefaultContexts.Save)]
+        //[Appearance("DocCur", Enabled = false, Criteria = "not IsAllowedDocAmount")]
+        public vwCurrency DocCur
+        {
+            get { return _DocCur; }
+            set
+            {
+                SetPropertyValue("DocCur", ref _DocCur, value);
+            }
+        }
         private decimal _DocAmount;
         [XafDisplayName("Document Amount"), ToolTip("Enter Number")]
         [Appearance("DocAmount", Enabled = false, Criteria = "not IsAllowedDocAmount")]
-        [Index(7)]
+        [Index(8)]
         public decimal DocAmount
         {
             get { return _DocAmount; }
@@ -259,7 +276,7 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
             }
         }
         private bool _IsOverride;
-        [XafDisplayName("Override Lower Level?")]
+        [XafDisplayName("Override Following Level?")]
         //[ModelDefault("EditMask", "(000)-00"), VisibleInListView(false)]
         //[RuleRequiredField(DefaultContexts.Save)]
         [Index(20)]

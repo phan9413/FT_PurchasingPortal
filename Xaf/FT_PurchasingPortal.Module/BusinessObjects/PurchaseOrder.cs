@@ -69,7 +69,7 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
         protected override void OnLoaded()
         {
             base.OnLoaded();
-            if (DocStatus.CurrDocStatus != BusinessObjects.DocStatus.Draft)
+            if (PurchaseOrderDetail.Count > 0)
                 IsCopy = true;
 
             if (!GeneralValues.IsNetCore)
@@ -230,7 +230,8 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
         }
 
         private PurchaseOrder _PurchaseOrder;
-        [Browsable(false)]
+        [VisibleInDetailView(false), VisibleInListView(false), VisibleInLookupListView(true)]
+        [Appearance("PurchaseOrder", Enabled = false)]
         [Association("PurchaseOrder-Detail")]
         public PurchaseOrder PurchaseOrder
         {

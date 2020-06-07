@@ -24,7 +24,7 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
     [Persistent("ODOC")]
     //[ImageName("BO_Contact")]
     [NavigationItem("Setup")]
-    [DefaultProperty("BoFullName")]
+    [DefaultProperty("BoName")]
     [ImageName("ModelEditor_Action_Modules")]
     //[DefaultListViewOptions(MasterDetailMode.ListViewOnly, false, NewItemRowPosition.None)]
     [Appearance("HideNew", AppearanceItemType.Action, "True", TargetItems = "New", Visibility = DevExpress.ExpressApp.Editors.ViewItemVisibility.Hide, Context = "Any")]
@@ -47,6 +47,8 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
         {
             base.AfterConstruction();
             // Place your initialization code here (https://documentation.devexpress.com/eXpressAppFramework/CustomDocument112834.aspx).
+            BoCode = "";
+            BoName = "";
             IsActive = true;
             //IsPassAccept = false;
             IsReqApp = false;
@@ -97,10 +99,11 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
             }
         }
 
+        [PersistentAlias("concat(BoCode, '::', BoName)")]
         [Index(2), VisibleInDetailView(false), VisibleInListView(false), VisibleInLookupListView(false)]
         public string BoFullName
         {
-            get { return BoCode + "-" + BoName; }
+            get { return EvaluateAlias("BoFullName").ToString(); }
         }
 
         private bool _IsActive;
@@ -259,6 +262,21 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
                     case DocTypeCodes.SalesQuotation:
                     case DocTypeCodes.SalesOrder:
                         rtn = "C";
+                        break;
+                }
+                return rtn;
+            }
+        }
+        [Browsable(false)]
+        public bool IsReq
+        {
+            get
+            {
+                bool rtn = false;
+                switch (this.BoCode)
+                {
+                    case DocTypeCodes.PurchaseRequest:
+                        rtn = true;
                         break;
                 }
                 return rtn;

@@ -17,7 +17,8 @@ namespace SAP_Integration
     {
         public string defuserid { get; set; }
         public string defpassword { get; set; }
-        public bool autopost { get; set; }
+        public bool autopostafterlogin { get; set; }
+        public bool autologin { get; set; }
 
         private IObjectSpace securedObjectSpace;
         public SecurityStrategyComplex Security { get; set; }
@@ -33,6 +34,11 @@ namespace SAP_Integration
         {
             txtUserID.Text = defuserid;
             txtPassword.Text = defpassword;
+            Post.Enabled = false;
+            if (autologin)
+            {
+                Login.PerformClick();
+            }
         }
 
         private void Login_Click(object sender, EventArgs e)
@@ -60,9 +66,11 @@ namespace SAP_Integration
                     return;
                 }
             }
-            if (autopost)
+            Login.Enabled = false;
+            Post.Enabled = true;
+            if (autopostafterlogin)
             {
-                Posting();
+                Post.PerformClick();
             }
 
         }
@@ -82,6 +90,16 @@ namespace SAP_Integration
 
             txtUserID.Enabled = true;
             txtPassword.Enabled = true;
+        }
+
+        private void Post_Click(object sender, EventArgs e)
+        {
+            Posting();
+
+            this.Close();
+
+            Application.Exit();
+            GC.Collect();
         }
     }
 }
