@@ -277,6 +277,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controllers\ChangeColumnTemplateController.cs" />
     <Compile Include="Controllers\WebModifyController.cs">
       <SubType>Component</SubType>
     </Compile>

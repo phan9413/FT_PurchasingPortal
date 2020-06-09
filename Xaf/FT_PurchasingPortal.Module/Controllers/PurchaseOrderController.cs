@@ -143,7 +143,8 @@ namespace FT_PurchasingPortal.Module.Controllers
             PurchaseOrder masterobject = (PurchaseOrder)View.CurrentObject;
 
             string ObjType = masterobject.DocType.BoCode;
-            string BusinessPartner = masterobject.CardCode == null ? "" : masterobject.CardCode.CardCode;
+            string BusinessPartner = masterobject.CardCode == null ? "" : masterobject.CardCode.BoKey;
+            string doccur = masterobject.DocCur == null ? "" : masterobject.DocCur.BoKey;
 
             IObjectSpace newObjectSpace = Application.CreateObjectSpace(typeof(PurchaseRequestDetail));
             string listViewId = Application.FindLookupListViewId(typeof(PurchaseRequestDetail));
@@ -151,7 +152,7 @@ namespace FT_PurchasingPortal.Module.Controllers
             if (BusinessPartner == "")
                 collectionSource.Criteria["filter01"] = CriteriaOperator.Parse("1=0");
             else
-                collectionSource.Criteria["Filter01"] = CriteriaOperator.Parse("OpenQty > CopyQty and PurchaseRequest is not null and PurchaseRequest.DocStatus.CurrDocStatus in (?, ?, ?) and LineStatus in (?) and (LineVendor=? or LineVendor is null)", DocStatus.Accepted, DocStatus.Closed, DocStatus.Posted, LineStatusEnum.Open, BusinessPartner);
+                collectionSource.Criteria["Filter01"] = CriteriaOperator.Parse("OpenQty > CopyQty and PurchaseRequest is not null and PurchaseRequest.DocStatus.CurrDocStatus in (?, ?, ?) and LineStatus in (?) and DocCur.BoKey=? and (LineVendor=? or LineVendor is null)", DocStatus.Accepted, DocStatus.Closed, DocStatus.Posted, LineStatusEnum.Open, doccur, BusinessPartner);
 
             e.View = Application.CreateListView(listViewId, collectionSource, true);
             //e.View = Application.CreateListView(typeof(PurchaseRequestDetail), true);

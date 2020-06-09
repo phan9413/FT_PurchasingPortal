@@ -248,7 +248,7 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
         [Index(14), VisibleInListView(true), VisibleInDetailView(true), VisibleInLookupListView(true)]
         [XafDisplayName("Currency")]
         [DataSourceCriteria("CompanyCode = '@This.Company.BoCode' and IsActive")]
-        [Appearance("DocCur", Enabled = false)]
+        [Appearance("DocCur", Enabled = false, Criteria = "not (LineVendor is null)")]
         [Appearance("DocCur2", Visibility = DevExpress.ExpressApp.Editors.ViewItemVisibility.Hide, Criteria = "not ObjType.IsReq")]
         [NoForeignKey]
         public vwCurrency DocCur

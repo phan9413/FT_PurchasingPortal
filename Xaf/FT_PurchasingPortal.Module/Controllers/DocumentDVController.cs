@@ -13,6 +13,7 @@ using DevExpress.ExpressApp.Templates;
 using DevExpress.ExpressApp.Utils;
 using DevExpress.ExpressApp.Xpo;
 using DevExpress.Persistent.Base;
+using DevExpress.Persistent.BaseImpl.PermissionPolicy;
 using DevExpress.Persistent.Validation;
 using DevExpress.Xpo;
 using DevExpress.Xpo.DB;
@@ -1562,6 +1563,7 @@ namespace FT_PurchasingPortal.Module.Controllers
                 IObjectSpace newObjectSpace = Application.CreateObjectSpace(typeof(Employee));
                 string listViewId = Application.FindLookupListViewId(typeof(Employee));
                 CollectionSourceBase collectionSource = Application.CreateCollectionSource(newObjectSpace, typeof(Employee), listViewId);
+                collectionSource.Criteria.Add("filter01", ContainsOperator.Parse("[SystemUser.Roles][[Name] = ?]", GeneralValues.ApprovalRole));
                 e.View = Application.CreateListView(listViewId, collectionSource, true);
             }
         }

@@ -109,7 +109,7 @@ namespace FT_PurchasingPortal.Module.Controllers
                     {
                         PurchaseOrder masterobject = (PurchaseOrder)collectionSource.MasterObject;
                         PurchaseOrderDetail currentobject = (PurchaseOrderDetail)e.CreatedObject;
-
+                        
                         if (masterobject.PurchaseOrderDetail.Count > 0)
                         {
                             comparevalue = masterobject.PurchaseOrderDetail.Min(pp => pp.Oid);
