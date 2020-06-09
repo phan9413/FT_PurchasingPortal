@@ -35,19 +35,6 @@ namespace FT_PurchasingPortal.Module.Controllers
         {
             base.OnActivated();
             // Perform various tasks depending on the target View.
-            if (Frame.Context == TemplateContext.LookupControl || Frame.Context == TemplateContext.LookupWindow)
-            {
-                NewObjectViewController newcon = Frame.GetController<NewObjectViewController>();
-                if (newcon != null)
-                {
-                    newcon.NewObjectAction.Active.SetItemValue("LookupNewListView", false);
-                }
-                DeleteObjectsViewController deleteCon = Frame.GetController<DeleteObjectsViewController>();
-                if (deleteCon != null)
-                {
-                    deleteCon.DeleteAction.Active.SetItemValue("LookupDelListView", false);
-                }
-            }
         }
         void grid_DataBound(object sender, EventArgs e)
         {

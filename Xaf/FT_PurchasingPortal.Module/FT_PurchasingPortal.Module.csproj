@@ -287,6 +287,12 @@
     <Compile Include="Controllers\MyCustomInplaceReportController.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Controllers\MyLookupViewController.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controllers\MyLookupViewController.Designer.cs">
+      <DependentUpon>MyLookupViewController.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controllers\PurchaseDeliveryController.cs">
       <SubType>Component</SubType>
     </Compile>
