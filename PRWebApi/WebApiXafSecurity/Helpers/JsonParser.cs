@@ -29,7 +29,6 @@ namespace WebApiXafSecurity.Helpers
 					ParseSimpleProperty(jObject, obj, memberInfo);
 				}
 			}
-			objectSpace.CommitChanges();
 		}
 
 		public static void ParseJObject<T>(JObject jObject, object obj, IObjectSpace objectSpace) where T : BaseObject
@@ -48,7 +47,6 @@ namespace WebApiXafSecurity.Helpers
 					ParseSimpleProperty(jObject, obj, memberInfo);
 				}
 			}
-			objectSpace.CommitChanges();
 		}
 		private static void ParseSimpleProperty(JObject jObject, object obj, IMemberInfo memberInfo)
 		{

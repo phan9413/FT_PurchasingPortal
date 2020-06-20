@@ -19,10 +19,13 @@ namespace WebApiXafSecurity.Controllers
 	[Route("api/[controller]")]
 	public class EmployeeController : Microsoft.AspNetCore.Mvc.Controller
 	{
+		const string controllername = "EmployeeController";
 		SecurityProvider securityProvider;
 		IObjectSpace objectSpace;
 		public EmployeeController(SecurityProvider securityProvider)
 		{
+			FT_PurchasingPortal.Module.GeneralValues.IsNetCore = true;
+			FT_PurchasingPortal.Module.GeneralValues.NetCoreUserName = securityProvider.GetUserName();
 			this.securityProvider = securityProvider;
 			objectSpace = securityProvider.ObjectSpaceProvider.CreateObjectSpace();
 		}
@@ -32,13 +35,14 @@ namespace WebApiXafSecurity.Controllers
 		{
 			try
 			{
-				//objectSpace = GenHelper.LoginByHeader(securityProvider, Request);
-				//if (objectSpace is null) return Unauthorized();
+				GenHelper.WriteLog("[Log]", "[" + securityProvider.GetUserName() + "]" + controllername + "-Get:[" + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "]");
+
 				IQueryable<Employee> employees = objectSpace.GetObjectsQuery<Employee>();
 				return Ok(employees);
 			}
 			catch (Exception ex)
 			{
+				GenHelper.WriteLog("[Error]", "[" + securityProvider.GetUserName() + "]" + controllername + "-Get:[" + ex.Message + "][" + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "]");
 				throw new Exception(ex.Message);
 			}
 		}
@@ -48,8 +52,8 @@ namespace WebApiXafSecurity.Controllers
 		{
 			try
 			{
-				//objectSpace = GenHelper.LoginByHeader(securityProvider, Request);
-				//if (objectSpace is null) return Unauthorized();
+				GenHelper.WriteLog("[Log]", "[" + securityProvider.GetUserName() + "]" + controllername + "-Get(" + id.ToString() + "):[" + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "]");
+
 				Employee existing = objectSpace.GetObjectByKey<Employee>(id);
 				if (existing == null)
 				{
@@ -59,6 +63,7 @@ namespace WebApiXafSecurity.Controllers
 			}
 			catch (Exception ex)
 			{
+				GenHelper.WriteLog("[Error]", "[" + securityProvider.GetUserName() + "]" + controllername + "-Get(" + id.ToString() + "):[" + ex.Message + "][" + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "]");
 				throw new Exception(ex.Message);
 			}
 		}
@@ -68,8 +73,8 @@ namespace WebApiXafSecurity.Controllers
 		{
 			try
 			{
-				//objectSpace = GenHelper.LoginByHeader(securityProvider, Request);
-				//if (objectSpace is null) return Unauthorized();
+				GenHelper.WriteLog("[Log]", "[" + securityProvider.GetUserName() + "]" + controllername + "-Delete(" + id.ToString() + "):[" + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "]");
+
 				Employee existing = objectSpace.GetObjectByKey<Employee>(id);
 				if (existing != null)
 				{
@@ -81,6 +86,7 @@ namespace WebApiXafSecurity.Controllers
 			}
 			catch (Exception ex)
 			{
+				GenHelper.WriteLog("[Error]", "[" + securityProvider.GetUserName() + "]" + controllername + "-Delete(" + id.ToString() + "):[" + ex.Message + "][" + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "]");
 				throw new Exception(ex.Message);
 			}
 		}
@@ -89,18 +95,20 @@ namespace WebApiXafSecurity.Controllers
 		{
 			try
 			{
-				//objectSpace = GenHelper.LoginByHeader(securityProvider, Request);
-				//if (objectSpace is null) return Unauthorized();
+				GenHelper.WriteLog("[Log]", "[" + securityProvider.GetUserName() + "]" + controllername + "-Put(" + id.ToString() + "):[" + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "]");
+
 				Employee employee = objectSpace.GetObjectByKey<Employee>(id);
 				if (employee != null)
 				{
 					JsonParser.ParseJObjectXPO<Employee>(values, employee, objectSpace);
+					objectSpace.CommitChanges();
 					return Ok(employee);
 				}
 				return NotFound();
 			}
 			catch (Exception ex)
 			{
+				GenHelper.WriteLog("[Error]", "[" + securityProvider.GetUserName() + "]" + controllername + "-Put(" + id.ToString() + "):[" + ex.Message + "][" + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "]");
 				throw new Exception(ex.Message);
 			}
 		}
@@ -109,15 +117,16 @@ namespace WebApiXafSecurity.Controllers
 		{
 			try
 			{
-				//objectSpace = GenHelper.LoginByHeader(securityProvider, Request);
-				//if (objectSpace is null) return Unauthorized();
+				GenHelper.WriteLog("[Log]", "[" + securityProvider.GetUserName() + "]" + controllername + "-Post:[" + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "]");
 
-                Employee employee = objectSpace.CreateObject<Employee>();
+				Employee employee = objectSpace.CreateObject<Employee>();
                 JsonParser.ParseJObjectXPO<Employee>(values, employee, objectSpace);
-                return Ok(employee);
+				objectSpace.CommitChanges();
+				return Ok(employee);
             }
 			catch (Exception ex)
 			{
+				GenHelper.WriteLog("[Error]", "[" + securityProvider.GetUserName() + "]" + controllername + "-Post:[" + ex.Message + "][" + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "]");
 				throw new Exception(ex.Message);
 			}
 		}

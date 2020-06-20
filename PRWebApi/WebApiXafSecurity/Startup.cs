@@ -22,7 +22,8 @@ namespace WebApiXafSecurity
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
-        }
+
+		}
 		string loginPath = "/";
 
 		public IConfiguration Configuration { get; }
@@ -31,6 +32,8 @@ namespace WebApiXafSecurity
 		// This method gets called by the runtime. Use this method to add services to the container.
 		public void ConfigureServices(IServiceCollection services)
 		{
+			Helpers.GenHelper.FilePath = Configuration["FilePath:LogPath"];
+
 			JsonResolver resolver = new JsonResolver();
 #if NETCOREAPP
 			Action<MvcNewtonsoftJsonOptions> JsonOptions =

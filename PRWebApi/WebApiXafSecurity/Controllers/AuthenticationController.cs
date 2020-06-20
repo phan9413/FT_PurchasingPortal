@@ -29,6 +29,7 @@ namespace WebApiXafSecurity.Controllers
 				if (securityProvider.InitConnection(userName, password))
 				{
 					result = Ok();
+					GenHelper.WriteLog("[Log]", "[" + userName + "]Login Done:[" + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "]");
 				}
 				else
 				{
@@ -46,6 +47,7 @@ namespace WebApiXafSecurity.Controllers
 		public async Task<ActionResult> Logout()
 		{
 			await HttpContext.SignOutAsync();
+			GenHelper.WriteLog("[Log]", "[" + securityProvider.GetUserName() + "]Logout Done:[" + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "]");
 			return Ok();
 		}
 		[Route("Authentication")]

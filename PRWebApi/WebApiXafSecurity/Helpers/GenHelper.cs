@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Primitives;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -10,28 +11,43 @@ namespace WebApiXafSecurity.Helpers
 {
     public static class GenHelper
     {
-        public static IObjectSpace LoginByHeader(SecurityProvider securityProvider, HttpRequest request)
+        public static string FilePath = "";
+        public static string GetUserNameFromRequest(HttpRequest request)
         {
-            IObjectSpace objectSpace = null;
             StringValues userinfo;
-            string username = "";
-            string password = "";
             if (request.Headers.TryGetValue("username", out userinfo))
             {
-                username = userinfo.First();
+                return userinfo.First();
             }
-            if (request.Headers.TryGetValue("password", out userinfo))
-            {
-                password = userinfo.First();
-            }
-            if (securityProvider.InitConnection(username, password))
-            {
-                objectSpace = securityProvider.ObjectSpaceProvider.CreateObjectSpace();
+            return "";
+        }
+        public static void WriteLog(string lvl, string str)
+        {
+            FileStream fileStream = null;
 
-                FT_PurchasingPortal.Module.GeneralValues.IsNetCore = true;
-                FT_PurchasingPortal.Module.GeneralValues.NetCoreUserName = username;
+            string filePath = FilePath + "[PRWebAPI] Log_" + System.DateTime.Today.ToString("yyyyMMdd") + "." + "txt";
+
+            FileInfo fileInfo = new FileInfo(filePath);
+            DirectoryInfo dirInfo = new DirectoryInfo(fileInfo.DirectoryName);
+            if (!dirInfo.Exists) dirInfo.Create();
+
+            if (!fileInfo.Exists)
+            {
+                fileStream = fileInfo.Create();
             }
-            return objectSpace;
+            else
+            {
+                fileStream = new FileStream(filePath, FileMode.Append);
+            }
+
+            StreamWriter log = new StreamWriter(fileStream);
+            string status = lvl.ToString();//.Replace("[Log]", "");
+
+            //For SAP_Integration_Log
+            log.WriteLine("{0}{1}", status, str.ToString());
+
+            log.Close();
+
         }
     }
 }

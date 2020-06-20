@@ -12,10 +12,13 @@ namespace WebApiXafSecurity.Controllers
 {
     public class GetDocController : Microsoft.AspNetCore.Mvc.Controller
     {
+        const string controllername = "GetDocController";
         SecurityProvider securityProvider;
         IObjectSpace objectSpace;
         public GetDocController(SecurityProvider securityProvider)
         {
+            FT_PurchasingPortal.Module.GeneralValues.IsNetCore = true;
+            FT_PurchasingPortal.Module.GeneralValues.NetCoreUserName = securityProvider.GetUserName();
             this.securityProvider = securityProvider;
             objectSpace = securityProvider.ObjectSpaceProvider.CreateObjectSpace();
         }
@@ -31,12 +34,12 @@ namespace WebApiXafSecurity.Controllers
         /// <response code="400">Not Found</response>
         [HttpGet]
         [Route("api/getpoitem/{docno}")]
-        public IActionResult Getpo(string docno)
+        public IActionResult GetPO(string docno)
         {
             try
             {
-                //objectSpace = GenHelper.LoginByHeader(securityProvider, Request);
-                //if (objectSpace is null) return Unauthorized();
+                GenHelper.WriteLog("[Log]", "[" + securityProvider.GetUserName() + "]" + controllername + "-GetPO(" + docno + "):[" + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "]");
+
                 PurchaseOrder obj = objectSpace.FindObject<PurchaseOrder>(CriteriaOperator.Parse("DocNo=?", docno));
                 if (obj == null)
                 {
@@ -55,6 +58,7 @@ namespace WebApiXafSecurity.Controllers
             }
             catch (Exception ex)
             {
+                GenHelper.WriteLog("[Error]", "[" + securityProvider.GetUserName() + "]" + controllername + "-GetPO:[" + ex.Message + "][" + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "]");
                 throw new Exception(ex.Message);
             }
 
@@ -71,12 +75,12 @@ namespace WebApiXafSecurity.Controllers
         /// <response code="400">Not Found</response>
         [HttpGet]
         [Route("api/getpritem/{docno}")]
-        public IActionResult Getpr(string docno)
+        public IActionResult GetPR(string docno)
         {
             try
             {
-                //objectSpace = GenHelper.LoginByHeader(securityProvider, Request);
-                //if (objectSpace is null) return Unauthorized();
+                GenHelper.WriteLog("[Log]", "[" + securityProvider.GetUserName() + "]" + controllername + "-GetPR(" + docno + "):[" + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "]");
+
                 PurchaseRequest obj = objectSpace.FindObject<PurchaseRequest>(CriteriaOperator.Parse("DocNo=?", docno));
                 if (obj == null)
                 {
@@ -95,6 +99,7 @@ namespace WebApiXafSecurity.Controllers
             }
             catch (Exception ex)
             {
+                GenHelper.WriteLog("[Error]", "[" + securityProvider.GetUserName() + "]" + controllername + "-GetPR:[" + ex.Message + "][" + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "]");
                 throw new Exception(ex.Message);
             }
         }

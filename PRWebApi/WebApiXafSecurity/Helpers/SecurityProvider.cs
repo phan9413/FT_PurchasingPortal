@@ -21,6 +21,10 @@ namespace WebApiXafSecurity.Helpers
 		XpoDataStoreProviderService xpoDataStoreProviderService;
 		IConfiguration config;
 		IHttpContextAccessor contextAccessor;
+		public string GetUserName()
+        {
+			return contextAccessor.HttpContext.User.Identity.Name;
+		}
 		public SecurityProvider(XpoDataStoreProviderService xpoDataStoreProviderService, IConfiguration config, IHttpContextAccessor contextAccessor)
 		{
 			DevExpress.Persistent.Base.PasswordCryptographer.EnableRfc2898 = true;
@@ -45,8 +49,9 @@ namespace WebApiXafSecurity.Helpers
 				SignIn(contextAccessor.HttpContext, userName);
 				return true;
 			}
-			catch
+			catch (Exception ex)
 			{
+				GenHelper.WriteLog("[Error]", "[" + userName + "]Login Error:[" + ex.Message + "][" + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "]");
 				return false;
 			}
 		}
