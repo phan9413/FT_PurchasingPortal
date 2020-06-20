@@ -2,32 +2,38 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              mc:Ignorable="d"
+             xmlns:markextensions="clr-namespace:XamarinPR.MarkExtensions"
              x:Class="XamarinPR.Views.LoginPage">
-    <ContentPage.Content>
-        <StackLayout Orientation="Vertical" Padding="30" Spacing="40">
-            <BoxView HeightRequest="10"/>
-            <Frame BackgroundColor="#BF043055" HasShadow="False">
-                <StackLayout Orientation="Vertical" Spacing="10">
-                    <Entry x:Name="Url" Text="{Binding Url}" Placeholder="Url Address"   
-                           PlaceholderColor="White" HeightRequest="40"   
-                           Keyboard="Url"
-                           TextColor="White"/>
-                    <Entry x:Name="UserName" Text="{Binding UserName}" Placeholder="User Name"   
-                           PlaceholderColor="White" HeightRequest="40"   
-                           TextColor="White"/>
-                    <Entry x:Name="Password" Text="{Binding Password}" Placeholder="Password"   
-                           PlaceholderColor="White" HeightRequest="40"   
-                           IsPassword="True"  
-                           TextColor="White"/>
-                </StackLayout>
-            </Frame>
-            <Button Command="{Binding SubmitCommand}" Text="Login" TextColor="White"  
-                    FontAttributes="Bold" FontSize="Large" HorizontalOptions="FillAndExpand"  
-                    BackgroundColor="#088da5" />
-            <!--<Button x:Name="page1" Text="Page 1" Clicked="page1_Clicked" />
-            <Button x:Name="cspage1" Text="CS Page 1" Clicked="cspage1_Clicked" />-->
-        </StackLayout>
-    </ContentPage.Content>
+    <ContentPage.Padding>
+        <OnPlatform x:TypeArguments="Thickness"
+                    iOS="0,20,0,0"
+                    Android="0,0,0,0">
+        </OnPlatform>
+    </ContentPage.Padding>
+    <StackLayout Orientation="Vertical" Padding="20" Spacing="10">
+        <!--<BoxView HeightRequest="10" Color="Blue"/>-->
+        <Frame BackgroundColor="#BF043055" HasShadow="False">
+            <StackLayout Orientation="Vertical" Spacing="10">
+                <Entry x:Name="Url" Text="{Binding Url}" Placeholder="Url Address"   
+                        PlaceholderColor="White" HeightRequest="40"   
+                        Keyboard="Url"
+                        TextColor="White"/>
+                <Entry x:Name="UserName" Text="{Binding UserName}" Placeholder="User Name"   
+                        PlaceholderColor="White" HeightRequest="40"   
+                        TextColor="White"/>
+                <Entry x:Name="Password" Text="{Binding Password}" Placeholder="Password"   
+                        PlaceholderColor="White" HeightRequest="40"   
+                        IsPassword="True"  
+                        TextColor="White"/>
+            </StackLayout>
+        </Frame>
+        <Button Command="{Binding SubmitCommand}" Text="Login" TextColor="White"  
+                FontAttributes="Bold" FontSize="Large" HorizontalOptions="FillAndExpand"  
+                BackgroundColor="#088da5" />
+        <Image HeightRequest="100" Aspect="AspectFill" x:Name="FTLogo" Source="{markextensions:EmbeddedImage ResourceId=XamarinPR.Images.FT_Logo.png}"/>
+        <!--<Button x:Name="page1" Text="Page 1" Clicked="page1_Clicked" />
+        <Button x:Name="cspage1" Text="CS Page 1" Clicked="cspage1_Clicked" />-->
+    </StackLayout>
 </ContentPage>

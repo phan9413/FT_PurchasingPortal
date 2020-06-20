@@ -36,7 +36,10 @@
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <ViewCell>
-                        <StackLayout Padding="10,10">
+                        <ViewCell.ContextActions>
+                            <MenuItem Text="Call" Clicked="CallMenuItem_Clicked" />
+                        </ViewCell.ContextActions>
+                        <StackLayout Padding="10,10" HorizontalOptions="StartAndExpand">
                             <Label Text="{Binding title}" FontSize="Title"/>
                             <Grid IsVisible="{Binding IsButtonVisible}">
                                 <Grid.RowDefinitions>

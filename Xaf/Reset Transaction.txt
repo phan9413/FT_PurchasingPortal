@@ -169,3 +169,5 @@ delete from OSTF
 go
 DBCC CHECKIDENT ('OSTF', RESEED, 0)
 go
+update ODTS1 set NextDocNo = 1000001
+go

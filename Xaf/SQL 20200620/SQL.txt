@@ -1,0 +1,38 @@
+alter table OPRQ1 add SAPObjType nvarchar(100)
+go
+alter table OPRQ1 add SAPDocEntry int
+go
+alter table OPRQ1 add SAPLineNum int
+go
+alter table OPRQ1 add SAPBaseType nvarchar(100)
+go
+alter table OPRQ1 add SAPBaseEntry int
+go
+alter table OPRQ1 add SAPBaseLine int
+go
+
+alter table OPRN1 add SAPObjType nvarchar(100)
+go
+alter table OPRN1 add SAPDocEntry int
+go
+alter table OPRN1 add SAPLineNum int
+go
+alter table OPRN1 add SAPBaseType nvarchar(100)
+go
+alter table OPRN1 add SAPBaseEntry int
+go
+alter table OPRN1 add SAPBaseLine int
+go
+
+alter table OPRE1 add SAPObjType nvarchar(100)
+go
+alter table OPRE1 add SAPDocEntry int
+go
+alter table OPRE1 add SAPLineNum int
+go
+alter table OPRE1 add SAPBaseType nvarchar(100)
+go
+alter table OPRE1 add SAPBaseEntry int
+go
+alter table OPRE1 add SAPBaseLine int
+go

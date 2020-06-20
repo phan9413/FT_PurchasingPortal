@@ -47,8 +47,23 @@ namespace XamarinPR.Helpers
                 AppSettings.AddOrUpdateValue(UserName, value);
             }
         }
+        #region password Constants
+        private const string Password = "Password";
+        private static readonly string PasswordDefault = string.Empty;
+        #endregion
+        public static string CurrentUserPassword
+        {
+            get
+            {
+                return AppSettings.GetValueOrDefault(Password, PasswordDefault);
+            }
+            set
+            {
+                AppSettings.AddOrUpdateValue(Password, value);
+            }
+        }
 
-        #region user Constants
+        #region bearer Constants
         private const string bearer = "bearer";
         private static readonly string bearerDefault = string.Empty;
         #endregion

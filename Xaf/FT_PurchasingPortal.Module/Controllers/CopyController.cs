@@ -167,6 +167,11 @@ namespace FT_PurchasingPortal.Module.Controllers
                         tDtl.BaseType = ios.GetObjectByKey<DocType>(dtl.ObjType.Oid);
 
                     tDtl.Baseline = dtl.Oid;
+
+                    tDtl.SAPBaseType = dtl.SAPObjType;
+                    tDtl.SAPBaseEntry = dtl.SAPDocEntry;
+                    tDtl.SAPBaseLine = dtl.SAPLineNum;
+
                     #region create object by type
                     if (tObject.GetType() == typeof(PurchaseRequest))
                     {
@@ -185,6 +190,20 @@ namespace FT_PurchasingPortal.Module.Controllers
                 }
 
             }
+            #region assign total
+            if (tObject.GetType() == typeof(PurchaseRequest))
+            {
+                ((PurchaseRequest)tObject).DocB4Total = ((PurchaseRequest)tObject).PurchaseRequestDetail.Sum(pp => pp.LineTotal);
+            }
+            else if (tObject.GetType() == typeof(PurchaseOrder))
+            {
+                ((PurchaseOrder)tObject).DocB4Total = ((PurchaseOrder)tObject).PurchaseOrderDetail.Sum(pp => pp.LineTotal);
+            }
+            else if (tObject.GetType() == typeof(PurchaseDelivery))
+            {
+                ((PurchaseDelivery)tObject).DocB4Total = ((PurchaseDelivery)tObject).PurchaseDeliveryDetail.Sum(pp => pp.LineTotal);
+            }
+            #endregion
             return added;
         }
 
@@ -353,6 +372,10 @@ namespace FT_PurchasingPortal.Module.Controllers
 
                         tDtl.Baseline = dtl.Oid;
 
+                        tDtl.SAPBaseType = dtl.SAPObjType;
+                        tDtl.SAPBaseEntry = dtl.SAPDocEntry;
+                        tDtl.SAPBaseLine = dtl.SAPLineNum;
+
                         #region create object by type
                         if (tObject.GetType() == typeof(PurchaseRequest))
                         {
@@ -371,7 +394,22 @@ namespace FT_PurchasingPortal.Module.Controllers
                     }
 
                 }
+
             }
+            #region assign total
+            if (tObject.GetType() == typeof(PurchaseRequest))
+            {
+                ((PurchaseRequest)tObject).DocB4Total = ((PurchaseRequest)tObject).PurchaseRequestDetail.Sum(pp => pp.LineTotal);
+            }
+            else if (tObject.GetType() == typeof(PurchaseOrder))
+            {
+                ((PurchaseOrder)tObject).DocB4Total = ((PurchaseOrder)tObject).PurchaseOrderDetail.Sum(pp => pp.LineTotal);
+            }
+            else if (tObject.GetType() == typeof(PurchaseDelivery))
+            {
+                ((PurchaseDelivery)tObject).DocB4Total = ((PurchaseDelivery)tObject).PurchaseDeliveryDetail.Sum(pp => pp.LineTotal);
+            }
+            #endregion
             return added;
         }
 
@@ -469,6 +507,10 @@ namespace FT_PurchasingPortal.Module.Controllers
                 tDtl.BaseType = ios.GetObjectByKey<DocType>(dtl.BaseType.Oid);
 
             tDtl.Baseline = dtl.Baseline;
+
+            tDtl.SAPBaseType = dtl.SAPBaseType;
+            tDtl.SAPBaseEntry = dtl.SAPBaseEntry;
+            tDtl.SAPBaseLine = dtl.SAPBaseLine;
 
             tDtl.IsDuplicated = true;
         }

@@ -10,23 +10,21 @@ using Newtonsoft.Json.Linq;
 using FT_PurchasingPortal.Module.BusinessObjects;
 using WebApiXafSecurity.Helpers;
 using DevExpress.CodeParser;
-using Microsoft.AspNetCore.Cors;
 
 namespace WebApiXafSecurity.Controllers
 {
-	//[AllowAnonymous]
-	[Authorize]
+	[AllowAnonymous]
 	[Route("api/[controller]")]
-	public class EmployeeController : Microsoft.AspNetCore.Mvc.Controller
+	public class PurchaseRequestController : Microsoft.AspNetCore.Mvc.Controller
 	{
 		SecurityProvider securityProvider;
 		IObjectSpace objectSpace;
-		public EmployeeController(SecurityProvider securityProvider)
+		public PurchaseRequestController(SecurityProvider securityProvider)
 		{
 			this.securityProvider = securityProvider;
 			objectSpace = securityProvider.ObjectSpaceProvider.CreateObjectSpace();
 		}
-		
+
 		[HttpGet]
 		public IActionResult Get()
 		{
@@ -34,7 +32,7 @@ namespace WebApiXafSecurity.Controllers
 			{
 				//objectSpace = GenHelper.LoginByHeader(securityProvider, Request);
 				//if (objectSpace is null) return Unauthorized();
-				IQueryable<Employee> employees = objectSpace.GetObjectsQuery<Employee>();
+				IQueryable<PurchaseRequest> employees = objectSpace.GetObjectsQuery<PurchaseRequest>();
 				return Ok(employees);
 			}
 			catch (Exception ex)
@@ -50,7 +48,7 @@ namespace WebApiXafSecurity.Controllers
 			{
 				//objectSpace = GenHelper.LoginByHeader(securityProvider, Request);
 				//if (objectSpace is null) return Unauthorized();
-				Employee existing = objectSpace.GetObjectByKey<Employee>(id);
+				PurchaseRequest existing = objectSpace.GetObjectByKey<PurchaseRequest>(id);
 				if (existing == null)
 				{
 					NotFound();
@@ -70,7 +68,7 @@ namespace WebApiXafSecurity.Controllers
 			{
 				//objectSpace = GenHelper.LoginByHeader(securityProvider, Request);
 				//if (objectSpace is null) return Unauthorized();
-				Employee existing = objectSpace.GetObjectByKey<Employee>(id);
+				PurchaseRequest existing = objectSpace.GetObjectByKey<PurchaseRequest>(id);
 				if (existing != null)
 				{
 					objectSpace.Delete(existing);
@@ -91,10 +89,10 @@ namespace WebApiXafSecurity.Controllers
 			{
 				//objectSpace = GenHelper.LoginByHeader(securityProvider, Request);
 				//if (objectSpace is null) return Unauthorized();
-				Employee employee = objectSpace.GetObjectByKey<Employee>(id);
+				PurchaseRequest employee = objectSpace.GetObjectByKey<PurchaseRequest>(id);
 				if (employee != null)
 				{
-					JsonParser.ParseJObjectXPO<Employee>(values, employee, objectSpace);
+					JsonParser.ParseJObjectXPO<PurchaseRequest>(values, employee, objectSpace);
 					return Ok(employee);
 				}
 				return NotFound();
@@ -112,8 +110,8 @@ namespace WebApiXafSecurity.Controllers
 				//objectSpace = GenHelper.LoginByHeader(securityProvider, Request);
 				//if (objectSpace is null) return Unauthorized();
 
-                Employee employee = objectSpace.CreateObject<Employee>();
-                JsonParser.ParseJObjectXPO<Employee>(values, employee, objectSpace);
+				PurchaseRequest employee = objectSpace.CreateObject<PurchaseRequest>();
+                JsonParser.ParseJObjectXPO<PurchaseRequest>(values, employee, objectSpace);
                 return Ok(employee);
             }
 			catch (Exception ex)

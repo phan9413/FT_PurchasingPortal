@@ -17,7 +17,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Xaf\FT_PurchasingPortal.Module\FT_PurchasingPortal.Module.csproj" />
+    <ProjectReference Include="..\..\Xaf\FT_PurchasingPortal.Module\FT_PurchasingPortal.Module.csproj">
+      <Private>true</Private>
+    </ProjectReference>
   </ItemGroup>
 
 

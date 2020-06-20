@@ -7,6 +7,8 @@ namespace SAP_Integration.SAPModels
 {
     public class InventoryTransfer
     {
+        public string DocObject { get; set; }
+        public string DocObjectCode { get; set; }
         public string LogUserID { get; set; }
         public Int32 Series { get; set; }
         public bool Printed { get; private set; }

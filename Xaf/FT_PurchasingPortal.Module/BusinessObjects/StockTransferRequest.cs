@@ -206,7 +206,9 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
                     rtn = true;
                 }
                 else if (FromWhsCod is null || WhsCode is null)
-                { }
+                {
+                    rtn = true;
+                }
                 else
                 {
                     if (FromWhsCod != WhsCode)

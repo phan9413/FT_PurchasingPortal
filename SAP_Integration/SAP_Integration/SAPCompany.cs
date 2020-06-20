@@ -1168,6 +1168,13 @@ where isnull(T0.SAPPosted,0) = 0 and T0.Status = @status";
                     oDoc = null;
                     return false;
                 }
+                for (int i = 0; i < getDoc.Lines.Count; i++)
+                {
+                    getDoc.Lines.SetCurrentLine(i);
+                    doc.Lines[i].SAPObjType = string.Format("{0}", (int)(SAPbobsCOM.BoObjectTypes)Enum.Parse(typeof(SAPbobsCOM.BoObjectTypes), doc.DocObject));
+                    doc.Lines[i].SAPDocEntry = getDoc.Lines.DocEntry;
+                    doc.Lines[i].SAPLineNum = getDoc.Lines.LineNum;
+                }
                 if (oCom.InTransaction) oCom.EndTransaction(SAPbobsCOM.BoWfTransOpt.wf_Commit);
                 System.Runtime.InteropServices.Marshal.ReleaseComObject(oDoc);
                 System.Runtime.InteropServices.Marshal.ReleaseComObject(getDoc);
@@ -1190,7 +1197,10 @@ where isnull(T0.SAPPosted,0) = 0 and T0.Status = @status";
             oCom.StartTransaction();
             try
             {
-                SAPbobsCOM.StockTransfer oDoc = (SAPbobsCOM.StockTransfer)oCom.GetBusinessObject((SAPbobsCOM.BoObjectTypes)Enum.Parse(typeof(SAPbobsCOM.BoObjectTypes), doc.DocObjectCode));
+                //SAPbobsCOM.StockTransfer oDoc = (SAPbobsCOM.StockTransfer)oCom.GetBusinessObject((SAPbobsCOM.BoObjectTypes)Enum.Parse(typeof(SAPbobsCOM.BoObjectTypes), doc.DocObjectCode));
+                SAPbobsCOM.StockTransfer oDoc = (SAPbobsCOM.StockTransfer)oCom.GetBusinessObject((SAPbobsCOM.BoObjectTypes)Enum.Parse(typeof(SAPbobsCOM.BoObjectTypes), doc.DocObject));
+                if ((SAPbobsCOM.BoObjectTypes)Enum.Parse(typeof(SAPbobsCOM.BoObjectTypes), doc.DocObject) == BoObjectTypes.oStockTransferDraft)
+                    if (!String.IsNullOrEmpty(doc.DocObjectCode)) oDoc.DocObjectCode = (SAPbobsCOM.BoObjectTypes)Enum.Parse(typeof(SAPbobsCOM.BoObjectTypes), doc.DocObjectCode);
 
                 #region Header
                 if (doc.Series > 0) oDoc.Series = doc.Series;
@@ -1330,7 +1340,7 @@ where isnull(T0.SAPPosted,0) = 0 and T0.Status = @status";
                     return false;
                 }
 
-                SAPbobsCOM.StockTransfer getDoc = (SAPbobsCOM.StockTransfer)oCom.GetBusinessObject((SAPbobsCOM.BoObjectTypes)Enum.Parse(typeof(SAPbobsCOM.BoObjectTypes), doc.DocObjectCode));
+                SAPbobsCOM.StockTransfer getDoc = (SAPbobsCOM.StockTransfer)oCom.GetBusinessObject((SAPbobsCOM.BoObjectTypes)Enum.Parse(typeof(SAPbobsCOM.BoObjectTypes), doc.DocObject));
 
                 if (!getDoc.GetByKey(int.Parse(docentry)))
                 {
@@ -1338,6 +1348,13 @@ where isnull(T0.SAPPosted,0) = 0 and T0.Status = @status";
                     if (oCom.InTransaction) oCom.EndTransaction(SAPbobsCOM.BoWfTransOpt.wf_RollBack);
                     oDoc = null;
                     return false;
+                }
+                for (int i = 0; i < getDoc.Lines.Count; i++)
+                {
+                    getDoc.Lines.SetCurrentLine(i);
+                    doc.Lines[i].SAPObjType = string.Format("{0}", (int)(SAPbobsCOM.BoObjectTypes)Enum.Parse(typeof(SAPbobsCOM.BoObjectTypes), doc.DocObject));
+                    doc.Lines[i].SAPDocEntry = getDoc.Lines.DocEntry;
+                    doc.Lines[i].SAPLineNum = getDoc.Lines.LineNum;
                 }
                 if (oCom.InTransaction) oCom.EndTransaction(SAPbobsCOM.BoWfTransOpt.wf_Commit);
                 System.Runtime.InteropServices.Marshal.ReleaseComObject(oDoc);

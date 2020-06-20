@@ -38,6 +38,7 @@ namespace WebApiXafSecurity.Helpers
 			AuthenticationStandardLogonParameters parameters = new AuthenticationStandardLogonParameters(userName, password);
 			SecurityStrategyComplex security = GetSecurity(typeof(AuthenticationStandardProvider).Name, parameters);
 			IObjectSpaceProvider objectSpaceProvider = GetObjectSpaceProvider(security);
+			//ObjectSpaceProvider = GetObjectSpaceProvider(security);
 			try
 			{
 				Login(security, objectSpaceProvider);
@@ -100,6 +101,9 @@ namespace WebApiXafSecurity.Helpers
 			objectSpaceProvider.TypesInfo.RegisterEntity(typeof(Employee));
 			objectSpaceProvider.TypesInfo.RegisterEntity(typeof(PermissionPolicyUser));
 			objectSpaceProvider.TypesInfo.RegisterEntity(typeof(PermissionPolicyRole));
+			objectSpaceProvider.TypesInfo.RegisterEntity(typeof(PurchaseRequest));
+			objectSpaceProvider.TypesInfo.RegisterEntity(typeof(PurchaseOrder));
+			objectSpaceProvider.TypesInfo.RegisterEntity(typeof(PurchaseDelivery));
 		}
 		public void Dispose()
 		{

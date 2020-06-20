@@ -22,6 +22,11 @@
 
   <ItemGroup>
     <PackageReference Include="Dapper" Version="2.0.30" />
+    <PackageReference Include="DevExpress.ExpressApp" Version="19.2.6" />
+    <PackageReference Include="DevExpress.ExpressApp.Security" Version="19.2.6" />
+    <PackageReference Include="DevExpress.ExpressApp.Security.Xpo" Version="19.2.6" />
+    <PackageReference Include="DevExpress.Persistent.Base" Version="19.2.6" />
+    <PackageReference Include="DevExpress.Persistent.BaseImpl" Version="19.2.6" />
     <PackageReference Include="DevExpress.Xpo" Version="19.2.6" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.2" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.2" />
@@ -34,30 +39,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Xaf\FT_PurchasingPortal.Module\FT_PurchasingPortal.Module.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="DevExpress.Data.v19.2">
-      <HintPath>..\..\Xaf\FT_PurchasingPortal.Module\bin\Debug\DevExpress.Data.v19.2.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.ExpressApp.Security.v19.2">
-      <HintPath>..\..\Xaf\FT_PurchasingPortal.Module\bin\Debug\DevExpress.ExpressApp.Security.v19.2.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.ExpressApp.Security.Xpo.v19.2">
-      <HintPath>..\..\Xaf\FT_PurchasingPortal.Module\bin\Debug\DevExpress.ExpressApp.Security.Xpo.v19.2.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.ExpressApp.v19.2">
-      <HintPath>..\..\Xaf\FT_PurchasingPortal.Module\bin\Debug\DevExpress.ExpressApp.v19.2.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.ExpressApp.Xpo.v19.2">
-      <HintPath>..\..\Xaf\FT_PurchasingPortal.Module\bin\Debug\DevExpress.ExpressApp.Xpo.v19.2.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.Persistent.Base.v19.2">
-      <HintPath>..\..\Xaf\FT_PurchasingPortal.Module\bin\Debug\DevExpress.Persistent.Base.v19.2.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.Persistent.BaseImpl.v19.2">
-      <HintPath>..\..\Xaf\FT_PurchasingPortal.Module\bin\Debug\DevExpress.Persistent.BaseImpl.v19.2.dll</HintPath>
-    </Reference>
   </ItemGroup>
 
 

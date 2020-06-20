@@ -48,6 +48,11 @@ namespace XamarinPR.Views
         {
         }
 
+        private void CallMenuItem_Clicked(object sender, EventArgs e)
+        {
+            DisplayAlert("Alert", "Calling", "OK");
+        }
+
 
         //private async void test()
         //{

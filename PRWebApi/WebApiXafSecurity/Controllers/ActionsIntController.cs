@@ -25,24 +25,31 @@ namespace WebApiXafSecurity.Controllers
 		[HttpPost]
 		public ActionResult GetPermissions(List<Guid> keys, string typeName)
 		{
-			ActionResult result = NoContent();
-			using (IObjectSpace objectSpace = securityProvider.ObjectSpaceProvider.CreateObjectSpace())
+			try
 			{
-				PermissionHelper permissionHelper = new PermissionHelper(securityProvider.Security);
-				ITypeInfo typeInfo = objectSpace.TypesInfo.PersistentTypes.FirstOrDefault(t => t.Name == typeName);
-				if (typeInfo != null)
+				ActionResult result = NoContent();
+				using (IObjectSpace objectSpace = securityProvider.ObjectSpaceProvider.CreateObjectSpace())
 				{
-					IList entityList = objectSpace.GetObjects(typeInfo.Type, new InOperator(typeInfo.KeyMember.Name, keys));
-					List<ObjectPermission> objectPermissions = new List<ObjectPermission>();
-					foreach (object entity in entityList)
+					PermissionHelper permissionHelper = new PermissionHelper(securityProvider.Security);
+					ITypeInfo typeInfo = objectSpace.TypesInfo.PersistentTypes.FirstOrDefault(t => t.Name == typeName);
+					if (typeInfo != null)
 					{
-						ObjectPermission objectPermission = permissionHelper.CreateObjectPermission(typeInfo, entity);
-						objectPermissions.Add(objectPermission);
+						IList entityList = objectSpace.GetObjects(typeInfo.Type, new InOperator(typeInfo.KeyMember.Name, keys));
+						List<ObjectPermission> objectPermissions = new List<ObjectPermission>();
+						foreach (object entity in entityList)
+						{
+							ObjectPermission objectPermission = permissionHelper.CreateObjectPermission(typeInfo, entity);
+							objectPermissions.Add(objectPermission);
+						}
+						result = Ok(objectPermissions);
 					}
-					result = Ok(objectPermissions);
 				}
+				return result;
 			}
-			return result;
+			catch (Exception ex)
+			{
+				throw new Exception(ex.Message);
+			}
 		}
 		protected override void Dispose(bool disposing)
 		{

@@ -13,6 +13,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 #endif
 using WebApiXafSecurity.Helpers;
+using Microsoft.AspNetCore.Authentication;
 
 namespace WebApiXafSecurity
 {
@@ -22,8 +23,9 @@ namespace WebApiXafSecurity
         {
             Configuration = configuration;
         }
+		string loginPath = "/";
 
-        public IConfiguration Configuration { get; }
+		public IConfiguration Configuration { get; }
 
 		// This method gets called by the runtime. Use this method to add services to the container.
 		// This method gets called by the runtime. Use this method to add services to the container.
@@ -51,10 +53,12 @@ namespace WebApiXafSecurity
 			services.AddControllers()
 				.AddNewtonsoftJson(JsonOptions);
 #endif
-			//services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-			//	 .AddCookie(options => {
-			//		 options.LoginPath = loginPath;
-			//	 });
+			// configure basic authentication 
+			services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+			              .AddCookie(options =>
+			              {
+			                  options.LoginPath = loginPath;
+			              });
 			services.AddSingleton<XpoDataStoreProviderService>();
 			services.AddSingleton(Configuration);
 			services.AddHttpContextAccessor();
@@ -81,28 +85,29 @@ namespace WebApiXafSecurity
 			app.UseAuthentication();
 			app.UseDefaultFiles();
 			app.UseHttpsRedirection();
-			//app.UseStaticFiles(new StaticFileOptions()
-			//{
-			//	OnPrepareResponse = context => {
-			//		if (context.Context.User.Identity.IsAuthenticated)
-			//		{
-			//			return;
-			//		}
-			//		else
-			//		{
-			//			string referer = context.Context.Request.Headers["Referer"].ToString();
-			//			string authenticationPagePath = loginPath;
-			//			string vendorString = "vendor.css";
-			//			if (context.Context.Request.Path.HasValue && context.Context.Request.Path.StartsWithSegments(authenticationPagePath)
-			//				|| referer != null && (referer.Contains(authenticationPagePath) || referer.Contains(vendorString)))
-			//			{
-			//				return;
-			//			}
-			//			context.Context.Response.Redirect(loginPath);
-			//		}
-			//	}
-			//});
-			app.UseCookiePolicy();
+            app.UseStaticFiles(new StaticFileOptions()
+            {
+                OnPrepareResponse = context =>
+                {
+                    if (context.Context.User.Identity.IsAuthenticated)
+                    {
+                        return;
+                    }
+                    else
+                    {
+                        //string referer = context.Context.Request.Headers["Referer"].ToString();
+                        //string authenticationPagePath = loginPath;
+                        //string vendorString = "vendor.css";
+                        //if (context.Context.Request.Path.HasValue && context.Context.Request.Path.StartsWithSegments(authenticationPagePath)
+                        //    || referer != null && (referer.Contains(authenticationPagePath) || referer.Contains(vendorString)))
+                        //{
+                        //    return;
+                        //}
+                        context.Context.Response.Redirect(loginPath);
+                    }
+                }
+            });
+            app.UseCookiePolicy();
 			app.UseMvc(routes => {
 				routes.MapRoute(
 					name: "default",

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Threading.Tasks;
 using WebApiXafSecurity.Helpers;
 using WebApiXafSecurity.Models;
@@ -20,18 +21,25 @@ namespace WebApiXafSecurity.Controllers
 		[AllowAnonymous]
 		public ActionResult Login([FromBody] UserLogin data)
 		{
-			ActionResult result;
-			string userName = data.UserName;
-			string password = data.Password;
-			if (securityProvider.InitConnection(userName, password))
+			try
 			{
-				result = Ok();
+				ActionResult result;
+				string userName = data.UserName;
+				string password = data.Password;
+				if (securityProvider.InitConnection(userName, password))
+				{
+					result = Ok();
+				}
+				else
+				{
+					result = Unauthorized();
+				}
+				return result;
 			}
-			else
-			{
-				result = Unauthorized();
+			catch (Exception ex)
+            {
+				throw new Exception(ex.Message);
 			}
-			return result;
 		}
 		[HttpGet]
 		[Route("Logout")]
@@ -53,5 +61,6 @@ namespace WebApiXafSecurity.Controllers
 			}
 			base.Dispose(disposing);
 		}
+
 	}
 }

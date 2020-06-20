@@ -174,30 +174,30 @@ begin
 		begin
 			insert into #doctable
 			(Amt, DocCur, DocDate, Employee, Department, Position, Division, Account, Project)
-			select sum(isnull(T1.LineTotal,0)), T0.DocCur, T0.DocDate, T0.DocOwner, T3.Department, T3.Position, T3.Division, T1.AcctCode, T1.PrjCode
+			select sum(isnull(T1.LineTotal,0)), T1.DocCur, T0.DocDate, T0.DocOwner, T3.Department, T3.Position, T3.Division, T1.AcctCode, T1.PrjCode
 			from OPRE T0 inner join OPRE1 T1 on T0.OID = T1.PurchaseRequest
 			inner join OPRED T2 on T0.DocStatus = T2.OID
 			inner join OEMP T3 on T0.DocOwner = T3.OID
 			where T0.OID = @docid
-			group by T0.DocCur, T0.DocDate, T0.DocOwner, T3.Department, T3.Position, T3.Division, T1.AcctCode, T1.PrjCode
+			group by T1.DocCur, T0.DocDate, T0.DocOwner, T3.Department, T3.Position, T3.Division, T1.AcctCode, T1.PrjCode
 
 			insert into #periodtable
 			(Amt, DocCur, DocDate, Employee, Department, Position, Division, Account, Project)
-			select sum(isnull(T1.LineTotal,0)), T0.DocCur, T0.DocDate, T0.DocOwner, T3.Department, T3.Position, T3.Division, T1.AcctCode, T1.PrjCode
+			select sum(isnull(T1.LineTotal,0)), T1.DocCur, T0.DocDate, T0.DocOwner, T3.Department, T3.Position, T3.Division, T1.AcctCode, T1.PrjCode
 			from OPRE T0 inner join OPRE1 T1 on T0.OID = T1.PurchaseRequest
 			inner join OPRED T2 on T0.DocStatus = T2.OID
 			inner join OEMP T3 on T0.DocOwner = T3.OID
 			where T0.OID <> @docid and T2.CurrDocStatus > 2 --in (3,4,5,6,7)
-			group by T0.DocCur, T0.DocDate, T0.DocOwner, T3.Department, T3.Position, T3.Division, T1.AcctCode, T1.PrjCode
+			group by T1.DocCur, T0.DocDate, T0.DocOwner, T3.Department, T3.Position, T3.Division, T1.AcctCode, T1.PrjCode
 
 			insert into #periodtable
 			(Amt, DocCur, DocDate, Employee, Department, Position, Division, Account, Project)
-			select sum(isnull(T1.LineTotal,0)), T0.DocCur, T0.DocDate, T0.DocOwner, T3.Department, T3.Position, T3.Division, T1.AcctCode, T1.PrjCode
+			select sum(isnull(T1.LineTotal,0)), T1.DocCur, T0.DocDate, T0.DocOwner, T3.Department, T3.Position, T3.Division, T1.AcctCode, T1.PrjCode
 			from OPRE T0 inner join OPRE1 T1 on T0.OID = T1.PurchaseRequest
 			inner join OPRED T2 on T0.DocStatus = T2.OID
 			inner join OEMP T3 on T0.DocOwner = T3.OID
 			where T0.OID = @docid
-			group by T0.DocCur, T0.DocDate, T0.DocOwner, T3.Department, T3.Position, T3.Division, T1.AcctCode, T1.PrjCode
+			group by T1.DocCur, T0.DocDate, T0.DocOwner, T3.Department, T3.Position, T3.Division, T1.AcctCode, T1.PrjCode
 
 		end
 

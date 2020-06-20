@@ -21,7 +21,9 @@ namespace SAP_Integration.Models
 
     public class DocumentLines : MarketingDocumentLines
     {
-
+        public string SAPObjType { get; set; }
+        public int SAPDocEntry { get; set; }
+        public int SAPLineNum { get; set; }
         public List<DocumentSerials> Serials { get; set; }
         public List<DocumentBatchs> Batches { get; set; }
         public List<DocumentLinesExpenses> Expenses { get; set; }

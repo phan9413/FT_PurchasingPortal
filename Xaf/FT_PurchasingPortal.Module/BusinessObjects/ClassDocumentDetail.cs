@@ -714,6 +714,68 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
                 SetPropertyValue("Baseline", ref _Baseline, value);
             }
         }
+        #region sap ref
+        private string _SAPObjType;
+        [Index(330), VisibleInListView(false), VisibleInDetailView(false), VisibleInLookupListView(false)]
+        public string SAPObjType
+        {
+            get { return _SAPObjType; }
+            set
+            {
+                SetPropertyValue("SAPObjType", ref _SAPObjType, value);
+            }
+        }
+        private int _SAPDocEntry;
+        [Index(331), VisibleInListView(false), VisibleInDetailView(false), VisibleInLookupListView(false)]
+        public int SAPDocEntry
+        {
+            get { return _SAPDocEntry; }
+            set
+            {
+                SetPropertyValue("SAPDocEntry", ref _SAPDocEntry, value);
+            }
+        }
+        private int _SAPLineNum;
+        [Index(332), VisibleInListView(false), VisibleInDetailView(false), VisibleInLookupListView(false)]
+        public int SAPLineNum
+        {
+            get { return _SAPLineNum; }
+            set
+            {
+                SetPropertyValue("SAPDocEntry", ref _SAPLineNum, value);
+            }
+        }
+        private string _SAPBaseType;
+        [Index(340), VisibleInListView(false), VisibleInDetailView(false), VisibleInLookupListView(false)]
+        public string SAPBaseType
+        {
+            get { return _SAPBaseType; }
+            set
+            {
+                SetPropertyValue("SAPBaseType", ref _SAPBaseType, value);
+            }
+        }
+        private int _SAPBaseEntry;
+        [Index(341), VisibleInListView(false), VisibleInDetailView(false), VisibleInLookupListView(false)]
+        public int SAPBaseEntry
+        {
+            get { return _SAPBaseEntry; }
+            set
+            {
+                SetPropertyValue("SAPDocEntry", ref _SAPBaseEntry, value);
+            }
+        }
+        private int _SAPBaseLine;
+        [Index(342), VisibleInListView(false), VisibleInDetailView(false), VisibleInLookupListView(false)]
+        public int SAPBaseLine
+        {
+            get { return _SAPBaseLine; }
+            set
+            {
+                SetPropertyValue("SAPBaseLine", ref _SAPBaseLine, value);
+            }
+        }
+        #endregion
         private int _MasterOid;
         [Index(400), VisibleInListView(false), VisibleInDetailView(false), VisibleInLookupListView(false)]
         public int MasterOid
