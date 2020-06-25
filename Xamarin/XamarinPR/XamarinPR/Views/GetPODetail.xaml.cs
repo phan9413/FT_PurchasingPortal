@@ -9,6 +9,7 @@ using Xamarin.Forms.Xaml;
 using XamarinPR.ViewModels;
 using XamarinPR.Models;
 using System.Collections.ObjectModel;
+using XamarinPR.Services;
 
 namespace XamarinPR.Views
 {
@@ -17,6 +18,7 @@ namespace XamarinPR.Views
     {
         public GetPODetail()
         {
+            BindingContext = new GetPODetailViewModel(new PageService());
             InitializeComponent();
         }
 

@@ -63,7 +63,7 @@
 	SalesQuotation
 	SalesAgreement
 	SalesOrder
-	PurchaseOrder
+	PurchaseRequest
 	PurchaseOrder
 	StockTransferRequest
 	}

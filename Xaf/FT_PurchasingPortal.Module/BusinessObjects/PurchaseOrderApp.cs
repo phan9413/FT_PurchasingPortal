@@ -72,15 +72,8 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
                 {
                     if (AppStatus != null && AppStatus.Count > 0)
                     {
-                        appcount = 0;
-                        foreach (PurchaseOrderAppStatus status in AppStatus)
-                        {
-                            if (status.Approval != null)
-                            {
-                                status.Approval.Oid = dtl.Oid;
-                                appcount++;
-                            }
-                        }
+                        appcount = AppStatus.Where(pp => pp.AppStage == dtl.Oid && pp.ApprovalStatus == ApprovalStatus.Approved).Count();
+                        if (appcount == null) appcount = 0;
                         if (dtl.Approval.ApprovalCnt > appcount)
                         {
                             rtn = dtl.Approval.Oid;
@@ -110,15 +103,8 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
                 {
                     if (AppStatus != null && AppStatus.Count > 0)
                     {
-                        appcount = 0;
-                        foreach (PurchaseOrderAppStatus status in AppStatus)
-                        {
-                            if (status.Approval != null)
-                            {
-                                status.Approval.Oid = dtl.Oid;
-                                appcount++;
-                            }
-                        }
+                        appcount = AppStatus.Where(pp => pp.AppStage == dtl.Oid && pp.ApprovalStatus == ApprovalStatus.Approved).Count();
+                        if (appcount == null) appcount = 0;
                         if (dtl.Approval.ApprovalCnt > appcount)
                         {
                             rtn = dtl.Oid;

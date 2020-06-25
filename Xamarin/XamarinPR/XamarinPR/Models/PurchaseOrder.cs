@@ -13,6 +13,10 @@ namespace XamarinPR.Models
             PurchaseOrderDetail = new List<PurchaseOrderDetail>();
         }
         public List<PurchaseOrderDetail> PurchaseOrderDetail;
+
+        public string DocNo { get; set; }
+        public Company Company { get; set; }
+        public vwBusinessPartners CardCode { get; set; }
     }
 
     public class PurchaseOrderDetail : INotifyPropertyChanged

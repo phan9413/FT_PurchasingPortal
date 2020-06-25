@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 using XamarinPR.Helpers;
+using XamarinPR.Services;
 using XamarinPR.ViewModels;
 
 namespace XamarinPR.Views
@@ -16,12 +17,11 @@ namespace XamarinPR.Views
     {
         public LoginPage()
         {
-            var vm = new LoginViewModel();
+            var vm = new LoginViewModel(new PageService());
+            //var vm = new LoginViewModel();
             this.BindingContext = vm;
             vm.DisplayInvalidLoginPrompt += () => DisplayAlert("Error", "Invalid Login, try again", "OK");
             InitializeComponent();
-
-            Url.Text = Settings.GeneralUrl;
             UserName.Completed += (object sender, EventArgs e) =>
             {
                 Password.Focus();
@@ -32,16 +32,11 @@ namespace XamarinPR.Views
                 vm.SubmitCommand.Execute(null);
             };
         }
-
-        private void page1_Clicked(object sender, EventArgs e)
+        protected override void OnAppearing()
         {
-            Application.Current.MainPage = new NavigationPage(new Page1());
-            //Application.Current.MainPage.Navigation.PushAsync();
-        }
-
-        private void cspage1_Clicked(object sender, EventArgs e)
-        {
-            Application.Current.MainPage = new NavigationPage(new csPage1());
+            base.OnAppearing();
+            Url.Text = Settings.GeneralUrl;
+            UserName.Text = Settings.CurrentUser;
         }
     }
 }

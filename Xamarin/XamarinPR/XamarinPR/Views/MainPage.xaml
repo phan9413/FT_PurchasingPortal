@@ -1,16 +1,17 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<ContentPage BackgroundColor="Black" xmlns="http://xamarin.com/schemas/2014/forms"
+<TabbedPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:markextensions="clr-namespace:XamarinPR.MarkExtensions"
              mc:Ignorable="d"
+             xmlns:local="clr-namespace:XamarinPR.Views"
+             xmlns:markextensions="clr-namespace:XamarinPR.MarkExtensions"
+             xmlns:plugin="clr-namespace:Plugin.Badge.Abstractions;assembly=Plugin.Badge.Abstractions" 
              x:Class="XamarinPR.Views.MainPage">
-    <AbsoluteLayout>
-        <ActivityIndicator IsRunning="{Binding Source={x:Reference image}, Path=IsLoading}" 
-                           Color="White"
-                           AbsoluteLayout.LayoutBounds="0.5,0.5,100,100"
-                           AbsoluteLayout.LayoutFlags="PositionProportional"/>
-        <Image IsVisible="True" x:Name="image" Aspect="AspectFill" />
-    </AbsoluteLayout>
-</ContentPage>
+    <TabbedPage.Children>
+        <local:MainMenu Title="Menu" IconImageSource="{markextensions:EmbeddedImage ResourceId=XamarinPR.Images.icons8-tire-track-96.png}" />
+        <local:CartPage x:Name="CartTab" Title="Cart" IconImageSource="{markextensions:EmbeddedImage ResourceId=XamarinPR.Images.icons8-container-truck-96.png}" 
+                          plugin:TabBadge.BadgeText="{Binding CartCount}"
+        />
+    </TabbedPage.Children>
+</TabbedPage>

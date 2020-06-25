@@ -10,15 +10,18 @@ using System.Windows.Input;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Threading.Tasks;
+using System.Runtime.CompilerServices;
+using XamarinPR.Services;
 
 namespace XamarinPR.ViewModels
 {
-    class GetPODetailViewModel : INotifyPropertyChanged
+    class GetPODetailViewModel : BaseViewModel
     {
         List<PurchaseOrderDetail> _list;
-
-        public GetPODetailViewModel()
+        private readonly IPageService _pageService;
+        public GetPODetailViewModel(IPageService pageService)
         {
+            _pageService = pageService;
             entryString = string.Empty;
             //PurchaseOrderDetail = new ObservableCollection<PurchaseOrderDetail>();
             submitGRN = new Command(() =>
@@ -26,12 +29,9 @@ namespace XamarinPR.ViewModels
                 postGRN();
             });
 
-            searchPO = new Command(() =>
-            {
-                getPOItem();
-            });
+            searchPO = new Command(getPOItem);
         }
-        public async void postGRN()
+        private async void postGRN()
         {
             string address = Settings.GeneralUrl + "api/submitgrnfrompo/" + entryString;
 
@@ -58,37 +58,10 @@ namespace XamarinPR.ViewModels
                     return;
                 }
 
-                DisplayAlert("Alert", entryString + " not found.", "OK");
+                await _pageService.DisplayAlert("Alert", entryString + " not found.", "OK");
             }
         }
-        public void addOrMinusItem(double value)
-        {
-            int index = PurchaseOrderDetail.IndexOf(_oldPurchaseOrderDetail);
-            double openqty = PurchaseOrderDetail[index].OpenQty + value;
-            if (openqty >= 0)
-                PurchaseOrderDetail[index].OpenQty = openqty;
-        }
-
-        public void hideOrShowItem(PurchaseOrderDetail item)
-        {
-            int index = PurchaseOrderDetail.IndexOf(item);
-            if (_oldPurchaseOrderDetail == item)
-            {
-                PurchaseOrderDetail[index].IsButtonVisible = !PurchaseOrderDetail[index].IsButtonVisible;
-            }
-            else
-            {
-                if (_oldPurchaseOrderDetail != null)
-                {
-                    int oldindex = PurchaseOrderDetail.IndexOf(_oldPurchaseOrderDetail);
-                    if (oldindex > -1)
-                        PurchaseOrderDetail[oldindex].IsButtonVisible = false;
-                }
-                PurchaseOrderDetail[index].IsButtonVisible = true;
-            }
-            _oldPurchaseOrderDetail = item;
-        }
-        public async void getPOItem()
+        private async void getPOItem()
         {
             string address = Settings.GeneralUrl + "api/getpoitem/" + entryString;
 
@@ -115,11 +88,38 @@ namespace XamarinPR.ViewModels
                     return;
                 }
 
-                DisplayAlert("Alert", entryString + " not found.", "OK");
+                await _pageService.DisplayAlert("Alert", entryString + " not found.", "OK");
             }
         }
-        public Command submitGRN { get; }
-        public Command searchPO { get; }
+
+        public void addOrMinusItem(double value)
+        {
+            int index = PurchaseOrderDetail.IndexOf(_oldPurchaseOrderDetail);
+            double openqty = PurchaseOrderDetail[index].OpenQty + value;
+            if (openqty >= 0)
+                PurchaseOrderDetail[index].OpenQty = openqty;
+        }
+        public void hideOrShowItem(PurchaseOrderDetail item)
+        {
+            int index = PurchaseOrderDetail.IndexOf(item);
+            if (_oldPurchaseOrderDetail == item)
+            {
+                PurchaseOrderDetail[index].IsButtonVisible = !PurchaseOrderDetail[index].IsButtonVisible;
+            }
+            else
+            {
+                if (_oldPurchaseOrderDetail != null)
+                {
+                    int oldindex = PurchaseOrderDetail.IndexOf(_oldPurchaseOrderDetail);
+                    if (oldindex > -1)
+                        PurchaseOrderDetail[oldindex].IsButtonVisible = false;
+                }
+                PurchaseOrderDetail[index].IsButtonVisible = true;
+            }
+            _oldPurchaseOrderDetail = item;
+        }
+        public ICommand submitGRN { get; private set; }
+        public ICommand searchPO { get; private set; }
         //public Command SelectedCommand { get; }
 
         private string _entryString;
@@ -128,8 +128,9 @@ namespace XamarinPR.ViewModels
             get => _entryString;
             set
             {
-                _entryString = value;
-                OnPropertyChanged("entryString");
+                //_entryString = value;
+                //OnPropertyChanged();
+                SetValue(ref _entryString, value);
             }
         }
 
@@ -139,33 +140,14 @@ namespace XamarinPR.ViewModels
             get => _SelectedItem;
             set
             {
-                _SelectedItem = value;
-                OnPropertyChanged("SelectedItem");
+                //_SelectedItem = value;
+                //OnPropertyChanged();
+                SetValue(ref _SelectedItem, value);
             }
         }
         private PurchaseOrderDetail _oldPurchaseOrderDetail { get; set; }
         public List<PurchaseOrderDetail> test { get; set; }
         public ObservableCollection<PurchaseOrderDetail> PurchaseOrderDetail { get; set; }
 
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        /// <summary>
-        /// to show display message dialog on phone screen
-        /// </summary>
-        /// <param name="title"></param>
-        /// <param name="message"></param>
-        /// <param name="okBtn"></param>
-        void DisplayAlert(string title, string message, string okBtn)
-        {
-            App.Current.MainPage.DisplayAlert(title, message, okBtn);
-        }
-        /// <summary>
-        /// Handle the on property changed, value update to screen
-        /// </summary>
-        /// <param name="propertyname"></param>
-        public void OnPropertyChanged(string propertyname)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyname));
-        }
     }
 }

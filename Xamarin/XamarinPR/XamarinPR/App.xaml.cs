@@ -16,7 +16,7 @@ namespace XamarinPR
             client = new HttpClient(); //<---- maintain one client always in app connection
 
             MainPage = new LoginPage();
-            //MainPage = new GetPODetail();
+            //MainPage = new ChooseWhsBP();
             //DependencyService.Register<MockDataStore>();
             //MainPage = new MainPage();
 

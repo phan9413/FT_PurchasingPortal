@@ -14,26 +14,24 @@
     </ContentPage.Padding>
     <StackLayout Orientation="Vertical" Padding="20" Spacing="10">
         <!--<BoxView HeightRequest="10" Color="Blue"/>-->
-        <Frame BackgroundColor="#BF043055" HasShadow="False">
+        <Frame BackgroundColor="CadetBlue" HasShadow="False" CornerRadius="10">
             <StackLayout Orientation="Vertical" Spacing="10">
                 <Entry x:Name="Url" Text="{Binding Url}" Placeholder="Url Address"   
-                        PlaceholderColor="White" HeightRequest="40"   
+                        HeightRequest="40"   
                         Keyboard="Url"
                         TextColor="White"/>
                 <Entry x:Name="UserName" Text="{Binding UserName}" Placeholder="User Name"   
-                        PlaceholderColor="White" HeightRequest="40"   
+                        HeightRequest="40"   
                         TextColor="White"/>
                 <Entry x:Name="Password" Text="{Binding Password}" Placeholder="Password"   
-                        PlaceholderColor="White" HeightRequest="40"   
+                        HeightRequest="40"   
                         IsPassword="True"  
                         TextColor="White"/>
             </StackLayout>
         </Frame>
         <Button Command="{Binding SubmitCommand}" Text="Login" TextColor="White"  
-                FontAttributes="Bold" FontSize="Large" HorizontalOptions="FillAndExpand"  
-                BackgroundColor="#088da5" />
-        <Image HeightRequest="100" Aspect="AspectFill" x:Name="FTLogo" Source="{markextensions:EmbeddedImage ResourceId=XamarinPR.Images.FT_Logo.png}"/>
-        <!--<Button x:Name="page1" Text="Page 1" Clicked="page1_Clicked" />
-        <Button x:Name="cspage1" Text="CS Page 1" Clicked="cspage1_Clicked" />-->
+                FontAttributes="Bold" FontSize="Large" HorizontalOptions="FillAndExpand" CornerRadius="20"
+                BackgroundColor="DarkSlateBlue" />
+        <Image Aspect="AspectFit" VerticalOptions="FillAndExpand" x:Name="FTLogo" Source="{markextensions:EmbeddedImage ResourceId=XamarinPR.Images.FT_Logo.png}"/>
     </StackLayout>
 </ContentPage>

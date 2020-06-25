@@ -109,6 +109,9 @@ namespace WebApiXafSecurity.Helpers
 			objectSpaceProvider.TypesInfo.RegisterEntity(typeof(PurchaseRequest));
 			objectSpaceProvider.TypesInfo.RegisterEntity(typeof(PurchaseOrder));
 			objectSpaceProvider.TypesInfo.RegisterEntity(typeof(PurchaseDelivery));
+			objectSpaceProvider.TypesInfo.RegisterEntity(typeof(Company));
+			objectSpaceProvider.TypesInfo.RegisterEntity(typeof(vwBusinessPartners));
+			objectSpaceProvider.TypesInfo.RegisterEntity(typeof(vwWarehouses));
 		}
 		public void Dispose()
 		{

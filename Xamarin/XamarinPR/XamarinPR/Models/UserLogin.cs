@@ -6,10 +6,8 @@ namespace XamarinPR.Models
     {
         public string UserName { get; set; }
         public string Password { get; set; }
-        public string StoredPassword { get; set; }
-        public int Company { get; set; }
-        public int Employee { get; set; }
-        public int WhsCode { get; set; }
+        public Company Company { get; set; }
+        public Employee Employee { get; set; }
 
     }
 }

@@ -37,8 +37,8 @@ namespace WebApiXafSecurity.Controllers
 			{
 				GenHelper.WriteLog("[Log]", "[" + securityProvider.GetUserName() + "]" + controllername + "-Get:[" + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "]");
 
-				IQueryable<Employee> employees = objectSpace.GetObjectsQuery<Employee>();
-				return Ok(employees);
+				IQueryable<Employee> existing = objectSpace.GetObjectsQuery<Employee>();
+				return Ok(existing);
 			}
 			catch (Exception ex)
 			{
@@ -97,12 +97,12 @@ namespace WebApiXafSecurity.Controllers
 			{
 				GenHelper.WriteLog("[Log]", "[" + securityProvider.GetUserName() + "]" + controllername + "-Put(" + id.ToString() + "):[" + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "]");
 
-				Employee employee = objectSpace.GetObjectByKey<Employee>(id);
-				if (employee != null)
+				Employee existing = objectSpace.GetObjectByKey<Employee>(id);
+				if (existing != null)
 				{
-					JsonParser.ParseJObjectXPO<Employee>(values, employee, objectSpace);
+					JsonParser.ParseJObjectXPO<Employee>(values, existing, objectSpace);
 					objectSpace.CommitChanges();
-					return Ok(employee);
+					return Ok(existing);
 				}
 				return NotFound();
 			}
@@ -119,10 +119,10 @@ namespace WebApiXafSecurity.Controllers
 			{
 				GenHelper.WriteLog("[Log]", "[" + securityProvider.GetUserName() + "]" + controllername + "-Post:[" + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "]");
 
-				Employee employee = objectSpace.CreateObject<Employee>();
-                JsonParser.ParseJObjectXPO<Employee>(values, employee, objectSpace);
+				Employee existing = objectSpace.CreateObject<Employee>();
+                JsonParser.ParseJObjectXPO<Employee>(values, existing, objectSpace);
 				objectSpace.CommitChanges();
-				return Ok(employee);
+				return Ok(existing);
             }
 			catch (Exception ex)
 			{

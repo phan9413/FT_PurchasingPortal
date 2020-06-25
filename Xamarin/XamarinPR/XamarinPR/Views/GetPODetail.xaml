@@ -6,9 +6,9 @@
              xmlns:local="clr-namespace:XamarinPR.ViewModels"             
              mc:Ignorable="d"
              x:Class="XamarinPR.Views.GetPODetail">
-    <ContentPage.BindingContext>
+    <!--<ContentPage.BindingContext>
         <local:GetPODetailViewModel />
-    </ContentPage.BindingContext>
+    </ContentPage.BindingContext>-->
     <StackLayout>
         <Grid>
             <Grid.RowDefinitions>
@@ -52,12 +52,13 @@
                                     <ColumnDefinition Width=".5*" />
                                     <ColumnDefinition Width=".5*" />
                                 </Grid.ColumnDefinitions>
-                                <Button Text="+" Grid.Column="1" Grid.Row="0" x:Name="btnAdd" Clicked="btnAdd_Clicked"
-                                        BackgroundColor="Green" FontSize="Subtitle" FontAttributes="Bold"/>
-                                <Editor Text="{Binding OpenQty}" Grid.Column="2" Grid.Row="0" Keyboard="Numeric"
-                                        Focused="Editor_Focused" Unfocused="Editor_Unfocused" />
-                                <Button Text="-" Grid.Column="3" Grid.Row="0" x:Name="btnMinus" Clicked="btnMinus_Clicked"
-                                        BackgroundColor="Red" FontSize="Subtitle" FontAttributes="Bold"/>
+                                <!--<Button Text="+" Grid.Column="1" Grid.Row="0" x:Name="btnAdd" Clicked="btnAdd_Clicked"
+                                        BackgroundColor="Green" FontSize="Subtitle" FontAttributes="Bold"/>-->
+                                <Entry Text="{Binding Source={x:Reference stepper}, Path=Value}" Grid.Column="2" Grid.Row="0" Keyboard="Numeric" />
+                                        <!--Focused="Editor_Focused" Unfocused="Editor_Unfocused" />-->
+                                <!--<Button Text="-" Grid.Column="3" Grid.Row="0" x:Name="btnMinus" Clicked="btnMinus_Clicked"
+                                        BackgroundColor="Red" FontSize="Subtitle" FontAttributes="Bold"/>-->
+                                <Stepper Grid.Column="3" Grid.Row="0" Minimum="1" x:Name="stepper" Value="{Binding OpenQty}"/>
                             </Grid>
                         </StackLayout>
                     </ViewCell>

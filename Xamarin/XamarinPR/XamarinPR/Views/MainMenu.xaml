@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             xmlns:markextensions="clr-namespace:XamarinPR.MarkExtensions"
+             x:Class="XamarinPR.Views.MainMenu">
+    <ContentPage.Padding>
+        <OnPlatform x:TypeArguments="Thickness"
+                iOS="0,20,0,0"
+                Android="0,0,0,0">
+        </OnPlatform>
+    </ContentPage.Padding>
+    <StackLayout Orientation="Vertical" Padding="20" Spacing="10">
+        <Button Text="New GRN" TextColor="White"  
+            FontAttributes="Bold" FontSize="Large" HorizontalOptions="FillAndExpand" CornerRadius="20"
+            BackgroundColor="DarkSlateBlue" Clicked="newgrn_Clicked"/>
+        <Image Aspect="AspectFit" VerticalOptions="FillAndExpand" x:Name="FTLogo" Source="{markextensions:EmbeddedImage ResourceId=XamarinPR.Images.FT_Logo.png}"/>
+    </StackLayout>
+</ContentPage>

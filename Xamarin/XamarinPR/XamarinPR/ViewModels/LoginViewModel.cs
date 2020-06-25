@@ -10,13 +10,19 @@ using XamarinPR.Views;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using XamarinPR.Services;
 
 namespace XamarinPR.ViewModels
 {
-    public class LoginViewModel : IDisposable, INotifyPropertyChanged
+    public class LoginViewModel : BaseViewModel
     {
+        private readonly IPageService _pageService;
+        public LoginViewModel(IPageService pageService)
+        {
+            _pageService = pageService;
+            SubmitCommand = new Command(OnSubmit);
+        }
         public Action DisplayInvalidLoginPrompt;
-        public event PropertyChangedEventHandler PropertyChanged = delegate { };
 
         private string _Url;
         public string Url
@@ -25,7 +31,7 @@ namespace XamarinPR.ViewModels
             set
             {
                 _Url = value;
-                PropertyChanged(this, new PropertyChangedEventArgs("Url"));
+                SetValue(ref _Url, value);
             }
         }
 
@@ -36,7 +42,7 @@ namespace XamarinPR.ViewModels
             set
             {
                 _UserName = value;
-                PropertyChanged(this, new PropertyChangedEventArgs("UserName"));
+                SetValue(ref _UserName, value);
             }
         }
         private string _Password;
@@ -46,22 +52,23 @@ namespace XamarinPR.ViewModels
             set
             {
                 _Password = value;
-                PropertyChanged(this, new PropertyChangedEventArgs("Password"));
+                SetValue(ref _Password, value);
             }
         }
         public ICommand SubmitCommand { protected set; get; }
-        public LoginViewModel()
-        {
-            SubmitCommand = new Command(OnSubmit);
-        }
         public async void OnSubmit()
         {
+            Application.Current.Properties[PropertyHelper.CompanyProp] = null;
+            Application.Current.Properties[PropertyHelper.WarehouseProp] = null;
+            Application.Current.Properties[PropertyHelper.BusinessPartnerProp] = null;
+            Application.Current.Properties[PropertyHelper.PurchaseOrderProp] = null;
+
             if (string.IsNullOrEmpty(UserName))
             {
                 DisplayInvalidLoginPrompt();
                 return;
             }
-            string address = Url + "api/login";
+            string address = Url + "/login";
             UserLogin request = new UserLogin()
             {
                 UserName = UserName,
@@ -74,43 +81,34 @@ namespace XamarinPR.ViewModels
                 var content = await client.RequestSvrAsync(address, request);
                 if (client.isSuccessStatusCode)
                 {
-                    DisplayAlert("Alert", "Login Success.", "OK");
-                    Application.Current.MainPage = new NavigationPage(new GetPODetail());
+                    if (Settings.GeneralUrl != Url)
+                        Settings.GeneralUrl = Url;
 
+                    Settings.CurrentUser = UserName;
+                    #region get user details
+                    content = await client.RequestSvrAsync(Url + "/api/systemusers/" + UserName);
+
+                    if (client.isSuccessStatusCode)
+                    {
+                        UserLogin usr = JsonConvert.DeserializeObject<UserLogin>(content);
+                        if (usr.Company != null)
+                            Application.Current.Properties[PropertyHelper.CompanyProp] = usr.Company;
+                        if (usr.Employee.WhsCode != null)
+                        {
+                            Application.Current.Properties[PropertyHelper.WarehouseProp] = usr.Employee.WhsCode;
+                        }
+                    }
+                    #endregion
+                    Application.Current.MainPage = new MainPage();
+                    //Application.Current.MainPage = new NavigationPage(new MainPage());
+                    //await _pageService.PushAsync(new GetPODetail());
                     return;
                 }
 
-                DisplayAlert("Alert", client.lastErrorDesc +
+                await _pageService.DisplayAlert("Alert", client.lastErrorDesc +
                     "\nLog in Failed", "OK");
             }
 
-        }
-        /// <summary>
-        /// to show display message dialog on phone screen
-        /// </summary>
-        /// <param name="title"></param>
-        /// <param name="message"></param>
-        /// <param name="okBtn"></param>
-        void DisplayAlert(string title, string message, string okBtn)
-        {
-            App.Current.MainPage.DisplayAlert(title, message, okBtn);
-        }
-
-        /// <summary>
-        /// Handle the on property changed, value update to screen
-        /// </summary>
-        /// <param name="propertyname"></param>
-        public void OnPropertyChanged(string propertyname)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyname));
-        }
-
-        /// <summary>
-        /// Dispose
-        /// </summary>
-        public void Dispose()
-        {
-            GC.Collect();
         }
     }
 }
