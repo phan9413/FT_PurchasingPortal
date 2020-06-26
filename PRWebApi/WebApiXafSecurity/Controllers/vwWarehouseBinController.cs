@@ -17,12 +17,12 @@ namespace WebApiXafSecurity.Controllers
 {
 	//[AllowAnonymous]
 	[Authorize]
-	public class vwWarehouseController : Microsoft.AspNetCore.Mvc.Controller
+	public class vwWarehouseBinController : Microsoft.AspNetCore.Mvc.Controller
 	{
-		const string controllername = "vwWarehouseController";
+		const string controllername = "vwWarehouseBinController";
 		SecurityProvider securityProvider;
 		IObjectSpace objectSpace;
-		public vwWarehouseController(SecurityProvider securityProvider)
+		public vwWarehouseBinController(SecurityProvider securityProvider)
 		{
 			FT_PurchasingPortal.Module.GeneralValues.IsNetCore = true;
 			FT_PurchasingPortal.Module.GeneralValues.NetCoreUserName = securityProvider.GetUserName();
@@ -30,7 +30,7 @@ namespace WebApiXafSecurity.Controllers
 			objectSpace = securityProvider.ObjectSpaceProvider.CreateObjectSpace();
 		}
 
-		[Route("api/WH/Whs/{bokey}")]
+		[Route("api/WH/Bin/{bokey}")]
 		[HttpGet]
 		public ActionResult Get(string bokey)
 		{
@@ -38,7 +38,7 @@ namespace WebApiXafSecurity.Controllers
 			{
 				GenHelper.WriteLog("[Log]", "[" + securityProvider.GetUserName() + "]" + controllername + "-Get(" + bokey + "):[" + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "]");
 
-				vwWarehouses existing = objectSpace.FindObject<vwWarehouses>(CriteriaOperator.Parse("BoKey=?", bokey));
+				vwWarehouseBins existing = objectSpace.FindObject<vwWarehouseBins>(CriteriaOperator.Parse("BoKey=?", bokey));
 				if (existing == null)
 				{
 					NotFound();
@@ -51,7 +51,7 @@ namespace WebApiXafSecurity.Controllers
 				throw new Exception(ex.Message);
 			}
 		}
-		[Route("api/WH/WhsList/{companycode}")]
+		[Route("api/WH/BinList/{companycode}")]
 		[HttpGet]
 		public ActionResult GetList(string companycode)
 		{
@@ -59,7 +59,7 @@ namespace WebApiXafSecurity.Controllers
 			{
 				GenHelper.WriteLog("[Log]", "[" + securityProvider.GetUserName() + "]" + controllername + "-GetList(" + companycode + "):[" + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "]");
 
-				List<vwWarehouses> existing = objectSpace.GetObjects<vwWarehouses>(CriteriaOperator.Parse("CompanyCode=?", companycode)).ToList();
+				List<vwWarehouseBins> existing = objectSpace.GetObjects<vwWarehouseBins>(CriteriaOperator.Parse("CompanyCode=?", companycode)).ToList();
 				return Ok(existing);
 			}
 			catch (Exception ex)

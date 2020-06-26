@@ -201,3 +201,12 @@ WHERE T0.InvntItem = 'Y'
 
 go
 
+alter view vwWarehouseBins
+as
+(
+	select '' + WhsCode as BoKey, WhsCode as BinCode, WhsCode, WhsName, 0 as BinAbsEntry
+	, case when Inactive = 'Y' then 0 else 1 end as IsActive
+	,'HQ' as CompanyCode 
+	from [SBODemoGB]..OWHS
+)
+go

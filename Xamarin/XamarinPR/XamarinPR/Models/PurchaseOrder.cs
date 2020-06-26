@@ -53,6 +53,17 @@ namespace XamarinPR.Models
                 OnPropertyChanged(nameof(isselected));
             }
         }
+        private string _BatchNumber;
+        [JsonIgnore]
+        public string BatchNumber
+        {
+            get => _BatchNumber;
+            set
+            {
+                _BatchNumber = value;
+                OnPropertyChanged(nameof(BatchNumber));
+            }
+        }
         public int Oid { get; set; }
         public PurchaseOrder PurchaseOrder { get; set; }
         public vwItemMasters ItemCode { get; set; }
@@ -88,7 +99,7 @@ namespace XamarinPR.Models
         }
         private string settitle()
         {
-            return string.Format("{0} [{1}] ({2})", ItemCode.ItemCode, ItemCode.ItemName, WhsCode.WhsCode);
+            return string.Format("({2}) {0} [{1}]", ItemCode.ItemCode, ItemCode.ItemName, WhsCode.WhsCode);
         }
         bool _IsButtonVisible;
         [JsonIgnore]

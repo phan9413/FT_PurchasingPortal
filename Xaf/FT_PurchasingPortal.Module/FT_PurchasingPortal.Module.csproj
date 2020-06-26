@@ -250,6 +250,7 @@
     <Compile Include="BusinessObjects\vwPriceList.cs" />
     <Compile Include="BusinessObjects\vwSAP_ITEM_AVAILABILITY.cs" />
     <Compile Include="BusinessObjects\vwExpenses.cs" />
+    <Compile Include="BusinessObjects\vwWarehouseBins.cs" />
     <Compile Include="BusinessObjects\vwWarehouses.cs" />
     <Compile Include="BusinessObjects\vwTaxes.cs" />
     <Compile Include="BusinessObjects\vwProjects.cs" />

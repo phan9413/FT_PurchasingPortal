@@ -26,6 +26,8 @@
                     SelectedItem="{Binding SelectedPOItem}" 
                     IsPullToRefreshEnabled="True"
                     Refreshing="poitemlist_Refreshing"
+                    SeparatorVisibility="Default"
+                    SeparatorColor="Black"
                     >
             <!--SelectionMode="Single"
                     SelectedItem="{Binding SelectedItem}"
@@ -51,14 +53,16 @@
                                     <ColumnDefinition Width="*" />
                                     <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
-                                <Label Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="5" Text="{Binding docno}" FontSize="Small"  VerticalTextAlignment="End" FontAttributes="Bold" TextColor="Blue"/>
+                                <Label Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Text="{Binding docno}" FontSize="Small"  VerticalTextAlignment="End" FontAttributes="Bold" TextColor="Blue"/>
+                                <Label Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="3" Text="{Binding BatchNumber}" FontSize="Small"  VerticalTextAlignment="End" HorizontalOptions="Start"  FontAttributes="Bold" TextColor="Black"/>
                                 <Label Grid.Row="0" Grid.Column="5" Text="Picking" FontSize="Small" IsVisible="{Binding isselected}" VerticalTextAlignment="End" HorizontalTextAlignment="End" FontAttributes="Bold" TextColor="Red"/>
-                                <Label Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="4" Text="{Binding title}" FontSize="Small" VerticalTextAlignment="Center" TextColor="BlueViolet"/>
-                                <Label Grid.Row="1" Grid.Column="4" Text="{Binding OpenQty}" FontSize="Small" HorizontalTextAlignment="End" VerticalTextAlignment="Center" TextColor="BlueViolet"/>
-                                <Label Grid.Row="1" Grid.Column="5" Text="{Binding UnitMsr}" FontSize="Small" HorizontalTextAlignment="End" VerticalTextAlignment="Center" TextColor="BlueViolet"/>
+                                <Label Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="4" Text="{Binding title}" FontSize="Small" VerticalTextAlignment="Center" FontAttributes="Bold" TextColor="BlueViolet"/>
+                                <Label Grid.Row="1" Grid.Column="4" Text="{Binding OpenQty}" FontSize="Small" HorizontalTextAlignment="End" VerticalTextAlignment="Center" FontAttributes="Bold" TextColor="BlueViolet"/>
+                                <Label Grid.Row="1" Grid.Column="5" Text="{Binding UnitMsr}" FontSize="Small" HorizontalTextAlignment="End" VerticalTextAlignment="Center" FontAttributes="Bold" TextColor="BlueViolet"/>
                             </Grid>
                             <Grid IsVisible="{Binding IsButtonVisible}">
                                 <Grid.RowDefinitions>
+                                    <RowDefinition Height="*" />
                                     <RowDefinition Height="*" />
                                 </Grid.RowDefinitions>
                                 <Grid.ColumnDefinitions>
@@ -70,6 +74,7 @@
                                 <Switch x:Name="switch" Grid.Column="0" Grid.Row="0" OnColor="ForestGreen" Toggled="switch_Toggled" HorizontalOptions="Start"/>
                                 <Stepper IsEnabled="{Binding Source={x:Reference switch}, Path=IsToggled}" Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="0" Minimum="0" Value="{Binding Source={x:Reference openqtyEntry}, Path=Text}"/>
                                 <Entry x:Name="openqtyEntry" IsEnabled="{Binding Source={x:Reference switch}, Path=IsToggled}" Text="{Binding OpenQty}" Grid.Column="3" Grid.Row="0" Keyboard="Numeric" />
+                                <Entry x:Name="batchnumber" IsEnabled="{Binding Source={x:Reference switch}, Path=IsToggled}" Text="{Binding BatchNumber}" Grid.Column="0" Grid.ColumnSpan="4" Grid.Row="1" Placeholder="Batch Number..." />
                             </Grid>
                         </StackLayout>
                     </ViewCell>

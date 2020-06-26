@@ -32,7 +32,7 @@
                   >
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <TextCell Text="{Binding CardCode}" Detail="{Binding CardName}" TextColor="Blue" DetailColor="BlueViolet"/>
+                    <TextCell Text="{Binding CardCode}" Detail="{Binding CardName}" TextColor="Blue" DetailColor="BlueViolet" />
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>

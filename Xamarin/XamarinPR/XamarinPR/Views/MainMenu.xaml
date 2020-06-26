@@ -13,6 +13,7 @@
         <Image Aspect="AspectFit" VerticalOptions="FillAndExpand" x:Name="FTLogo" Source="{markextensions:EmbeddedImage ResourceId=XamarinPR.Images.FT_Logo.png}"/>
         <Button Text="Logout"
             FontAttributes="Bold" FontSize="Large" HorizontalOptions="FillAndExpand" CornerRadius="20" IsTabStop="True"
+            BackgroundColor="IndianRed"
             Command="{Binding logout}"/>
     </StackLayout>
 </ContentPage>
