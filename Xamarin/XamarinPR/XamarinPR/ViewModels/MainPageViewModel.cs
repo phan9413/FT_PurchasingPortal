@@ -27,8 +27,25 @@ namespace XamarinPR.ViewModels
             {
                 refreshCount();
             });
-
+            logout = new Command(() =>
+            {
+                logoutapi();
+            });
         }
+        private async void logoutapi()
+        {
+            string Url = Settings.GeneralUrl;
+            using (var client = new HttpClientWapi())
+            {
+                var content = await client.RequestSvrAsync(Url + "/logout");
+
+                if (client.isSuccessStatusCode)
+                {
+                    Application.Current.MainPage = new LoginPage();
+                }
+            }
+        }
+
         private async void refreshCount()
         {
             string Url = Settings.GeneralUrl;
@@ -43,6 +60,7 @@ namespace XamarinPR.ViewModels
                 }
             }
         }
+        public ICommand logout { get; private set; }
         public Action getCount { get; private set; }
 
         private string _CartCount;

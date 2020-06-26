@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
+using XamarinPR.Helpers;
+using XamarinPR.Models;
 using XamarinPR.Services;
 using XamarinPR.ViewModels;
 
@@ -27,15 +29,15 @@ namespace XamarinPR.Views
 
             //vm.refresh.Invoke();
         }
-        protected override async void OnAppearing()
-        {
-            var vm = BindingContext as ChooseBPViewModel;
-            await vm.getWhs();
-            await vm.getBP();
+        //protected override async void OnAppearing()
+        //{
+        //    var vm = BindingContext as ChooseBPViewModel;
+        //    await vm.getWhs();
+        //    await vm.getBP();
 
-            base.OnAppearing();
+        //    base.OnAppearing();
 
-        }
+        //}
 
         private async void bplist_Refreshing(object sender, EventArgs e)
         {

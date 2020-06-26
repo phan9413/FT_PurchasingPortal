@@ -8,6 +8,12 @@
              xmlns:markextensions="clr-namespace:XamarinPR.MarkExtensions"
              xmlns:plugin="clr-namespace:Plugin.Badge.Abstractions;assembly=Plugin.Badge.Abstractions" 
              x:Class="XamarinPR.Views.MainPage">
+    <TabbedPage.Padding>
+        <OnPlatform x:TypeArguments="Thickness"
+                iOS="10,20,10,10"
+                Android="10,10,10,10">
+        </OnPlatform>
+    </TabbedPage.Padding>
     <TabbedPage.Children>
         <local:MainMenu Title="Menu" IconImageSource="{markextensions:EmbeddedImage ResourceId=XamarinPR.Images.icons8-tire-track-96.png}" />
         <local:CartPage x:Name="CartTab" Title="Cart" IconImageSource="{markextensions:EmbeddedImage ResourceId=XamarinPR.Images.icons8-container-truck-96.png}" 

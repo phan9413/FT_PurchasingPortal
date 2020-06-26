@@ -27,27 +27,31 @@ namespace XamarinPR.ViewModels
         public ChoosePOViewModel(IPageService pageService)
         {
             _pageService = pageService;
-            SelectedWhs = new vwWarehouses();
-            SelectedPO = new PurchaseOrder();
+            //SelectedWhs = new vwWarehouses();
+            //SelectedPO = new PurchaseOrder();
 
             submit = new Command(() =>
             {
                 submitForm();
             });
+            init();
+        }
+        private async void init()
+        {
+            await getPO();
         }
         public async void submitForm()
         {
-            if (SelectedWhs == null || SelectedPO == null)
+            if (SelectedPO == null)
             {
-                await _pageService.DisplayAlert("Fail 1", "Please Select Warehouse and PO", "OK");
+                await _pageService.DisplayAlert("Fail 1", "Please Select PO", "OK");
                 return;
             }
-            else if (SelectedWhs.BoKey == null || SelectedPO.DocNo == null)
+            else if (SelectedPO.DocNo == null)
             {
-                await _pageService.DisplayAlert("Fail 2", "Please Select Warehouse and PO", "OK");
+                await _pageService.DisplayAlert("Fail 2", "Please Select PO", "OK");
                 return;
             }
-            Application.Current.Properties[PropertyHelper.WarehouseProp] = SelectedWhs;
             Application.Current.Properties[PropertyHelper.PurchaseOrderProp] = SelectedPO;
 
             await _pageService.DisplayAlert("Success", "Warehouse and PO selected", "OK");
@@ -115,7 +119,7 @@ namespace XamarinPR.ViewModels
             string cardcodekey = ((vwBusinessPartners)Application.Current.Properties[PropertyHelper.BusinessPartnerProp]).BoKey;
             using (var client = new HttpClientWapi())
             {
-                var content = await client.RequestSvrAsync(Url + "/api/getpo/" + cardcodekey);
+                var content = await client.RequestSvrAsync(Url + "/api/getopenpo/" + cardcodekey);
 
                 if (client.isSuccessStatusCode)
                 {
@@ -136,8 +140,7 @@ namespace XamarinPR.ViewModels
         public void filterList(string text)
         {
             text = text.ToUpper();
-            //List<vwBusinessPartners> list = ibplist.Where(pp => pp.CardCode.StartsWith(text) || (pp.CardName != null && pp.CardName.StartsWith(text))).ToList();
-            polist = new ObservableCollection<PurchaseOrder>(ipolist.Where(pp => pp.DocNo.StartsWith(text)));
+            polist = new ObservableCollection<PurchaseOrder>(ipolist.Where(pp => pp.DocNo.ToUpper().Contains(text)));
             page._polist.ItemsSource = polist;
         }
 

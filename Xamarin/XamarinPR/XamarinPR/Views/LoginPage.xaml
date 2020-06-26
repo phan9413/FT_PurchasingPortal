@@ -8,11 +8,11 @@
              x:Class="XamarinPR.Views.LoginPage">
     <ContentPage.Padding>
         <OnPlatform x:TypeArguments="Thickness"
-                    iOS="0,20,0,0"
-                    Android="0,0,0,0">
+                    iOS="0,20,10,10"
+                    Android="10,10,10,10">
         </OnPlatform>
     </ContentPage.Padding>
-    <StackLayout Orientation="Vertical" Padding="20" Spacing="10">
+    <StackLayout Orientation="Vertical" Padding="10" Spacing="10">
         <!--<BoxView HeightRequest="10" Color="Blue"/>-->
         <Frame BackgroundColor="CadetBlue" HasShadow="False" CornerRadius="10">
             <StackLayout Orientation="Vertical" Spacing="10">

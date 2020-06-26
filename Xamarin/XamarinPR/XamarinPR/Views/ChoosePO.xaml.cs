@@ -25,15 +25,15 @@ namespace XamarinPR.Views
             _whspick = this.whspicker;
             _polist = this.polist;
         }
-        protected override async void OnAppearing()
-        {
-            var vm = BindingContext as ChoosePOViewModel;
-            await vm.getWhs();
-            await vm.getPO();
+        //protected override async void OnAppearing()
+        //{
+        //    var vm = BindingContext as ChoosePOViewModel;
+        //    await vm.getWhs();
+        //    await vm.getPO();
 
-            base.OnAppearing();
+        //    base.OnAppearing();
 
-        }
+        //}
         private async void polist_Refreshing(object sender, EventArgs e)
         {
             var vm = BindingContext as ChoosePOViewModel;

@@ -27,31 +27,35 @@ namespace XamarinPR.ViewModels
         public ChooseBPViewModel(IPageService pageService)
         {
             _pageService = pageService;
-            SelectedWhs = new vwWarehouses();
-            SelectedBP = new vwBusinessPartners();
+            //SelectedWhs = new vwWarehouses();
+            //SelectedBP = new vwBusinessPartners();
 
             submit = new Command(() =>
             {
                 submitForm();
             });
+            init();
+        }
+        private async void init()
+        {
+            await getBP();
         }
 
         public async void submitForm()
         {
-            if (SelectedWhs == null || SelectedBP == null)
+            if (SelectedBP == null)
             {
-                await _pageService.DisplayAlert("Fail 1", "Please Select Warehouse and BP", "OK");
+                await _pageService.DisplayAlert("Fail 1", "Please Select BP", "OK");
                 return;
             }
-            else if (SelectedWhs.BoKey == null || SelectedBP.BoKey == null)
+            else if (SelectedBP.BoKey == null)
             {
-                await _pageService.DisplayAlert("Fail 2", "Please Select Warehouse and BP", "OK");
+                await _pageService.DisplayAlert("Fail 2", "Please Select BP", "OK");
                 return;
             }
-            Application.Current.Properties[PropertyHelper.WarehouseProp] = SelectedWhs;
             Application.Current.Properties[PropertyHelper.BusinessPartnerProp] = SelectedBP;
 
-            await _pageService.PushAsync(new ChoosePO());
+            await _pageService.PushAsync(new ChoosePOItem());
         }
         public ChooseBP page;
 
@@ -136,8 +140,7 @@ namespace XamarinPR.ViewModels
         public void filterList(string text)
         {
             text = text.ToUpper();
-            //List<vwBusinessPartners> list = ibplist.Where(pp => pp.CardCode.StartsWith(text) || (pp.CardName != null && pp.CardName.StartsWith(text))).ToList();
-            bplist = new ObservableCollection<vwBusinessPartners>(ibplist.Where(pp => pp.CardCode.ToUpper().StartsWith(text) || (pp.CardName != null && pp.CardName.ToUpper().StartsWith(text))));
+            bplist = new ObservableCollection<vwBusinessPartners>(ibplist.Where(pp => pp.CardCode.ToUpper().Contains(text) || (pp.CardName != null && pp.CardName.ToUpper().Contains(text))));
             page._bplist.ItemsSource = bplist;
         }
 

@@ -34,14 +34,42 @@ namespace WebApiXafSecurity.Controllers
         /// <response code="200">Returns found item</response>
         /// <response code="400">Not Found</response>
         [HttpGet]
-        [Route("api/getpo/{cardcodekey}")]
-        public IActionResult GetPO(string cardcodekey)
+        [Route("api/getopenpo/{cardcodekey}")]
+        public IActionResult GetOpenPO(string cardcodekey)
         {
             try
             {
                 GenHelper.WriteLog("[Log]", "[" + securityProvider.GetUserName() + "]" + controllername + "-GetPO(" + cardcodekey + "):[" + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "]");
 
                 List<PurchaseOrder> obj = objectSpace.GetObjects<PurchaseOrder>(CriteriaOperator.Parse("[CardCode.BoKey]=? and [DocStatus.CurrDocStatus] in (?,?,?) and [PurchaseOrderDetail][[Quantity] > [CopyQty]]", cardcodekey, DocStatus.Accepted, DocStatus.Closed, DocStatus.Posted)).ToList();
+
+                return Ok(obj);
+            }
+            catch (Exception ex)
+            {
+                GenHelper.WriteLog("[Error]", "[" + securityProvider.GetUserName() + "]" + controllername + "-GetPO:[" + ex.Message + "][" + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "]");
+                throw new Exception(ex.Message);
+            }
+
+        }
+        /// <summary>
+        /// Get PO from API
+        /// </summary>
+        /// <remarks>
+        /// Note that the key is a Oid and an integer.
+        /// </remarks>
+        /// <param name="docno">PO No</param>       
+        /// <response code="200">Returns found item</response>
+        /// <response code="400">Not Found</response>
+        [HttpGet]
+        [Route("api/getopenpoitem/{cardcodekey}")]
+        public IActionResult GetPO(string cardcodekey)
+        {
+            try
+            {
+                GenHelper.WriteLog("[Log]", "[" + securityProvider.GetUserName() + "]" + controllername + "-GetPO(" + cardcodekey + "):[" + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "]");
+
+                List<PurchaseOrderDetail> obj = objectSpace.GetObjects<PurchaseOrderDetail>(CriteriaOperator.Parse("!isnull([PurchaseOrder]) and [PurchaseOrder.CardCode.BoKey]=? and [PurchaseOrder.DocStatus.CurrDocStatus] in (?,?,?) and [Quantity] > [CopyQty]", cardcodekey, DocStatus.Accepted, DocStatus.Closed, DocStatus.Posted)).OrderBy(pp => pp.PurchaseOrder.DocNo).ToList();
 
                 return Ok(obj);
             }
@@ -63,14 +91,14 @@ namespace WebApiXafSecurity.Controllers
         /// <response code="200">Returns found item</response>
         /// <response code="400">Not Found</response>
         [HttpGet]
-        [Route("api/getpoitem/{docno}")]
-        public IActionResult GetPOItem(string docno)
+        [Route("api/getpoitem/{companycode}/{docno}")]
+        public IActionResult GetPOItem(string companycode, string docno)
         {
             try
             {
                 GenHelper.WriteLog("[Log]", "[" + securityProvider.GetUserName() + "]" + controllername + "-GetPOItem(" + docno + "):[" + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "]");
 
-                PurchaseOrder obj = objectSpace.FindObject<PurchaseOrder>(CriteriaOperator.Parse("DocNo=?", docno));
+                PurchaseOrder obj = objectSpace.FindObject<PurchaseOrder>(CriteriaOperator.Parse("Company.BoCode=? and DocNo=?", companycode, docno));
                 if (obj == null)
                 {
                     return NotFound();
@@ -104,14 +132,14 @@ namespace WebApiXafSecurity.Controllers
         /// <response code="200">Returns found item</response>
         /// <response code="400">Not Found</response>
         [HttpGet]
-        [Route("api/getpritem/{docno}")]
-        public IActionResult GetPRItem(string docno)
+        [Route("api/getpritem/{companycode}/{docno}")]
+        public IActionResult GetPRItem(string companycode, string docno)
         {
             try
             {
                 GenHelper.WriteLog("[Log]", "[" + securityProvider.GetUserName() + "]" + controllername + "-GetPRItem(" + docno + "):[" + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "]");
 
-                PurchaseRequest obj = objectSpace.FindObject<PurchaseRequest>(CriteriaOperator.Parse("DocNo=?", docno));
+                PurchaseRequest obj = objectSpace.FindObject<PurchaseRequest>(CriteriaOperator.Parse("Company.BoCode=? and DocNo=?", companycode, docno));
                 if (obj == null)
                 {
                     return NotFound();

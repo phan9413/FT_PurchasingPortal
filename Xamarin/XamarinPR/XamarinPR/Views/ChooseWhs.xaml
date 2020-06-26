@@ -5,34 +5,25 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"
              xmlns:markextensions="clr-namespace:XamarinPR.MarkExtensions"
-             x:Class="XamarinPR.Views.ChooseBP">
+             x:Class="XamarinPR.Views.ChooseWhs">
     <ContentPage.Padding>
         <OnPlatform x:TypeArguments="Thickness"
                 iOS="10,20,10,10"
                 Android="10,10,10,10">
         </OnPlatform>
     </ContentPage.Padding>
-    <ContentPage.ToolbarItems>
-        <ToolbarItem x:Name="gotomenu" IconImageSource="{markextensions:EmbeddedImage ResourceId=XamarinPR.Images.icons8-tire-track-96.png}" Text="Menu"
-                     Clicked="gotomenu_Clicked" />
-    </ContentPage.ToolbarItems>
     <StackLayout Padding="10,0" Spacing="10">
-        <Picker x:Name="whspicker" HorizontalOptions="FillAndExpand" Title="Select Warehouse" 
-                ItemsSource="{Binding whslist}"
-                ItemDisplayBinding="{Binding WhsName}"
-                SelectedItem="{Binding SelectedWhs}"
+        <SearchBar x:Name="whssearch" HorizontalOptions="FillAndExpand" Placeholder="Search Warehouse..." TextChanged="whssearch_TextChanged"
                 />
-        <SearchBar x:Name="bpsearch" HorizontalOptions="FillAndExpand" Placeholder="Search Supplier..." TextChanged="bpsearch_TextChanged"
-                />
-        <ListView x:Name="bplist" HorizontalOptions="FillAndExpand" 
-                  ItemsSource="{Binding bplist}" 
-                  SelectedItem="{Binding SelectedBP}" 
+        <ListView x:Name="whslist" HorizontalOptions="FillAndExpand" 
+                  ItemsSource="{Binding whslist}" 
+                  SelectedItem="{Binding SelectedWhs}" 
                   IsPullToRefreshEnabled="True"
-                  Refreshing="bplist_Refreshing"
+                  Refreshing="whslist_Refreshing"
                   >
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <TextCell Text="{Binding CardCode}" Detail="{Binding CardName}" TextColor="Blue" DetailColor="BlueViolet"/>
+                    <TextCell Text="{Binding WhsCode}" Detail="{Binding WhsName}" TextColor="Blue" DetailColor="BlueViolet"/>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
@@ -40,7 +31,8 @@
                 TextColor="White"  
                 FontAttributes="Bold" FontSize="Large" HorizontalOptions="FillAndExpand" CornerRadius="20"
                 BackgroundColor="DarkSlateBlue" 
-                Command="{Binding submit}" />
+                Command="{Binding submit}"
+                />
 
     </StackLayout>
 </ContentPage>
