@@ -6,44 +6,42 @@ using System.Threading.Tasks;
 
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
+using XamarinPR.Helpers;
+using XamarinPR.Models;
 using XamarinPR.Services;
 using XamarinPR.ViewModels;
 
 namespace XamarinPR.Views
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class ChooseWhs : ContentPage
+    public partial class ChooseWhsBin : ContentPage
     {
         public ListView _whslist;
 
-        public ChooseWhs()
+        public ChooseWhsBin()
         {
-            var vm = new ChooseWhsViewModel(new PageService());
+            var vm = new ChooseWhsBinViewModel(new PageService());
             vm.page = this;
             BindingContext = vm;
             InitializeComponent();
             _whslist = this.whslist;
         }
-        //protected override void OnAppearing()
-        //{
-        //    base.OnAppearing();
-        //    var vm = BindingContext as ChooseWhsViewModel;
-
-        //    if (vm.SelectedWhs != null)
-        //    {
-        //        _whslist.SelectedItem = vm.SelectedWhs;
-        //    }
-        //}
-        private async void whslist_Refreshing(object sender, EventArgs e)
+        protected override void OnAppearing()
         {
-            var vm = BindingContext as ChooseWhsViewModel;
-            await vm.getWhs();
-            _whslist.EndRefresh();
-        }
+            var vm = BindingContext as ChooseWhsBinViewModel;
+            vm.refresh();
+            base.OnAppearing();
 
+            if (Application.Current.Properties[PropertyHelper.WarehouseProp] != null)
+            {
+                var whs = Application.Current.Properties[PropertyHelper.WarehouseProp] as vwWarehouses;
+                this.whssearch.Text = whs.WhsCode;
+            }
+
+        }
         private void whssearch_TextChanged(object sender, TextChangedEventArgs e)
         {
-            var vm = BindingContext as ChooseWhsViewModel;
+            var vm = BindingContext as ChooseWhsBinViewModel;
             if (e.OldTextValue != e.NewTextValue)
             {
                 vm.filterList(e.NewTextValue);

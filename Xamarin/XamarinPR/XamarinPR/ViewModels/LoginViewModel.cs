@@ -11,6 +11,7 @@ using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using XamarinPR.Services;
+using System.Threading.Tasks;
 
 namespace XamarinPR.ViewModels
 {
@@ -20,9 +21,11 @@ namespace XamarinPR.ViewModels
         public LoginViewModel(IPageService pageService)
         {
             _pageService = pageService;
-            SubmitCommand = new Command(OnSubmit);
+            SubmitCommand = new Command(async () => 
+            {
+                await OnSubmit();
+            });
         }
-        public Action DisplayInvalidLoginPrompt;
 
         private string _Url;
         public string Url
@@ -56,7 +59,7 @@ namespace XamarinPR.ViewModels
             }
         }
         public ICommand SubmitCommand { protected set; get; }
-        public async void OnSubmit()
+        public async Task OnSubmit()
         {
             Application.Current.Properties[PropertyHelper.CompanyProp] = null;
             Application.Current.Properties[PropertyHelper.WarehouseProp] = null;
@@ -65,7 +68,7 @@ namespace XamarinPR.ViewModels
 
             if (string.IsNullOrEmpty(UserName))
             {
-                DisplayInvalidLoginPrompt();
+                await _pageService.DisplayAlert("Alert", "User Name is empty", "OK");
                 return;
             }
             string address = Url + "/login";

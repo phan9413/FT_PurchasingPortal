@@ -23,16 +23,16 @@ namespace XamarinPR.ViewModels
             _pageService = pageService;
             CartCount = "0";
 
-            getCount = new Action(() =>
+            getCount = new Action(async () =>
             {
-                refreshCount();
+                await refreshCount();
             });
-            logout = new Command(() =>
+            logout = new Command(async () =>
             {
-                logoutapi();
+                await logoutapi();
             });
         }
-        private async void logoutapi()
+        private async Task logoutapi()
         {
             string Url = Settings.GeneralUrl;
             using (var client = new HttpClientWapi())
@@ -46,7 +46,7 @@ namespace XamarinPR.ViewModels
             }
         }
 
-        private async void refreshCount()
+        private async Task refreshCount()
         {
             string Url = Settings.GeneralUrl;
             string UserName = Settings.CurrentUser;

@@ -56,17 +56,5 @@ namespace XamarinPR.Views
         }
 
 
-        //private async void test()
-        //{
-        //    var vm = BindingContext as GetPODetailViewModel;
-        //    await vm.getPOItem();
-
-
-        //    ObservableCollection<PurchaseOrderDetail> a = null;
-        //    a = vm.PurchaseOrderDetail;
-        //    lstPO.ItemsSource = vm.PurchaseOrderDetail;
-
-
-        //}
     }
 }

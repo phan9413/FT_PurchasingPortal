@@ -30,29 +30,31 @@ namespace XamarinPR.ViewModels
             //SelectedWhs = new vwWarehouses();
             //SelectedPO = new PurchaseOrder();
 
-            submit = new Command(() =>
+            submit = new Command(async () =>
             {
-                submitForm();
+                await submitForm();
             });
             init();
         }
-        private async void init()
+        private async Task init()
         {
+            await getWhs();
             await getPO();
         }
-        public async void submitForm()
+        public async Task submitForm()
         {
-            if (SelectedPO == null)
+            if (SelectedPO == null || SelectedWhs == null)
             {
-                await _pageService.DisplayAlert("Fail 1", "Please Select PO", "OK");
+                await _pageService.DisplayAlert("Fail 1", "Please Select Warehouse and PO", "OK");
                 return;
             }
-            else if (SelectedPO.DocNo == null)
+            else if (SelectedPO.DocNo == null || SelectedWhs.BoKey == null)
             {
-                await _pageService.DisplayAlert("Fail 2", "Please Select PO", "OK");
+                await _pageService.DisplayAlert("Fail 2", "Please Select Warehouse and PO", "OK");
                 return;
             }
             Application.Current.Properties[PropertyHelper.PurchaseOrderProp] = SelectedPO;
+            Application.Current.Properties[PropertyHelper.WarehouseProp] = SelectedWhs;
 
             await _pageService.DisplayAlert("Success", "Warehouse and PO selected", "OK");
         }

@@ -25,14 +25,6 @@ namespace XamarinPR.Views
             _poitemlist = this.poitemlist;
 
         }
-        //protected override async void OnAppearing()
-        //{
-        //    var vm = BindingContext as ChoosePOItemViewModel;
-        //    await vm.getPOItem();
-
-        //    base.OnAppearing();
-
-        //}
         private async void poitemlist_Refreshing(object sender, EventArgs e)
         {
             var vm = BindingContext as ChoosePOItemViewModel;
@@ -53,9 +45,9 @@ namespace XamarinPR.Views
             var item = e.Item as PurchaseOrderDetail;
             vm.hideOrShowItem(item);
         }
-        private void gotomenu_Clicked(object sender, EventArgs e)
+        private void gotocart_Clicked(object sender, EventArgs e)
         {
-            Application.Current.MainPage = new MainPage();
+            Application.Current.MainPage = new CartPage();
         }
 
         private void InitMenu_Clicked(object sender, EventArgs e)
@@ -69,10 +61,20 @@ namespace XamarinPR.Views
             var vm = BindingContext as ChoosePOItemViewModel;
             vm.SelectedPOItem.isselected = !vm.SelectedPOItem.isselected;
         }
-        private void WhsMenu_Clicked(object sender, EventArgs e)
+        private async void gotobin_Clicked(object sender, EventArgs e)
         {
             var vm = BindingContext as ChoosePOItemViewModel;
-            vm.gotoChooseWhs();
+            await vm.gotoChooseBin();
+        }
+        private async void gotowh_Clicked(object sender, EventArgs e)
+        {
+            var vm = BindingContext as ChoosePOItemViewModel;
+            await vm.gotoChooseWhs();
+        }
+        private async void gotopo_Clicked(object sender, EventArgs e)
+        {
+            var vm = BindingContext as ChoosePOItemViewModel;
+            await vm.postGRNItem();
         }
     }
 }

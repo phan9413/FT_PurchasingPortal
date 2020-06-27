@@ -13,8 +13,14 @@
         </OnPlatform>
     </ContentPage.Padding>
     <ContentPage.ToolbarItems>
-        <ToolbarItem x:Name="gotomenu" IconImageSource="{markextensions:EmbeddedImage ResourceId=XamarinPR.Images.icons8-tire-track-96.png}" Text="Menu"
-                     Clicked="gotomenu_Clicked" />
+        <ToolbarItem x:Name="gotocart" IconImageSource="{markextensions:EmbeddedImage ResourceId=XamarinPR.Images.icons8-container-truck-96.png}" Text="Cart"
+                     Clicked="gotocart_Clicked" Order="Primary"/>
+        <ToolbarItem x:Name="gotopo" Text="Receive to PO WH"
+                     Clicked="gotopo_Clicked" Order="Secondary"/>
+        <ToolbarItem x:Name="gotowh" Text="Receive to WH"
+                     Clicked="gotowh_Clicked" Order="Secondary"/>
+        <ToolbarItem x:Name="gotobin" Text="Receive to Bin"
+                     Clicked="gotobin_Clicked" Order="Secondary"/>
     </ContentPage.ToolbarItems>
     <StackLayout Spacing="10">
         <SearchBar x:Name="poitemsearch" HorizontalOptions="FillAndExpand" Placeholder="Search PO Item..." TextChanged="poitemsearch_TextChanged"
@@ -35,10 +41,9 @@
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <ViewCell>
-                        <ViewCell.ContextActions>
-                            <!--<MenuItem Text="Erase" Clicked="InitMenu_Clicked" />-->
+                        <!--<ViewCell.ContextActions>
                             <MenuItem Text="WH" Clicked="WhsMenu_Clicked" />
-                        </ViewCell.ContextActions>
+                        </ViewCell.ContextActions>-->
                         <StackLayout HorizontalOptions="StartAndExpand">
                             <Grid>
                                 <Grid.RowDefinitions>
@@ -55,7 +60,7 @@
                                 </Grid.ColumnDefinitions>
                                 <Label Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Text="{Binding docno}" FontSize="Small"  VerticalTextAlignment="End" FontAttributes="Bold" TextColor="Blue"/>
                                 <Label Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="3" Text="{Binding BatchNumber}" FontSize="Small"  VerticalTextAlignment="End" HorizontalOptions="Start"  FontAttributes="Bold" TextColor="Black"/>
-                                <Label Grid.Row="0" Grid.Column="5" Text="Picking" FontSize="Small" IsVisible="{Binding isselected}" VerticalTextAlignment="End" HorizontalTextAlignment="End" FontAttributes="Bold" TextColor="Red"/>
+                                <Label Grid.Row="0" Grid.Column="5" Text="Receiving" FontSize="Small" IsVisible="{Binding isselected}" VerticalTextAlignment="End" HorizontalTextAlignment="End" FontAttributes="Bold" TextColor="Red"/>
                                 <Label Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="4" Text="{Binding title}" FontSize="Small" VerticalTextAlignment="Center" FontAttributes="Bold" TextColor="BlueViolet"/>
                                 <Label Grid.Row="1" Grid.Column="4" Text="{Binding OpenQty}" FontSize="Small" HorizontalTextAlignment="End" VerticalTextAlignment="Center" FontAttributes="Bold" TextColor="BlueViolet"/>
                                 <Label Grid.Row="1" Grid.Column="5" Text="{Binding UnitMsr}" FontSize="Small" HorizontalTextAlignment="End" VerticalTextAlignment="Center" FontAttributes="Bold" TextColor="BlueViolet"/>
@@ -81,10 +86,10 @@
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
-        <Button Text="Submit" 
+        <!--<Button Text="Submit" 
                 TextColor="White"  
                 FontAttributes="Bold" FontSize="Large" HorizontalOptions="FillAndExpand" CornerRadius="20"
                 BackgroundColor="DarkSlateBlue" 
-                Command="{Binding submit}" />
+                Command="{Binding submit}" />-->
     </StackLayout>
 </ContentPage>

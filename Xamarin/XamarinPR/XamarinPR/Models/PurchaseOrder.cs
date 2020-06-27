@@ -67,23 +67,13 @@ namespace XamarinPR.Models
         public int Oid { get; set; }
         public PurchaseOrder PurchaseOrder { get; set; }
         public vwItemMasters ItemCode { get; set; }
-
-        private vwWarehouses _WhsCode;
-        public vwWarehouses WhsCode
-        {
-            get => _WhsCode;
-            set
-            {
-                _WhsCode = value;
-                OnPropertyChanged(nameof(WhsCode));
-                title = settitle();
-            }
-        }
+        public vwWarehouses WhsCode { get; set; }
         public string Dscription { get; set; }
         public string UnitMsr { get; set; }
         public int Baseline { get; set; }
         public double Quantity { get; set; }
         public double CopyQty { get; set; }
+        public bool IsBeingDelete { get; set; }
 
         double _OpenQty;
         public double OpenQty

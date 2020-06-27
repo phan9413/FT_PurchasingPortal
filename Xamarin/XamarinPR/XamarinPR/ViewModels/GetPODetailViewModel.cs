@@ -24,14 +24,17 @@ namespace XamarinPR.ViewModels
             _pageService = pageService;
             entryString = string.Empty;
             //PurchaseOrderDetail = new ObservableCollection<PurchaseOrderDetail>();
-            submitGRN = new Command(() =>
+            submitGRN = new Command(async () =>
             {
-                postGRN();
+                await postGRN();
             });
 
-            searchPO = new Command(getPOItem);
+            searchPO = new Command(async () => 
+            {
+                await getPOItem();
+            });
         }
-        private async void postGRN()
+        private async Task postGRN()
         {
             string address = Settings.GeneralUrl + "api/submitgrnfrompo/" + entryString;
 
@@ -61,7 +64,7 @@ namespace XamarinPR.ViewModels
                 await _pageService.DisplayAlert("Alert", entryString + " not found.", "OK");
             }
         }
-        private async void getPOItem()
+        private async Task getPOItem()
         {
             string address = Settings.GeneralUrl + "api/getpoitem/" + entryString;
 

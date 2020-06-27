@@ -4,7 +4,7 @@ using System.Text;
 
 namespace XamarinPR.Models
 {
-    public class vwWarehousesBin
+    public class vwWarehouseBins
     {
         public string BoKey { get; set; }
         public string BinCode { get; set; }

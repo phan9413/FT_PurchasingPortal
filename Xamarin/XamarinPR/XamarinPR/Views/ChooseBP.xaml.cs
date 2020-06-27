@@ -27,17 +27,7 @@ namespace XamarinPR.Views
             _whspick = this.whspicker;
             _bplist = this.bplist;
 
-            //vm.refresh.Invoke();
         }
-        //protected override async void OnAppearing()
-        //{
-        //    var vm = BindingContext as ChooseBPViewModel;
-        //    await vm.getWhs();
-        //    await vm.getBP();
-
-        //    base.OnAppearing();
-
-        //}
 
         private async void bplist_Refreshing(object sender, EventArgs e)
         {
