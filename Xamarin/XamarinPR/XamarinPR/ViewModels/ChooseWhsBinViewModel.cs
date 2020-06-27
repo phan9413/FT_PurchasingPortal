@@ -46,19 +46,19 @@ namespace XamarinPR.ViewModels
         {
             if (SelectedWhs == null)
             {
-                await _pageService.DisplayAlert("Fail 1", "Please Select Bin", "OK");
+                await _pageService.DisplayAlert("Fail 1", "Please Select Warehouse or Bin", "OK");
                 return;
             }
             else if (SelectedWhs.BoKey == null)
             {
-                await _pageService.DisplayAlert("Fail 2", "Please Select Bin", "OK");
+                await _pageService.DisplayAlert("Fail 2", "Please Select Warehouse or Bin", "OK");
                 return;
             }
 
             if (typeof(ChoosePOItem) == sourcepage.GetType())
             {
                 var vm = ((ChoosePOItem)sourcepage).BindingContext as ChoosePOItemViewModel;
-                // do genGRNItem();
+
                 await vm.postGRNItem(SelectedWhs);
 
             }

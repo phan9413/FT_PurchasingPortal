@@ -19,6 +19,7 @@ namespace XamarinPR.ViewModels
 {
     public class ChoosePOItemViewModel : BaseViewModel
     {
+        private IEnumerable<vwWarehouses> iwarehouselist;
         private IEnumerable<vwWarehouseBins> ibinlist;
         private IEnumerable<vwWarehouseBins> iwhslist;
 
@@ -48,6 +49,7 @@ namespace XamarinPR.ViewModels
         }
         public async Task init()
         {
+            await getWarehouse();
             await getWhs();
             await getBin();
             await getPOItem();
@@ -86,6 +88,33 @@ namespace XamarinPR.ViewModels
 
         public ICommand submit { get; private set; }
         public Action eraseqty { get; private set; }
+        public async Task getWarehouse()
+        {
+            string Url = Settings.GeneralUrl;
+            string company = ((Company)Application.Current.Properties[PropertyHelper.CompanyProp]).BoCode;
+            using (var client = new HttpClientWapi())
+            {
+                var content = await client.RequestSvrAsync(Url + "/api/wh/whslist/" + company);
+
+                if (client.isSuccessStatusCode)
+                {
+                    //whslist = new ObservableCollection<vwWarehouseBins>();
+                    //whslist = JsonConvert.DeserializeObject<ObservableCollection<vwWarehouseBins>>(content);
+                    iwarehouselist = JsonConvert.DeserializeObject<IEnumerable<vwWarehouses>>(content);
+
+                    //page._whslist.ItemsSource = whslist;
+                    //page._whspick.SetBinding(Picker.SelectedItemProperty, "SelectedWhs");
+                    //page._whspick.ItemDisplayBinding = new Binding("WhsName");
+
+                    //if (Application.Current.Properties[PropertyHelper.WarehouseProp] != null)
+                    //{
+                    //    SelectedWhs = Application.Current.Properties[PropertyHelper.WarehouseProp] as vwWarehouseBins;
+                    //    page._whslist.SelectedIndex = page._whslist.Items.IndexOf(SelectedWhs.WhsName);
+                    //}
+                }
+
+            }
+        }
 
         public async Task getPOItem()
         {
@@ -169,6 +198,10 @@ namespace XamarinPR.ViewModels
         {
             try
             {
+                if (wh != null)
+                {
+                    Application.Current.Properties[PropertyHelper.WarehouseProp] = iwarehouselist.Where(pp => pp.WhsCode == wh.WhsCode).FirstOrDefault(); ;
+                }
                 List<PurchaseDeliveryDetail> post = new List<PurchaseDeliveryDetail>();
                 foreach (PurchaseOrderDetail dtl in ipoitemlist)
                 {
@@ -179,8 +212,14 @@ namespace XamarinPR.ViewModels
                         obj.Quantity = dtl.OpenQty;
                         if (!string.IsNullOrEmpty(dtl.BatchNumber))
                             obj.BatchNumber = dtl.BatchNumber;
+                        string key = "";
+
                         if (wh != null)
-                            obj.BinCode = new vwWarehouseBins(){ BoKey = wh.BoKey };
+                            key = wh.BoKey;
+                        else
+                            key = iwhslist.Where(pp => pp.WhsCode == dtl.WhsCode.WhsCode && pp.BinAbsEntry == 0).FirstOrDefault().BoKey;
+
+                        obj.BinCode = new vwWarehouseBins() { BoKey = key };
 
                         post.Add(obj);
                     }
@@ -196,6 +235,9 @@ namespace XamarinPR.ViewModels
                         var content = await client.RequestSvrAsync(address, jobj);
                         if (client.isSuccessStatusCode)
                         {
+                            page._poitemlist.BeginRefresh();
+                            await getPOItem();
+                            page._poitemlist.EndRefresh();
                             return;
                         }
 
