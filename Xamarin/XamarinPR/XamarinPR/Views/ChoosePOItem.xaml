@@ -60,7 +60,7 @@
                                 </Grid.ColumnDefinitions>
                                 <Label Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Text="{Binding docno}" FontSize="Small"  VerticalTextAlignment="End" FontAttributes="Bold" TextColor="Blue"/>
                                 <Label Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="3" Text="{Binding BatchNumber}" FontSize="Small"  VerticalTextAlignment="End" HorizontalOptions="Start"  FontAttributes="Bold" TextColor="Black"/>
-                                <Label Grid.Row="0" Grid.Column="5" Text="Receiving" FontSize="Small" IsVisible="{Binding isselected}" VerticalTextAlignment="End" HorizontalTextAlignment="End" FontAttributes="Bold" TextColor="Red"/>
+                                <Label Grid.Row="0" Grid.Column="5" Text="Rec..." FontSize="Small" IsVisible="{Binding isselected}" VerticalTextAlignment="End" HorizontalTextAlignment="End" FontAttributes="Bold" TextColor="Red"/>
                                 <Label Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="4" Text="{Binding title}" FontSize="Small" VerticalTextAlignment="Center" FontAttributes="Bold" TextColor="BlueViolet"/>
                                 <Label Grid.Row="1" Grid.Column="4" Text="{Binding OpenQty}" FontSize="Small" HorizontalTextAlignment="End" VerticalTextAlignment="Center" FontAttributes="Bold" TextColor="BlueViolet"/>
                                 <Label Grid.Row="1" Grid.Column="5" Text="{Binding UnitMsr}" FontSize="Small" HorizontalTextAlignment="End" VerticalTextAlignment="Center" FontAttributes="Bold" TextColor="BlueViolet"/>

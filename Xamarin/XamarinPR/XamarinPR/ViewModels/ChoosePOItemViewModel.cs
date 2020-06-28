@@ -14,6 +14,7 @@ using XamarinPR.Services;
 using Newtonsoft.Json.Linq;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Security;
 
 namespace XamarinPR.ViewModels
 {
@@ -31,11 +32,11 @@ namespace XamarinPR.ViewModels
             _pageService = pageService;
             //SelectedPOItem = new PurchaseOrderDetail();
 
-            submit = new Command(async () =>
-            {
-                page.IsEnabled = false;
-                await submitForm();
-            });
+            //submit = new Command(async () =>
+            //{
+            //    page.IsEnabled = false;
+            //    await submitForm();
+            //});
             eraseqty = new Action(async() =>
             {
                 if (SelectedPOItem == null)
@@ -54,12 +55,12 @@ namespace XamarinPR.ViewModels
             await getBin();
             await getPOItem();
         }
-        public async Task submitForm()
-        {
+        //public async Task submitForm()
+        //{
 
-            await _pageService.DisplayAlert("Success", "GRN items submitted", "OK");
-            page.IsEnabled = true;
-        }
+        //    await _pageService.DisplayAlert("Success", "GRN items submitted", "OK");
+        //    page.IsEnabled = true;
+        //}
 
         public ChoosePOItem page;
 
@@ -203,23 +204,27 @@ namespace XamarinPR.ViewModels
                     Application.Current.Properties[PropertyHelper.WarehouseProp] = iwarehouselist.Where(pp => pp.WhsCode == wh.WhsCode).FirstOrDefault(); ;
                 }
                 List<PurchaseDeliveryDetail> post = new List<PurchaseDeliveryDetail>();
+                string whskey = "";
+                string bokey = ((vwBusinessPartners)Application.Current.Properties[PropertyHelper.BusinessPartnerProp]).BoKey;
                 foreach (PurchaseOrderDetail dtl in ipoitemlist)
                 {
                     if (dtl.isselected && dtl.OpenQty > 0)
                     {
                         PurchaseDeliveryDetail obj = new PurchaseDeliveryDetail();
                         obj.Baseline = dtl.Oid;
+                        obj.BaseDocNo = dtl.docno;
                         obj.Quantity = dtl.OpenQty;
                         if (!string.IsNullOrEmpty(dtl.BatchNumber))
                             obj.BatchNumber = dtl.BatchNumber;
-                        string key = "";
+                        whskey = "";
 
                         if (wh != null)
-                            key = wh.BoKey;
+                            whskey = wh.BoKey;
                         else
-                            key = iwhslist.Where(pp => pp.WhsCode == dtl.WhsCode.WhsCode && pp.BinAbsEntry == 0).FirstOrDefault().BoKey;
+                            whskey = iwhslist.Where(pp => pp.WhsCode == dtl.WhsCode.WhsCode && pp.BinAbsEntry == 0).FirstOrDefault().BoKey;
 
-                        obj.BinCode = new vwWarehouseBins() { BoKey = key };
+                        obj.BinCode = new vwWarehouseBins() { BoKey = whskey };
+                        obj.LineVendor = new vwBusinessPartners() { BoKey = bokey };
 
                         post.Add(obj);
                     }
@@ -227,9 +232,9 @@ namespace XamarinPR.ViewModels
                 if (post.Count > 0)
                 {
                     string json = JsonConvert.SerializeObject(post);
-                    JObject jobj = JObject.Parse(json);
+                    JArray jobj = JArray.Parse(json);
 
-                    string address = Settings.GeneralUrl + "api/submitgrnitem/" + Settings.CurrentUser;
+                    string address = Settings.GeneralUrl + "/api/gengrnitem";
                     using (var client = new HttpClientWapi())
                     {
                         var content = await client.RequestSvrAsync(address, jobj);

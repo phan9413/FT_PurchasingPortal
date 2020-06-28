@@ -15,19 +15,29 @@ namespace XamarinPR.Views
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class MainPage : TabbedPage 
     {
+        public CartPage _CartPage;
         public MainPage()
         {
             var vm = new MainPageViewModel(new PageService());
+            vm.page = this;
             BindingContext = vm;
-            vm.getCount.Invoke();
             InitializeComponent();
-
-            //CartTab.SetBinding(TabBadge.BadgeTextProperty, new Binding("Source=CartCount"));
+            _CartPage = this.CartTab;
         }
 
-        protected override void OnAppearing()
+        protected override async void OnAppearing()
         {
+            var vm = BindingContext as MainPageViewModel;
             base.OnAppearing();
+            await setbadgetext();
+            //CartTab.SetBinding(TabBadge.BadgeTextProperty, new Binding("Source=CartCount"));
+        }
+        public async Task setbadgetext()
+        {
+            var vm = BindingContext as MainPageViewModel;
+            await vm.refreshCount();
+            TabBadge.SetBadgeText(CartTab, vm.CartCount);
+
         }
     }
 }

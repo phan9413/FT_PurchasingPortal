@@ -81,7 +81,7 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
                 }
                 else
                 {
-                    Session.ExecuteSproc("sp_AfterDocUpdated", new OperandValue(GeneralValues.NetCoreUserName), new OperandValue(this.Oid), new OperandValue(this.ObjType.BoCode));
+                    Session.ExecuteSproc("sp_AfterDocDetailUpdated", new OperandValue(GeneralValues.NetCoreUserName), new OperandValue(this.Oid), new OperandValue(this.ObjType.BoCode));
                 }
             }
         }
@@ -712,6 +712,16 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
             set
             {
                 SetPropertyValue("Baseline", ref _Baseline, value);
+            }
+        }
+        private string _BaseDocNo;
+        [Index(322), VisibleInListView(false), VisibleInDetailView(false), VisibleInLookupListView(false)]
+        public string BaseDocNo
+        {
+            get { return _BaseDocNo; }
+            set
+            {
+                SetPropertyValue("BaseDocNo", ref _BaseDocNo, value);
             }
         }
         #region sap ref

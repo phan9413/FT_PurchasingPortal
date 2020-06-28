@@ -27,7 +27,12 @@ namespace XamarinPR.Models
         [JsonIgnore]
         public string docno
         {
-            get => PurchaseDelivery.DocNo;
+            get => PurchaseDelivery is null ? "" : PurchaseDelivery.DocNo;
+        }
+        [JsonIgnore]
+        public string vendor
+        {
+            get => LineVendor is null ? "" : LineVendor.CardCode;
         }
 
         string _title;
@@ -53,7 +58,6 @@ namespace XamarinPR.Models
             }
         }
         private string _BatchNumber;
-        [JsonIgnore]
         public string BatchNumber
         {
             get => _BatchNumber;
@@ -78,7 +82,9 @@ namespace XamarinPR.Models
         public PurchaseDelivery PurchaseDelivery { get; set; }
         public vwItemMasters ItemCode { get; set; }
         public vwWarehouses WhsCode { get; set; }
+        public vwBusinessPartners LineVendor { get; set; }
         public string Dscription { get; set; }
+        public string BaseDocNo { get; set; }
         public int Baseline { get; set; }
         public double Quantity { get; set; }
         public double CopyQty { get; set; }

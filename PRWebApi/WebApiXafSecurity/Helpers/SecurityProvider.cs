@@ -107,11 +107,16 @@ namespace WebApiXafSecurity.Helpers
 			objectSpaceProvider.TypesInfo.RegisterEntity(typeof(PermissionPolicyUser));
 			objectSpaceProvider.TypesInfo.RegisterEntity(typeof(PermissionPolicyRole));
 			objectSpaceProvider.TypesInfo.RegisterEntity(typeof(PurchaseRequest));
+			objectSpaceProvider.TypesInfo.RegisterEntity(typeof(PurchaseRequestDetail));
 			objectSpaceProvider.TypesInfo.RegisterEntity(typeof(PurchaseOrder));
+			objectSpaceProvider.TypesInfo.RegisterEntity(typeof(PurchaseOrderDetail));
 			objectSpaceProvider.TypesInfo.RegisterEntity(typeof(PurchaseDelivery));
+			objectSpaceProvider.TypesInfo.RegisterEntity(typeof(PurchaseDeliveryDetail));
 			objectSpaceProvider.TypesInfo.RegisterEntity(typeof(Company));
 			objectSpaceProvider.TypesInfo.RegisterEntity(typeof(vwBusinessPartners));
 			objectSpaceProvider.TypesInfo.RegisterEntity(typeof(vwWarehouses));
+			objectSpaceProvider.TypesInfo.RegisterEntity(typeof(vwWarehouseBins));
+			objectSpaceProvider.TypesInfo.RegisterEntity(typeof(vwItemMasters));
 		}
 		public void Dispose()
 		{

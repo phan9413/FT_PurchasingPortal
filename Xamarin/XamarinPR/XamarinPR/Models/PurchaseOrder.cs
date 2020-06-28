@@ -28,7 +28,7 @@ namespace XamarinPR.Models
         [JsonIgnore]
         public string docno
         {
-            get => PurchaseOrder.DocNo;
+            get => PurchaseOrder is null? "": PurchaseOrder.DocNo;
         }
 
         private string _title;
@@ -71,6 +71,7 @@ namespace XamarinPR.Models
         public string Dscription { get; set; }
         public string UnitMsr { get; set; }
         public int Baseline { get; set; }
+        public string BaseDocNo { get; set; }
         public double Quantity { get; set; }
         public double CopyQty { get; set; }
         public bool IsBeingDelete { get; set; }

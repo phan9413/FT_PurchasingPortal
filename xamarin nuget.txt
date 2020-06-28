@@ -1,0 +1,13 @@
+> android project
+Install-Package Xamarin.Google.Android.Material -Version 1.0.0.1     
+Install-Package Xamarin.AndroidX.Lifecycle.LiveData -Version 2.2.0.1
+Install-Package Xamarin.AndroidX.Browser -Version 1.2.0.1
+Install-Package Xamarin.AndroidX.Legacy.Support.V4 -Version 1.0.0.1
+
+
+> core project
+Install-Package Plugin.Badge
+
+
+
+

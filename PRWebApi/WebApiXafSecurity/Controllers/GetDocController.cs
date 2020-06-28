@@ -80,7 +80,7 @@ namespace WebApiXafSecurity.Controllers
             }
 
         }
-
+        /*
         /// <summary>
         /// Get PO from API
         /// </summary>
@@ -161,6 +161,7 @@ namespace WebApiXafSecurity.Controllers
                 throw new Exception(ex.Message);
             }
         }
+        */
         /// <summary>
         /// Get PR from API
         /// </summary>
@@ -179,7 +180,7 @@ namespace WebApiXafSecurity.Controllers
                 GenHelper.WriteLog("[Log]", "[" + securityProvider.GetUserName() + "]" + controllername + "-GetGRNItemCount(" + username + "):[" + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "]");
                 int cnt = 0;
 
-                List<PurchaseDeliveryDetail> obj = objectSpace.GetObjects<PurchaseDeliveryDetail>(CriteriaOperator.Parse("CreateUser.UserName=?", username)).ToList();
+                List<PurchaseDeliveryDetail> obj = objectSpace.GetObjects<PurchaseDeliveryDetail>(CriteriaOperator.Parse("[CreateUser.UserName]=? and isnull([PurchaseDelivery])", username)).ToList();
                 if (obj != null)
                 {
                     cnt = obj.Count;
@@ -210,8 +211,8 @@ namespace WebApiXafSecurity.Controllers
             {
                 GenHelper.WriteLog("[Log]", "[" + securityProvider.GetUserName() + "]" + controllername + "-GetGRNItem(" + username + "):[" + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "]");
 
-                List<PurchaseDeliveryDetail> obj = objectSpace.GetObjects<PurchaseDeliveryDetail>(CriteriaOperator.Parse("CreateUser.UserName=?", username)).ToList();
-                if (obj != null)
+                List<PurchaseDeliveryDetail> obj = objectSpace.GetObjects<PurchaseDeliveryDetail>(CriteriaOperator.Parse("[CreateUser.UserName]=? and isnull([PurchaseDelivery])", username)).ToList();
+                if (obj == null)
                 {
                     return NotFound();
                 }

@@ -1,0 +1,156 @@
+
+/****** Object:  StoredProcedure [dbo].[sp_AfterDocDetailUpdated]    Script Date: 28/6/2020 4:04:52 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+ALTER procedure
+[dbo].[sp_AfterDocDetailUpdated] 
+@usercode nvarchar(50),
+@docid int,
+@objtype nvarchar(50)
+AS
+begin
+ -- DocStatus
+	--Draft = 0, (new create document / doc user press save)
+	--Cancelled = 1, (once doc userpress cancel button)
+	--Rejected = 2, (once approverejected / or reject user press reject button)
+	--Submited = 3, (once doc userpress submit button (trigger approval base on approval condition))
+	--Accepted = 4, (once approveuser approval completed / or no approval required after press submit button)
+	--Closed = 5, (once closeuser press close button)
+	--Posted = 6, (once postuser press post button)
+	--PostedCancel = 7 (once sap posting error)
+
+ -- LineStatus
+    --Open = 0,
+    --Close = 1,
+    --Cancel = 2,
+    --Delete = 3
+	-------------------------------------------
+	declare @useroid uniqueidentifier
+	declare @baseline int
+	declare @basetypeoid int
+	declare @basetype nvarchar(50)
+	declare @qty numeric(19,6)
+	declare @totalqty numeric(19,6)
+	declare @today datetime
+
+	select @today = getdate()
+	select @useroid = Oid from PermissionPolicyUser where UserName = @usercode
+
+	if @objtype = 'StockTransferRequest' -- OSTF
+	begin
+		update OSTF1 set MasterOid = isnull(StockTransferRequest,0) where OID = @docid
+		and isnull(MasterOid,0) = 0 and isnull(StockTransferRequest,0) > 0
+
+		update OSTF1 set DeleteBy = @useroid, DeleteDate = @today where OID = @docid
+		and StockTransferRequest is null
+	end
+
+
+	if @objtype = 'PurchaseDelivery' -- OPRN
+	begin
+		update OPRN1 set MasterOid = isnull(PurchaseDelivery,0) where OID = @docid
+		and isnull(MasterOid,0) = 0 and isnull(PurchaseDelivery,0) > 0
+
+		update OPRN1 set DeleteBy = @useroid, DeleteDate = @today where OID = @docid
+		and PurchaseDelivery is null
+
+		select @baseline = T0.BaseLine, @basetypeoid = T0.BaseType, @basetype = T2.BoCode 
+		from OPRN1 T0
+		inner join ODOC T2 on T0.BaseType = T2.OID
+		where T0.OID = @docid
+
+		update OPRN1 set OpenQty = Quantity - CopyQty, OpenCreQty = Quantity - CopyCreQty where OID = @docid
+
+		if @baseline > 0
+		begin
+			update T1
+			set T1.ItemCode = T2.ItemCode,
+				T1.ItemDetails = T2.ItemDetails,
+				T1.WhsCode = T2.WhsCode,
+				T1.UnitMsr = T2.UnitMsr,
+				T1.SAPBaseEntry = T2.SAPDocEntry,
+				T1.SAPBaseLine = T2.SAPLineNum,
+				T1.SAPBaseType = T2.SAPObjType,
+				T1.DocCur = T2.DocCur
+			from OPRN1 T1 inner join OPRQ1 T2 on T1.Baseline = T2.OID and T1.BaseType = T2.ObjType
+			where isnull(T1.ItemCode,'') = '' and isnull(T1.PurchaseDelivery,0) = 0
+
+			select @qty = sum(T1.Quantity) 
+			from OPRN T0 inner join OPRN1 T1 on T0.OID = T1.PurchaseDelivery
+			inner join OPRND T2 on T0.DocStatus = T2.OID
+			where T1.BaseLine = @baseline and T1.BaseType = @basetypeoid
+			and T2.CurrDocStatus in (0,2,3,4,5,6,7) and T1.LineStatus in (0, 1)
+
+			select @totalqty = isnull(@qty,0)
+
+			select @qty = sum(T1.Quantity) 
+			from OPRN1 T1 left join OPRN T0 on T0.OID = T1.PurchaseDelivery
+			where T1.BaseLine = @baseline and T1.BaseType = @basetypeoid
+			and isnull(T1.GCRecord,0) = 0 and T0.OID is null
+
+			select @totalqty = @totalqty + isnull(@qty,0)
+
+			if @basetype = 'PurchaseOrder'
+			begin
+				update OPRQ1 set CopyQty = @totalqty, OpenQty = Quantity - @totalqty where OID = @baseline
+			end
+		end
+	end
+	
+	if @objtype = 'PurchaseOrder' -- OPRQ
+	begin
+		update OPRQ1 set MasterOid = isnull(PurchaseOrder,0) where OID = @docid
+		and isnull(MasterOid,0) = 0 and isnull(PurchaseOrder,0) > 0
+
+		update OPRQ1 set DeleteBy = @useroid, DeleteDate = @today where OID = @docid
+		and PurchaseOrder is null
+
+		select @baseline = T0.BaseLine, @basetypeoid = T0.BaseType, @basetype = T2.BoCode 
+		from OPRQ1 T0
+		inner join ODOC T2 on T0.BaseType = T2.OID
+		where T0.OID = @docid
+
+		update OPRQ1 set OpenQty = Quantity - CopyQty, OpenCreQty = Quantity - CopyCreQty where OID = @docid
+
+		if @baseline > 0
+		begin
+			select @qty = sum(T1.Quantity) 
+			from OPRQ T0 inner join OPRQ1 T1 on T0.OID = T1.PurchaseOrder
+			inner join OPRQD T2 on T0.DocStatus = T2.OID
+			where T1.BaseLine = @baseline and T1.BaseType = @basetypeoid
+			and T2.CurrDocStatus in (0,2,3,4,5,6,7) and T1.LineStatus in (0, 1)
+
+			select @totalqty = isnull(@qty,0)
+
+			if @basetype = 'PurchaseRequest'
+			begin
+				update OPRE1 set CopyQty = @totalqty, OpenQty = Quantity - @totalqty where OID = @baseline
+			end
+		end
+	end
+
+	if @objtype = 'PurchaseRequest' -- OPRE
+	begin
+		update OPRE1 set MasterOid = isnull(PurchaseRequest,0) where OID = @docid
+		and isnull(MasterOid,0) = 0 and isnull(PurchaseRequest,0) > 0
+
+		update OPRE1 set DeleteBy = @useroid, DeleteDate = @today where OID = @docid
+		and PurchaseRequest is null
+
+		select @baseline = T0.BaseLine, @basetypeoid = T0.BaseType, @basetype = T2.BoCode 
+		from OPRE1 T0
+		inner join ODOC T2 on T0.BaseType = T2.OID
+		where T0.OID = @docid
+
+		update OPRE1 set OpenQty = Quantity - CopyQty, OpenCreQty = Quantity - CopyCreQty where OID = @docid
+	end
+
+end
+
+
+
+
+

@@ -47,7 +47,9 @@ namespace XamarinPR.Views
         }
         private void gotocart_Clicked(object sender, EventArgs e)
         {
-            Application.Current.MainPage = new CartPage();
+            MainPage page = new MainPage();
+            page.CurrentPage = page._CartPage;
+            Application.Current.MainPage = page;
         }
 
         private void InitMenu_Clicked(object sender, EventArgs e)

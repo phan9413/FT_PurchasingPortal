@@ -18,15 +18,12 @@ namespace XamarinPR.ViewModels
     public class MainPageViewModel : BaseViewModel
     {
         private readonly IPageService _pageService;
+        public MainPage page;
         public MainPageViewModel(IPageService pageService)
         {
             _pageService = pageService;
             CartCount = "0";
 
-            getCount = new Action(async () =>
-            {
-                await refreshCount();
-            });
             logout = new Command(async () =>
             {
                 await logoutapi();
@@ -46,7 +43,7 @@ namespace XamarinPR.ViewModels
             }
         }
 
-        private async Task refreshCount()
+        public async Task refreshCount()
         {
             string Url = Settings.GeneralUrl;
             string UserName = Settings.CurrentUser;
@@ -58,10 +55,10 @@ namespace XamarinPR.ViewModels
                 {
                     CartCount = content;
                 }
+
             }
         }
         public ICommand logout { get; private set; }
-        public Action getCount { get; private set; }
 
         private string _CartCount;
         public string CartCount
