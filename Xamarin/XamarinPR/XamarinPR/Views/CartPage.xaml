@@ -24,6 +24,7 @@
                 />
         <SearchBar x:Name="bpsearch" HorizontalOptions="FillAndExpand" Placeholder="Search Supplier..." TextChanged="bpsearch_TextChanged"
                 />-->
+        <Label x:Name="NoItemFound" Text="No item found..." HorizontalOptions="Center"/>
         <ListView x:Name="grnitemlist" HorizontalOptions="FillAndExpand" 
                   ItemsSource="{Binding grnitem}" 
                   SelectedItem="{Binding SelectedGRNItem}" 
@@ -33,7 +34,7 @@
                   >
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <ViewCell>
+                    <ViewCell Tapped="ViewCell_Tapped">
                         <ViewCell.ContextActions>
                             <MenuItem Text="Remove" Clicked="Remove_Clicked" />
                         </ViewCell.ContextActions>

@@ -16,6 +16,8 @@ namespace XamarinPR.Views
     public partial class ChoosePOItem : ContentPage
     {
         public ListView _poitemlist;
+        public Label _NoItemFound;
+        private ViewCell _lastCell;
         public ChoosePOItem()
         {
             var vm = new ChoosePOItemViewModel(new PageService());
@@ -23,7 +25,7 @@ namespace XamarinPR.Views
             BindingContext = vm;
             InitializeComponent();
             _poitemlist = this.poitemlist;
-
+            _NoItemFound = this.NoItemFound;
         }
         private async void poitemlist_Refreshing(object sender, EventArgs e)
         {
@@ -77,6 +79,18 @@ namespace XamarinPR.Views
         {
             var vm = BindingContext as ChoosePOItemViewModel;
             await vm.postGRNItem();
+        }
+
+        private void ViewCell_Tapped(object sender, EventArgs e)
+        {
+            if (_lastCell != null)
+                _lastCell.View.BackgroundColor = Color.Transparent;
+            var viewCell = (ViewCell)sender;
+            if (viewCell.View != null)
+            {
+                viewCell.View.BackgroundColor = Color.LightSkyBlue;
+                _lastCell = viewCell;
+            }
         }
     }
 }

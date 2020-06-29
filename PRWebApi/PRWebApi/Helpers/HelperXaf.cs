@@ -15,24 +15,22 @@ namespace PRWebApi.Helpers
     public static class HelperXaf
     {
         public const string xafAssembly = "FT_PurchasingPortal.Module.BusinessObjects";
-        public static bool VerifyHashedPassword(string StoredPassword, string Password)
-        {
-            PasswordCryptographer.EnableRfc2898 = true;
-            PasswordCryptographer.SupportLegacySha512 = false;
+    }
+    public static bool VerifyHashedPassword(string StoredPassword, string Password)
+    {
+        PasswordCryptographer.EnableRfc2898 = true;
+        PasswordCryptographer.SupportLegacySha512 = false;
 
-            return new PasswordCryptographer().AreEqual(StoredPassword, Password);
-            //return PasswordCryptographer.VerifyHashedPasswordDelegate(StoredPassword, Password);
-        }
-        public static string HashPassword(string Password)
-        {
-            PasswordCryptographer.EnableRfc2898 = true;
-            PasswordCryptographer.SupportLegacySha512 = false;
+        return new PasswordCryptographer().AreEqual(StoredPassword, Password);
+        //return PasswordCryptographer.VerifyHashedPasswordDelegate(StoredPassword, Password);
+    }
+    public static string HashPassword(string Password)
+    {
+        PasswordCryptographer.EnableRfc2898 = true;
+        PasswordCryptographer.SupportLegacySha512 = false;
 
-            return new PasswordCryptographer().GenerateSaltedPassword(Password.Trim());
-            //return PasswordCryptographer.HashPasswordDelegate(password);
-        }
-
-
+        return new PasswordCryptographer().GenerateSaltedPassword(Password.Trim());
+        //return PasswordCryptographer.HashPasswordDelegate(password);
     }
 
 }

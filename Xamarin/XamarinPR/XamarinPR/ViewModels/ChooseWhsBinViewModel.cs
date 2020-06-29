@@ -66,7 +66,7 @@ namespace XamarinPR.ViewModels
 
         }
 
-        public Page sourcepage;
+        public ContentPage sourcepage;
         public ChooseWhsBin page;
 
         private vwWarehouseBins _SelectedWhs;

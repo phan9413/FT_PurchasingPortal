@@ -17,6 +17,9 @@ namespace XamarinPR.Views
     {
         public ListView _grnitemlist;
         public MainPage _parent;
+        public Label _NoItemFound;
+        private ViewCell _lastCell;
+
         public CartPage()
         {
             var vm = new CartPageViewModel(new PageService());
@@ -24,20 +27,29 @@ namespace XamarinPR.Views
             vm.page = this;
             InitializeComponent();
             _grnitemlist = this.grnitemlist;
+            _NoItemFound = this.NoItemFound;
+        }
+        private async Task refreshlist()
+        {
+            var vm = BindingContext as CartPageViewModel;
+            await vm.getGRNItem();
+            if (Application.Current.MainPage.GetType() == typeof(MainPage))
+            {
+                _parent = Application.Current.MainPage as MainPage;
+                if (_parent != null)
+                    _parent.setbadgetext(vm.grnitem.Count.ToString());
+            }
+            vm.SelectedGRNItem = null;
         }
         protected override async void OnAppearing()
         {
-            var vm = BindingContext as CartPageViewModel;
             base.OnAppearing();
-            await vm.getGRNItem();
-            vm.SelectedGRNItem = null;
+            await refreshlist();
         }
         private async void grnitemlist_Refreshing(object sender, EventArgs e)
         {
-            var vm = BindingContext as CartPageViewModel;
-            await vm.getGRNItem();
+            await refreshlist();
             _grnitemlist.EndRefresh();
-            vm.SelectedGRNItem = null;
         }
         private void ListView_ItemTapped(object sender, ItemTappedEventArgs e)
         {
@@ -50,9 +62,19 @@ namespace XamarinPR.Views
             bool rtn = await vm.removeGRNItem();
             if (rtn)
             {
-                await vm.getGRNItem();
-                if (_parent != null)
-                    await _parent.setbadgetext();
+                await refreshlist();
+            }
+        }
+
+        private void ViewCell_Tapped(object sender, EventArgs e)
+        {
+            if (_lastCell != null)
+                _lastCell.View.BackgroundColor = Color.Transparent;
+            var viewCell = (ViewCell)sender;
+            if (viewCell.View != null)
+            {
+                viewCell.View.BackgroundColor = Color.LightSkyBlue;
+                _lastCell = viewCell;
             }
         }
     }

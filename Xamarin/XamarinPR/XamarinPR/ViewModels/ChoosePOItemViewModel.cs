@@ -63,6 +63,15 @@ namespace XamarinPR.ViewModels
         //}
 
         public ChoosePOItem page;
+        private bool _noitemfound;
+        public bool noitemfound
+        {
+            get => _noitemfound;
+            set
+            {
+                SetValue(ref _noitemfound, value);
+            }
+        }
 
         private PurchaseOrderDetail _SelectedPOItem;
         public PurchaseOrderDetail SelectedPOItem
@@ -119,6 +128,8 @@ namespace XamarinPR.ViewModels
 
         public async Task getPOItem()
         {
+            noitemfound = true;
+
             string Url = Settings.GeneralUrl;
             string cardcodekey = ((vwBusinessPartners)Application.Current.Properties[PropertyHelper.BusinessPartnerProp]).BoKey;
             using (var client = new HttpClientWapi())
@@ -133,12 +144,16 @@ namespace XamarinPR.ViewModels
                     poitemlist = new ObservableCollection<PurchaseOrderDetail>(ipoitemlist);
 
                     page._poitemlist.ItemsSource = poitemlist;
+
+                    if (poitemlist.Count > 0)
+                        noitemfound = false;
                     //page._bplist.SetBinding(ListView.SelectedItemProperty, "SelectedPO");
                     //page._bplist.ItemDisplayBinding = new Binding("WhsName");
 
                 }
 
             }
+            page._NoItemFound.IsVisible = noitemfound;
         }
         public async Task getWhs()
         {

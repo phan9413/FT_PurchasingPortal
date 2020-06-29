@@ -38,6 +38,9 @@
     <Compile Update="Views\ChooseWhsBin.xaml.cs">
       <DependentUpon>ChooseWhsBin.xaml</DependentUpon>
     </Compile>
+    <Compile Update="Views\GetDocDetails.xaml.cs">
+      <DependentUpon>GetDocDetails.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>
@@ -57,6 +60,9 @@
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Views\ChooseWhsBin.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\GetDocDetails.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Views\LoginPage.xaml">

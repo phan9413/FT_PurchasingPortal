@@ -29,10 +29,21 @@
                   SelectedItem="{Binding SelectedBP}" 
                   IsPullToRefreshEnabled="True"
                   Refreshing="bplist_Refreshing"
+                  
                   >
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <TextCell Text="{Binding CardCode}" Detail="{Binding CardName}" TextColor="Blue" DetailColor="BlueViolet" />
+                    <!--<TextCell Text="" Detail="{Binding CardName}" TextColor="Blue" DetailColor="BlueViolet" />-->
+                    <ViewCell Tapped="ViewCell_Tapped">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+                            <Label Grid.Row="0" Text="{Binding CardCode}" TextColor="Blue" />
+                            <Label Grid.Row="1" Text="{Binding CardName}" TextColor="BlueViolet" />
+                        </Grid>
+                    </ViewCell>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>

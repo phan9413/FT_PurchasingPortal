@@ -16,6 +16,7 @@ namespace XamarinPR.Models
         public string DocNo { get; set; }
         public Company Company { get; set; }
         public vwBusinessPartners CardCode { get; set; }
+        public string NumAtCard { get; set; }
     }
 
     public class PurchaseDeliveryDetail : INotifyPropertyChanged
@@ -84,6 +85,7 @@ namespace XamarinPR.Models
         public vwWarehouses WhsCode { get; set; }
         public vwBusinessPartners LineVendor { get; set; }
         public string Dscription { get; set; }
+        public string UnitMsr { get; set; }
         public string BaseDocNo { get; set; }
         public int Baseline { get; set; }
         public double Quantity { get; set; }

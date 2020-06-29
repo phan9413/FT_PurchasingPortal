@@ -21,7 +21,16 @@
                   >
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <TextCell Text="{Binding BinCode}" Detail="{Binding WhsName}" TextColor="Blue" DetailColor="BlueViolet"/>
+                    <ViewCell Tapped="ViewCell_Tapped">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+                            <Label Grid.Row="0" Text="{Binding BinCode}" TextColor="Blue" />
+                            <Label Grid.Row="1" Text="{Binding WhsName}" TextColor="BlueViolet" />
+                        </Grid>
+                    </ViewCell>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>

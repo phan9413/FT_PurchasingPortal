@@ -29,14 +29,13 @@ namespace XamarinPR.Views
         {
             var vm = BindingContext as MainPageViewModel;
             base.OnAppearing();
-            await setbadgetext();
+            await vm.refreshCount();
+            setbadgetext(vm.CartCount);
             //CartTab.SetBinding(TabBadge.BadgeTextProperty, new Binding("Source=CartCount"));
         }
-        public async Task setbadgetext()
+        public void setbadgetext(string value)
         {
-            var vm = BindingContext as MainPageViewModel;
-            await vm.refreshCount();
-            TabBadge.SetBadgeText(CartTab, vm.CartCount);
+            TabBadge.SetBadgeText(CartTab, value);
 
         }
     }

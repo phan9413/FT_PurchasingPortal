@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             x:Class="XamarinPR.Views.GetDocDetails">
+    <ContentPage.Content>
+        <StackLayout Padding="10,10" Spacing="10">
+            <StackLayout Orientation="Vertical" VerticalOptions="CenterAndExpand">
+                <Entry Placeholder="DO Number" Text="{Binding docnumber}"/>
+            </StackLayout>
+            <StackLayout Orientation="Vertical" VerticalOptions="EndAndExpand">
+                <StackLayout Orientation="Horizontal" Spacing="20" >
+                    <Button Text="Back" 
+                    TextColor="White"  
+                    FontAttributes="Bold" FontSize="Large" HorizontalOptions="FillAndExpand" CornerRadius="20"
+                    BackgroundColor="IndianRed" 
+                    Command="{Binding back}"
+                    />
+                    <Button Text="Submit" 
+                    TextColor="White"  
+                    FontAttributes="Bold" FontSize="Large" HorizontalOptions="FillAndExpand" CornerRadius="20"
+                    BackgroundColor="ForestGreen" 
+                    Command="{Binding submit}"
+                    />
+                </StackLayout>
+            </StackLayout>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

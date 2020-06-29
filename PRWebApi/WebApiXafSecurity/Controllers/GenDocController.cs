@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using DevExpress.Data.Filtering;
 using DevExpress.ExpressApp;
+using DevExpress.XtraCharts;
 using FT_PurchasingPortal.Module;
 using FT_PurchasingPortal.Module.BusinessObjects;
 using Microsoft.AspNetCore.Authorization;
@@ -25,6 +26,75 @@ namespace WebApiXafSecurity.Controllers
             FT_PurchasingPortal.Module.GeneralValues.NetCoreUserName = securityProvider.GetUserName();
             this.securityProvider = securityProvider;
             objectSpace = securityProvider.ObjectSpaceProvider.CreateObjectSpace();
+        }
+        /// <summary>
+        /// Get PR from API
+        /// </summary>
+        /// <remarks>
+        /// Note that the key is a Oid and an integer.
+        /// </remarks>
+        /// <param name="username">user name</param>       
+        /// <response code="200">Returns found item</response>
+        /// <response code="400">Not Found</response>
+        [HttpPost]
+        [Route("api/gengrn")]
+        public IActionResult GenGRN([FromBody] JObject values)
+        {
+            try
+            {
+                GenHelper.WriteLog("[Log]", "[" + securityProvider.GetUserName() + "]" + controllername + "-GenGRN:[" + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "]");
+                GenHelper.WriteLog("[Json]", "[" + securityProvider.GetUserName() + "]" + controllername + "-GenGRN:[" + Environment.NewLine + values.ToString() + Environment.NewLine + "][" + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "]");
+
+                //
+                //JsonParser.ParseJObjectXPO<PurchaseDelivery>(values, employee, objectSpace);
+                string temp = "";
+                JToken token;
+                PurchaseDelivery employee = objectSpace.CreateObject<PurchaseDelivery>();
+                token = values["CardCode"];
+                temp = token["BoKey"].ToString();
+                employee.CardCode = objectSpace.FindObject<vwBusinessPartners>(CriteriaOperator.Parse("BoKey=?", temp));
+                employee.NumAtCard = values["NumAtCard"].ToString();
+
+                //JsonPopulateObjectHelper.PopulateObjectWODetail(values.ToString(), employee.Session, employee);
+
+                string detalclassname = "PurchaseDeliveryDetail";
+                int intkeyvalue = -1;
+                JArray jarray = (JArray)values[detalclassname];
+                foreach (JObject Jdtl in jarray.Children())
+                {
+                    if (Jdtl.ContainsKey("Oid"))
+                    {
+                        if (int.TryParse(Jdtl["Oid"].ToString(), out intkeyvalue))
+                        {
+                            PurchaseDeliveryDetail dtl = objectSpace.GetObjectByKey<PurchaseDeliveryDetail>(intkeyvalue);
+                            employee.PurchaseDeliveryDetail.Add(dtl);
+                        }
+                        else
+                        {
+                            GenHelper.WriteLog("[Error]", "[" + securityProvider.GetUserName() + "]" + controllername + "-GenGRN:[Details Key value is invalid][" + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "]");
+                            throw new Exception("Details Key value is invalid");
+                        }
+                    }
+                    else
+                    {
+                        GenHelper.WriteLog("[Error]", "[" + securityProvider.GetUserName() + "]" + controllername + "-GenGRN:[Details Key Column Not found][" + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "]");
+                        throw new Exception("Details Key Column Not found");
+                    }
+                }
+                if (employee.DocTypeSeries == null)
+                {
+                    GenHelper.WriteLog("[Error]", "[" + securityProvider.GetUserName() + "]" + controllername + "-GenGRN:[Document series is not found][" + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "]");
+                    throw new Exception("Document series is not found");
+                }
+                employee.AssignDocNumber();
+                objectSpace.CommitChanges();
+                return Ok(employee.DocNum);
+            }
+            catch (Exception ex)
+            {
+                GenHelper.WriteLog("[Error]", "[" + securityProvider.GetUserName() + "]" + controllername + "-GenGRN:[" + ex.Message + "][" + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "]");
+                throw new Exception(ex.Message);
+            }
         }
 
         /// <summary>

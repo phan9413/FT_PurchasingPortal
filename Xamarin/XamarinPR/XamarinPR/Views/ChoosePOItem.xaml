@@ -25,6 +25,7 @@
     <StackLayout Spacing="10">
         <SearchBar x:Name="poitemsearch" HorizontalOptions="FillAndExpand" Placeholder="Search PO Item..." TextChanged="poitemsearch_TextChanged"
                 />
+        <Label x:Name="NoItemFound" Text="No item found..." HorizontalOptions="Center"/>
         <ListView x:Name="poitemlist" 
                     ItemsSource="{Binding poitemlist}"
                     HasUnevenRows="True"
@@ -40,7 +41,7 @@
                     SelectionChangedCommand="{Binding SelectedCommand}" >-->
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <ViewCell>
+                    <ViewCell Tapped="ViewCell_Tapped">
                         <!--<ViewCell.ContextActions>
                             <MenuItem Text="WH" Clicked="WhsMenu_Clicked" />
                         </ViewCell.ContextActions>-->

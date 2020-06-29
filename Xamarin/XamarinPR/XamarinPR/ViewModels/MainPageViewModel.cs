@@ -66,7 +66,6 @@ namespace XamarinPR.ViewModels
             get { return _CartCount; }
             set
             {
-                _CartCount = value;
                 SetValue(ref _CartCount, value);
             }
         }

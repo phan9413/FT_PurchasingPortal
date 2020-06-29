@@ -16,6 +16,7 @@ namespace XamarinPR.Views
     {
         public Picker _whspick;
         public ListView _polist;
+        private ViewCell _lastCell;
         public ChoosePO()
         {
             var vm = new ChoosePOViewModel(new PageService());
@@ -43,6 +44,17 @@ namespace XamarinPR.Views
         private void gotomenu_Clicked(object sender, EventArgs e)
         {
             Application.Current.MainPage = new MainPage();
+        }
+        private void ViewCell_Tapped(object sender, EventArgs e)
+        {
+            if (_lastCell != null)
+                _lastCell.View.BackgroundColor = Color.Transparent;
+            var viewCell = (ViewCell)sender;
+            if (viewCell.View != null)
+            {
+                viewCell.View.BackgroundColor = Color.LightSkyBlue;
+                _lastCell = viewCell;
+            }
         }
     }
 }

@@ -17,7 +17,7 @@ namespace XamarinPR.Views
     public partial class ChooseWhsBin : ContentPage
     {
         public ListView _whslist;
-
+        private ViewCell _lastCell;
         public ChooseWhsBin()
         {
             var vm = new ChooseWhsBinViewModel(new PageService());
@@ -47,6 +47,17 @@ namespace XamarinPR.Views
                 vm.filterList(e.NewTextValue);
             }
 
+        }
+        private void ViewCell_Tapped(object sender, EventArgs e)
+        {
+            if (_lastCell != null)
+                _lastCell.View.BackgroundColor = Color.Transparent;
+            var viewCell = (ViewCell)sender;
+            if (viewCell.View != null)
+            {
+                viewCell.View.BackgroundColor = Color.LightSkyBlue;
+                _lastCell = viewCell;
+            }
         }
 
     }
