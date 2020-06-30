@@ -52,9 +52,9 @@
                                     <ColumnDefinition Width="*" />
                                     <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
-                                <Label Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Text="{Binding vendor}" FontSize="Small"  VerticalTextAlignment="End" FontAttributes="Bold" TextColor="Blue"/>
-                                <Label Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="2" Text="{Binding BaseDocNo}" FontSize="Small"  VerticalTextAlignment="End" FontAttributes="Bold" TextColor="Blue"/>
-                                <Label Grid.Row="0" Grid.Column="4" Grid.ColumnSpan="2" Text="{Binding BatchNumber}" FontSize="Small"  VerticalTextAlignment="End" HorizontalOptions="Start"  FontAttributes="Bold" TextColor="Black"/>
+                                <Label Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="1" Text="{Binding vendor}" FontSize="Small"  VerticalTextAlignment="End" FontAttributes="Bold" TextColor="Blue"/>
+                                <Label Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding BaseDocNo}" FontSize="Small"  VerticalTextAlignment="End" FontAttributes="Bold" TextColor="Black"/>
+                                <Label Grid.Row="0" Grid.Column="3" Grid.ColumnSpan="3" Text="{Binding BatchNumber}" FontSize="Small"  VerticalTextAlignment="End" FontAttributes="Bold" TextColor="Blue"/>
                                 <Label Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="4" Text="{Binding title}" FontSize="Small" VerticalTextAlignment="Center" FontAttributes="Bold" TextColor="BlueViolet"/>
                                 <Label Grid.Row="1" Grid.Column="4" Text="{Binding Quantity}" FontSize="Small" HorizontalTextAlignment="End" VerticalTextAlignment="Center" FontAttributes="Bold" TextColor="BlueViolet"/>
                                 <Label Grid.Row="1" Grid.Column="5" Text="{Binding UnitMsr}" FontSize="Small" HorizontalTextAlignment="End" VerticalTextAlignment="Center" FontAttributes="Bold" TextColor="BlueViolet"/>

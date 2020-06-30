@@ -9,5 +9,6 @@ namespace XamarinPR.Models
         public int Oid { get; set; }
         public string BoCode { get; set; }
         public string BoName { get; set; }
+
     }
 }

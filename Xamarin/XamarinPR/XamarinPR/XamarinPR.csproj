@@ -12,12 +12,14 @@
 
   <ItemGroup>
     <None Remove="Images\FT_Logo.png" />
+    <None Remove="Images\icons8-barcode-scanner-96.png" />
     <None Remove="Images\icons8-container-truck-96.png" />
     <None Remove="Images\icons8-tire-track-96.png" />
   </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Include="Images\FT_Logo.png" />
+    <EmbeddedResource Include="Images\icons8-barcode-scanner-96.png" />
     <EmbeddedResource Include="Images\icons8-container-truck-96.png" />
     <EmbeddedResource Include="Images\icons8-tire-track-96.png" />
   </ItemGroup>
@@ -28,7 +30,8 @@
     <PackageReference Include="Plugin.Badge" Version="2.3.0" />
     <PackageReference Include="Xam.Plugins.Settings" Version="3.1.1" />
     <PackageReference Include="Xamarin.Forms" Version="4.7.0.968" />  
-    <PackageReference Include="Xamarin.Essentials" Version="1.5.3.2" />
+    <PackageReference Include="Xamarin.Essentials" Version="1.5.3.2" />  
+    <PackageReference Include="ZXing.Net.Mobile" Version="2.4.1" />
   </ItemGroup>
 
   <ItemGroup>

@@ -9,6 +9,7 @@ using Xamarin.Forms.Xaml;
 using XamarinPR.Models;
 using XamarinPR.Services;
 using XamarinPR.ViewModels;
+using ZXing.Mobile;
 
 namespace XamarinPR.Views
 {
@@ -18,6 +19,7 @@ namespace XamarinPR.Views
         public ListView _poitemlist;
         public Label _NoItemFound;
         private ViewCell _lastCell;
+        private Entry _batchnumber;
         public ChoosePOItem()
         {
             var vm = new ChoosePOItemViewModel(new PageService());
@@ -90,6 +92,24 @@ namespace XamarinPR.Views
             {
                 viewCell.View.BackgroundColor = Color.LightSkyBlue;
                 _lastCell = viewCell;
+            }
+        }
+
+        private async void scanbarcode_Clicked(object sender, EventArgs e)
+        {
+            try
+            {
+                var scanner = DependencyService.Get<IQrScanningService>();
+                var result = await scanner.ScanAsync();
+                if (result != null)
+                {
+                    var vm = BindingContext as ChoosePOItemViewModel;
+                    vm.SelectedPOItem.BatchNumber = result;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw;
             }
         }
     }

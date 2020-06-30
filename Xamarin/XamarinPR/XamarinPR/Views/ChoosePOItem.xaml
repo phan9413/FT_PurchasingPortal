@@ -80,7 +80,10 @@
                                 <Switch x:Name="switch" Grid.Column="0" Grid.Row="0" OnColor="ForestGreen" Toggled="switch_Toggled" HorizontalOptions="Start"/>
                                 <Stepper IsEnabled="{Binding Source={x:Reference switch}, Path=IsToggled}" Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="0" Minimum="0" Value="{Binding Source={x:Reference openqtyEntry}, Path=Text}"/>
                                 <Entry x:Name="openqtyEntry" IsEnabled="{Binding Source={x:Reference switch}, Path=IsToggled}" Text="{Binding OpenQty}" Grid.Column="3" Grid.Row="0" Keyboard="Numeric" />
-                                <Entry x:Name="batchnumber" IsEnabled="{Binding Source={x:Reference switch}, Path=IsToggled}" Text="{Binding BatchNumber}" Grid.Column="0" Grid.ColumnSpan="4" Grid.Row="1" Placeholder="Batch Number..." />
+                                <Entry x:Name="batchnumber" IsEnabled="{Binding Source={x:Reference switch}, Path=IsToggled}" Text="{Binding BatchNumber}" Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="1" Placeholder="Batch Number..." VerticalOptions="StartAndExpand"/>
+                                <Button x:Name="scanbarcode" IsEnabled="{Binding Source={x:Reference switch}, Path=IsToggled}" Grid.Column="3" Grid.Row="1" CornerRadius="100" Clicked="scanbarcode_Clicked"
+                                        BackgroundColor="BlueViolet"
+                                        ImageSource="{markextensions:EmbeddedImage ResourceId=XamarinPR.Images.icons8-barcode-scanner-96.png}" />
                             </Grid>
                         </StackLayout>
                     </ViewCell>
