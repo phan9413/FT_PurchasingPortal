@@ -45,18 +45,29 @@ namespace XamarinPR.ViewModels
 
         public async Task refreshCount()
         {
-            string Url = Settings.GeneralUrl;
-            string UserName = Settings.CurrentUser;
-            using (var client = new HttpClientWapi())
+            if (this.OnProcessLoading) return;
+            this.ShowLoading("Loading...");
+            try
             {
-                var content = await client.RequestSvrAsync(Url + "/api/GetGRNItemCount/" + UserName);
 
-                if (client.isSuccessStatusCode)
+                string Url = Settings.GeneralUrl;
+                string UserName = Settings.CurrentUser;
+                using (var client = new HttpClientWapi())
                 {
-                    CartCount = content;
-                }
+                    var content = await client.RequestSvrAsync(Url + "/api/GetGRNItemCount/" + UserName);
 
+                    if (client.isSuccessStatusCode)
+                    {
+                        CartCount = content;
+                    }
+
+                }
             }
+            catch (Exception ex)
+            {
+                await _pageService.DisplayAlert("Error", ex.Message, "OK");
+            }
+            this.HideLoading();
         }
         public ICommand logout { get; private set; }
 

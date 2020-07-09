@@ -31,5 +31,6 @@ namespace XamarinPR.Services
         {
             await Application.Current.MainPage.Navigation.PopModalAsync();
         }
+
     }
 }

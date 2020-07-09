@@ -16,6 +16,10 @@ namespace FT_PurchasingPortal.Module.Web.Controllers
         }
         protected override void Save(SimpleActionExecuteEventArgs args)
         {
+            if (typeof(ClassDocument).IsAssignableFrom(View.ObjectTypeInfo.Type))
+            {
+                ((ClassDocument)View.CurrentObject).VerNo++;
+            }
             base.Save(args);
             RefreshController controller = Frame.GetController<RefreshController>();
             if (typeof(ClassDocument).IsAssignableFrom(View.ObjectTypeInfo.Type))

@@ -1,0 +1,44 @@
+
+alter table OPRE1 add VerNo integer
+go
+alter table OPRQ1 add VerNo integer
+go
+alter table OPRN1 add VerNo integer
+go
+alter table OPRE1 add PostVerNo integer
+go
+alter table OPRQ1 add PostVerNo integer
+go
+alter table OPRN1 add PostVerNo integer
+go
+
+
+alter table OPRE add VerNo integer
+go
+alter table OPRQ add VerNo integer
+go
+alter table OPRN add VerNo integer
+go
+alter table OPRE add PostVerNo integer
+go
+alter table OPRQ add PostVerNo integer
+go
+alter table OPRN add PostVerNo integer
+go
+
+
+update OPRE1 set VerNo = 1, PostVerNo = 0
+go
+update OPRQ1 set VerNo = 1, PostVerNo = 0
+go
+update OPRN1 set VerNo = 1, PostVerNo = 0
+go
+update OPRE set VerNo = 1, PostVerNo = 0
+go
+update OPRQ set VerNo = 1, PostVerNo = 0
+go
+update OPRN set VerNo = 1, PostVerNo = 0
+go
+
+update ODTS set PostToDocument = 1
+go

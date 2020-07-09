@@ -451,6 +451,10 @@
     <Content Include="Model.Tablet.xafml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="ReadMe.txt" />
+    <Content Include="UnusableNodes.xml">
+      <DependentUpon>Model.xafml</DependentUpon>
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>

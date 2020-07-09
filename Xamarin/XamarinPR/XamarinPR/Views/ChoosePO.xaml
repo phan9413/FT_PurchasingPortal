@@ -37,7 +37,7 @@
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="*" />
                             </Grid.RowDefinitions>
-                            <Label Grid.Row="0" Text="{Binding DocNo}" TextColor="Blue" />
+                            <Label Grid.Row="0" Text="{Binding DocNo}" TextColor="Black" />
                         </Grid>
                     </ViewCell>
                 </DataTemplate>

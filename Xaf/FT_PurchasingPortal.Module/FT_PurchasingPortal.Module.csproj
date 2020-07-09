@@ -185,6 +185,11 @@
     <Compile Include="BusinessObjects\ClassUDFDetail.cs" />
     <Compile Include="BusinessObjects\ClassUDFHeader.cs" />
     <Compile Include="BusinessObjects\NonPersistentObject.cs" />
+    <Compile Include="BusinessObjects\PurchaseReturnUDF.cs" />
+    <Compile Include="BusinessObjects\PurchaseReturnDoc.cs" />
+    <Compile Include="BusinessObjects\PurchaseReturnAttachment.cs" />
+    <Compile Include="BusinessObjects\PurchaseReturnApp.cs" />
+    <Compile Include="BusinessObjects\PurchaseReturn.cs" />
     <Compile Include="BusinessObjects\PurchaseDelivery.cs" />
     <Compile Include="BusinessObjects\PurchaseDeliveryApp.cs" />
     <Compile Include="BusinessObjects\PurchaseDeliveryAttachment.cs" />

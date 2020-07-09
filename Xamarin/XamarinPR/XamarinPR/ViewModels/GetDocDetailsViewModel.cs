@@ -38,7 +38,7 @@ namespace XamarinPR.ViewModels
         {
             if (string.IsNullOrEmpty(docnumber))
             {
-                await _pageService.DisplayAlert("Fail", "Please fill in DO Number", "OK");
+                await _pageService.DisplayAlert("Fail", "Please fill in Doc Number", "OK");
                 return;
             }
 
@@ -46,10 +46,17 @@ namespace XamarinPR.ViewModels
             {
                 var vm = ((CartPage)sourcepage).BindingContext as CartPageViewModel;
                 vm.docnumber = docnumber;
+                await _pageService.PopModalAsync();
                 await vm.postGRN();
 
             }
-            await _pageService.PopModalAsync();
+            else if (typeof(MainMenu) == sourcepage.GetType())
+            {
+                PurchaseOrder obj = new PurchaseOrder() { DocNo = docnumber };
+                Application.Current.Properties[PropertyHelper.PurchaseOrderProp] = obj;
+                await _pageService.PopModalAsync();
+                ((MainMenu)sourcepage).gotoPOItem();
+            }
 
         }
 

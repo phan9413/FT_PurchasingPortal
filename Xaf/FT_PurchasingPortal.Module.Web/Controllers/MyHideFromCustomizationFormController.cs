@@ -45,34 +45,38 @@ namespace FT_PurchasingPortal.Module.Web.Controllers
                         {
                             if (!string.IsNullOrEmpty(column.Id))
                             {
-                                string temp = View.Model.Columns[column.Id].ModelMember.PropertyEditorType.Name;
-                                //IModelPropertyEditor prop = (IModelPropertyEditor)View.Model.Columns[column.Id].ModelMember.PropertyEditorType.GetType();
-                                IModelMemberShowInCustomizationForm modelMember = (IModelMemberShowInCustomizationForm)View.Model.Columns[column.Id].ModelMember;
-                                //if (temp == "MyDecPropertyEditorVP" || temp == "MyDouPropertyEditorVP")
-                                if (temp.Contains("PropertyEditorVP"))
+                                IModelColumn mycol = View.Model.Columns[column.Id];
+                                if (mycol != null)
                                 {
-                                    column.ShowInCustomizationForm = false;
-                                }
-                                else
-                                {
-                                    column.ShowInCustomizationForm = modelMember.ShowInCustomizationForm;
-                                }
+                                    string temp = View.Model.Columns[column.Id].ModelMember.PropertyEditorType.Name;
+                                    //IModelPropertyEditor prop = (IModelPropertyEditor)View.Model.Columns[column.Id].ModelMember.PropertyEditorType.GetType();
+                                    IModelMemberShowInCustomizationForm modelMember = (IModelMemberShowInCustomizationForm)View.Model.Columns[column.Id].ModelMember;
+                                    //if (temp == "MyDecPropertyEditorVP" || temp == "MyDouPropertyEditorVP")
+                                    if (temp.Contains("PropertyEditorVP"))
+                                    {
+                                        column.ShowInCustomizationForm = false;
+                                    }
+                                    else
+                                    {
+                                        column.ShowInCustomizationForm = modelMember.ShowInCustomizationForm;
+                                    }
 
-                                //switch (column.Id)
-                                //{
-                                //    case "UnitPrice":
-                                //    case "LineTotal":
-                                //    case "TotalBeforeDiscount":
-                                //    case "Discount":
-                                //    case "TripCost":
-                                //    case "GST":
-                                //    case "GrandTotal":
-                                //        column.ShowInCustomizationForm = false;
-                                //        break;
-                                //    default:
-                                //        column.ShowInCustomizationForm = modelMember.ShowInCustomizationForm;
-                                //        break;
-                                //}
+                                    //switch (column.Id)
+                                    //{
+                                    //    case "UnitPrice":
+                                    //    case "LineTotal":
+                                    //    case "TotalBeforeDiscount":
+                                    //    case "Discount":
+                                    //    case "TripCost":
+                                    //    case "GST":
+                                    //    case "GrandTotal":
+                                    //        column.ShowInCustomizationForm = false;
+                                    //        break;
+                                    //    default:
+                                    //        column.ShowInCustomizationForm = modelMember.ShowInCustomizationForm;
+                                    //        break;
+                                    //}
+                                }
                             }
                         }
                     }
@@ -104,11 +108,15 @@ namespace FT_PurchasingPortal.Module.Web.Controllers
                                 {
                                     try
                                     {
-                                        string temp = View.Model.Columns[col.FieldName].ModelMember.PropertyEditorType.Name;
-                                        //if (temp == "MyDecPropertyEditorVP" || temp == "MyDouPropertyEditorVP")
-                                        if (temp.Contains("PropertyEditorVP"))
+                                        IModelColumn mycol = View.Model.Columns[col.FieldName];
+                                        if (mycol != null)
                                         {
-                                            column.Visible = false;
+                                            string temp = View.Model.Columns[col.FieldName].ModelMember.PropertyEditorType.Name;
+                                            //if (temp == "MyDecPropertyEditorVP" || temp == "MyDouPropertyEditorVP")
+                                            if (temp.Contains("PropertyEditorVP"))
+                                            {
+                                                column.Visible = false;
+                                            }
                                         }
                                     }
                                     catch

@@ -94,6 +94,7 @@ namespace FT_PurchasingPortal.Module.Controllers
 
                 selectedObject.DocStatus.AddDocStatus(DocStatus.Closed, paramString);
                 selectedObject.DocStatus.CurrDocStatus = DocStatus.Closed;
+                selectedObject.VerNo++;
             }
             else if (e.GetType() == typeof(PurchaseRequest))
             {
@@ -101,6 +102,7 @@ namespace FT_PurchasingPortal.Module.Controllers
 
                 selectedObject.DocStatus.AddDocStatus(DocStatus.Closed, paramString);
                 selectedObject.DocStatus.CurrDocStatus = DocStatus.Closed;
+                selectedObject.VerNo++;
             }
             else if (e.GetType() == typeof(PurchaseDelivery))
             {
@@ -108,6 +110,7 @@ namespace FT_PurchasingPortal.Module.Controllers
 
                 selectedObject.DocStatus.AddDocStatus(DocStatus.Closed, paramString);
                 selectedObject.DocStatus.CurrDocStatus = DocStatus.Closed;
+                selectedObject.VerNo++;
             }
 
             return true;
@@ -127,6 +130,7 @@ namespace FT_PurchasingPortal.Module.Controllers
 
                 selectedObject.DocStatus.AddDocStatus(DocStatus.Cancelled, paramString);
                 selectedObject.DocStatus.CurrDocStatus = DocStatus.Cancelled;
+                selectedObject.VerNo++;
             }
             else if (e.GetType() == typeof(PurchaseRequest))
             {
@@ -134,6 +138,7 @@ namespace FT_PurchasingPortal.Module.Controllers
 
                 selectedObject.DocStatus.AddDocStatus(DocStatus.Cancelled, paramString);
                 selectedObject.DocStatus.CurrDocStatus = DocStatus.Cancelled;
+                selectedObject.VerNo++;
             }
             else if (e.GetType() == typeof(PurchaseDelivery))
             {
@@ -141,6 +146,7 @@ namespace FT_PurchasingPortal.Module.Controllers
 
                 selectedObject.DocStatus.AddDocStatus(DocStatus.Cancelled, paramString);
                 selectedObject.DocStatus.CurrDocStatus = DocStatus.Cancelled;
+                selectedObject.VerNo++;
             }
 
             return true;
@@ -1015,6 +1021,19 @@ namespace FT_PurchasingPortal.Module.Controllers
             {
                 PurchaseOrder selectedObject = (PurchaseOrder)View.CurrentObject;
                 docstatus = selectedObject.DocStatus.CurrDocStatus;
+                if (selectedObject.PurchaseOrderDetail.Count > 0 && selectedObject.PurchaseOrderDetail.Where(pp => pp.VerNo != pp.PostVerNo).Count() > 0)
+                {
+                    err = true;
+                    actionMessage = "Document details has not yet sync. Please wait.";
+                }
+                if (!err)
+                {
+                    if (selectedObject.VerNo != selectedObject.PostVerNo)
+                    {
+                        err = true;
+                        actionMessage = "Document has not yet sync. Please wait.";
+                    }
+                }
             }
             else if (View.ObjectTypeInfo.Type == typeof(PurchaseRequest))
             {
@@ -1026,12 +1045,15 @@ namespace FT_PurchasingPortal.Module.Controllers
                 PurchaseDelivery selectedObject = (PurchaseDelivery)View.CurrentObject;
                 docstatus = selectedObject.DocStatus.CurrDocStatus;
             }
-            if (docstatus == DocStatus.Accepted || docstatus == DocStatus.PostedCancel)
-            { }
-            else
+            if (!err)
             {
-                err = true;
-                actionMessage = "Document invalid.";
+                if (docstatus == DocStatus.Accepted)
+                { }
+                else
+                {
+                    err = true;
+                    actionMessage = "Document invalid.";
+                }
             }
 
             IObjectSpace os = Application.CreateObjectSpace();
@@ -1061,6 +1083,7 @@ namespace FT_PurchasingPortal.Module.Controllers
         private void CancelDoc_CustomizePopupWindowParams(object sender, CustomizePopupWindowParamsEventArgs e)
         {
             bool err = false;
+            bool copyfound = false;
             string actionMessage = "Press OK to CONFIRM the action and SAVE, else press Cancel.";
 
             DocStatus docstatus = DocStatus.Cancelled;
@@ -1073,23 +1096,66 @@ namespace FT_PurchasingPortal.Module.Controllers
             {
                 PurchaseOrder selectedObject = (PurchaseOrder)View.CurrentObject;
                 docstatus = selectedObject.DocStatus.CurrDocStatus;
+                if (selectedObject.PurchaseOrderDetail.Count > 0 && selectedObject.PurchaseOrderDetail.Where(pp => pp.VerNo != pp.PostVerNo).Count() > 0)
+                {
+                    err = true;
+                    actionMessage = "Document details has not yet sync. Please wait.";
+                }
+                if (!err)
+                {
+                    if (selectedObject.VerNo != selectedObject.PostVerNo)
+                    {
+                        err = true;
+                        actionMessage = "Document has not yet sync. Please wait.";
+                    }
+                }
             }
             else if (View.ObjectTypeInfo.Type == typeof(PurchaseRequest))
             {
                 PurchaseRequest selectedObject = (PurchaseRequest)View.CurrentObject;
                 docstatus = selectedObject.DocStatus.CurrDocStatus;
+                if (selectedObject.PurchaseRequestDetail.Where(pp => pp.CopyQty > 0 || pp.CopyCreQty > 0).Count() > 0)
+                {
+                    copyfound = true;
+                }
             }
             else if (View.ObjectTypeInfo.Type == typeof(PurchaseDelivery))
             {
                 PurchaseDelivery selectedObject = (PurchaseDelivery)View.CurrentObject;
                 docstatus = selectedObject.DocStatus.CurrDocStatus;
+                if (selectedObject.PurchaseDeliveryDetail.Where(pp => pp.CopyQty > 0 || pp.CopyCreQty > 0).Count() > 0)
+                {
+                    copyfound = true;
+                }
             }
-            if (docstatus == DocStatus.Draft || docstatus == DocStatus.Rejected)
-            { }
-            else
+            if (!err)
             {
-                err = true;
-                actionMessage = "Document invalid.";
+                if (typeof(ClassDocument).IsAssignableFrom(View.ObjectTypeInfo.Type))
+                {
+                    if (copyfound)
+                    {
+                        err = true;
+                        actionMessage = "Target Document Found.";
+                    }
+                    else if (docstatus == DocStatus.Draft || docstatus == DocStatus.Rejected || docstatus == DocStatus.Accepted)
+                    { }
+                    else
+                    {
+                        err = true;
+                        actionMessage = "Document invalid.";
+                    }
+                }
+                else if (typeof(ClassStockTransferDocument).IsAssignableFrom(View.ObjectTypeInfo.Type))
+                {
+
+                    if (docstatus == DocStatus.Draft || docstatus == DocStatus.Rejected || docstatus == DocStatus.Accepted)
+                    { }
+                    else
+                    {
+                        err = true;
+                        actionMessage = "Document invalid.";
+                    }
+                }
             }
 
             IObjectSpace os = Application.CreateObjectSpace();
@@ -1640,14 +1706,27 @@ namespace FT_PurchasingPortal.Module.Controllers
                 PurchaseDelivery selectedObject = (PurchaseDelivery)View.CurrentObject;
                 docstatus = selectedObject.DocStatus.CurrDocStatus;
             }
-            if (docstatus == DocStatus.Closed)
-            { }
+            if (View.ObjectTypeInfo.Type == typeof(StockTransferRequest))
+            {
+                if (docstatus == DocStatus.Closed || docstatus == DocStatus.PostedCancel)
+                { }
+                else
+                {
+                    err = true;
+                    actionMessage = "Document invalid.";
+                }
+            }
             else
             {
-                err = true;
-                actionMessage = "Document invalid.";
-            }
+                if (docstatus == DocStatus.PostedCancel)
+                { }
+                else
+                {
+                    err = true;
+                    actionMessage = "Document invalid.";
+                }
 
+            }
             IObjectSpace os = Application.CreateObjectSpace();
             DetailView dv = Application.CreateDetailView(os, os.CreateObject<StringParameters>(), true);
             dv.ViewEditMode = DevExpress.ExpressApp.Editors.ViewEditMode.Edit;

@@ -12,33 +12,28 @@
                 Android="10,10,10,10">
         </OnPlatform>
     </ContentPage.Padding>
-    <!--<ContentPage.ToolbarItems>
-        <ToolbarItem x:Name="gotomenu" IconImageSource="{markextensions:EmbeddedImage ResourceId=XamarinPR.Images.icons8-tire-track-96.png}" Text="Menu"
-                     Clicked="gotomenu_Clicked" />
-    </ContentPage.ToolbarItems>-->
     <StackLayout Padding="0,0" Spacing="10">
-        <!--<Picker x:Name="whspicker" HorizontalOptions="FillAndExpand" Title="Select Warehouse" 
-                ItemsSource="{Binding whslist}"
-                ItemDisplayBinding="{Binding WhsName}"
-                SelectedItem="{Binding SelectedWhs}"
-                />
-        <SearchBar x:Name="bpsearch" HorizontalOptions="FillAndExpand" Placeholder="Search Supplier..." TextChanged="bpsearch_TextChanged"
-                />-->
         <Label x:Name="NoItemFound" Text="No item found..." HorizontalOptions="Center"/>
         <ListView x:Name="grnitemlist" HorizontalOptions="FillAndExpand" 
                   ItemsSource="{Binding grnitem}" 
-                  SelectedItem="{Binding SelectedGRNItem}" 
+                  SelectedItem="{Binding SelectedGRNItem}"
                   IsPullToRefreshEnabled="True"
-                  ItemTapped="ListView_ItemTapped"
                   Refreshing="grnitemlist_Refreshing"
                   >
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <ViewCell Tapped="ViewCell_Tapped">
-                        <ViewCell.ContextActions>
-                            <MenuItem Text="Remove" Clicked="Remove_Clicked" />
-                        </ViewCell.ContextActions>
-                        <StackLayout HorizontalOptions="StartAndExpand">
+                        <SwipeView>
+                            <SwipeView.RightItems>
+                                <SwipeItems>
+                                    <SwipeItem 
+                                       IconImageSource="{markextensions:EmbeddedImage ResourceId=XamarinPR.Images.icons8-trash-96.png}"
+                                       BackgroundColor="LightPink"
+                                       Invoked="SwipeItem_Invoked"
+                                       CommandParameter="{Binding Oid}"
+                                       />
+                                </SwipeItems>
+                            </SwipeView.RightItems>
                             <Grid>
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="*" />
@@ -51,15 +46,16 @@
                                     <ColumnDefinition Width="*" />
                                     <ColumnDefinition Width="*" />
                                     <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
-                                <Label Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="1" Text="{Binding vendor}" FontSize="Small"  VerticalTextAlignment="End" FontAttributes="Bold" TextColor="Blue"/>
-                                <Label Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding BaseDocNo}" FontSize="Small"  VerticalTextAlignment="End" FontAttributes="Bold" TextColor="Black"/>
-                                <Label Grid.Row="0" Grid.Column="3" Grid.ColumnSpan="3" Text="{Binding BatchNumber}" FontSize="Small"  VerticalTextAlignment="End" FontAttributes="Bold" TextColor="Blue"/>
-                                <Label Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="4" Text="{Binding title}" FontSize="Small" VerticalTextAlignment="Center" FontAttributes="Bold" TextColor="BlueViolet"/>
-                                <Label Grid.Row="1" Grid.Column="4" Text="{Binding Quantity}" FontSize="Small" HorizontalTextAlignment="End" VerticalTextAlignment="Center" FontAttributes="Bold" TextColor="BlueViolet"/>
-                                <Label Grid.Row="1" Grid.Column="5" Text="{Binding UnitMsr}" FontSize="Small" HorizontalTextAlignment="End" VerticalTextAlignment="Center" FontAttributes="Bold" TextColor="BlueViolet"/>
+                                <Label Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Text="{Binding vendor}" FontSize="Small" FontAttributes="Bold"  TextColor="Black"/>
+                                <Label Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="2" Text="{Binding BaseDocNo}" FontSize="Small" FontAttributes="None"  TextColor="Black"/>
+                                <Label Grid.Row="0" Grid.Column="4" Grid.ColumnSpan="3" Text="{Binding BatchNumber}" FontSize="Small" FontAttributes="Italic" TextColor="Black"/>
+                                <Label Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="5" Text="{Binding title}" FontSize="Small" HorizontalTextAlignment="Start"  VerticalTextAlignment="Center" FontAttributes="None" TextColor="Black"/>
+                                <Label Grid.Row="1" Grid.Column="5" Text="{Binding Quantity}" FontSize="Small" HorizontalTextAlignment="End" FontAttributes="Bold" TextColor="Black"/>
+                                <Label Grid.Row="1" Grid.Column="6" Text="{Binding UnitMsr}" FontSize="Small" HorizontalTextAlignment="End" FontAttributes="None" TextColor="Black"/>
                             </Grid>
-                        </StackLayout>
+                        </SwipeView>
                     </ViewCell>
                 </DataTemplate>
             </ListView.ItemTemplate>

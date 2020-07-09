@@ -24,10 +24,14 @@ namespace XamarinPR.Views
         {
             var vm = new CartPageViewModel(new PageService());
             BindingContext = vm;
+
             vm.page = this;
+            refreshlist();
+
             InitializeComponent();
             _grnitemlist = this.grnitemlist;
             _NoItemFound = this.NoItemFound;
+
         }
         private async Task refreshlist()
         {
@@ -39,31 +43,16 @@ namespace XamarinPR.Views
                 if (_parent != null)
                     _parent.setbadgetext(vm.grnitem.Count.ToString());
             }
-            vm.SelectedGRNItem = null;
         }
-        protected override async void OnAppearing()
-        {
-            base.OnAppearing();
-            await refreshlist();
-        }
+        //protected override async void OnAppearing()
+        //{
+        //    base.OnAppearing();
+        //    await refreshlist();
+        //}
         private async void grnitemlist_Refreshing(object sender, EventArgs e)
         {
             await refreshlist();
             _grnitemlist.EndRefresh();
-        }
-        private void ListView_ItemTapped(object sender, ItemTappedEventArgs e)
-        {
-            var vm = BindingContext as CartPageViewModel;
-            vm.SelectedGRNItem = e.Item as PurchaseDeliveryDetail;
-        }
-        private async void Remove_Clicked(object sender, EventArgs e)
-        {
-            var vm = BindingContext as CartPageViewModel;
-            bool rtn = await vm.removeGRNItem();
-            if (rtn)
-            {
-                await refreshlist();
-            }
         }
 
         private void ViewCell_Tapped(object sender, EventArgs e)
@@ -77,6 +66,21 @@ namespace XamarinPR.Views
                 _lastCell = viewCell;
             }
         }
+
+        private async void SwipeItem_Invoked(object sender, EventArgs e)
+        {
+            // start here 
+            var view = sender as SwipeItem;
+            int oid = (int)view.CommandParameter;
+
+            var vm = BindingContext as CartPageViewModel;
+            bool rtn = await vm.removeGRNItem(oid);
+            if (rtn)
+            {
+                await refreshlist();
+            }
+        }
+
     }
 
 }

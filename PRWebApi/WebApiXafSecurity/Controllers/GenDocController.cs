@@ -60,6 +60,7 @@ namespace WebApiXafSecurity.Controllers
                 string detalclassname = "PurchaseDeliveryDetail";
                 int intkeyvalue = -1;
                 JArray jarray = (JArray)values[detalclassname];
+                int cnt = 0;
                 foreach (JObject Jdtl in jarray.Children())
                 {
                     if (Jdtl.ContainsKey("Oid"))
@@ -67,6 +68,8 @@ namespace WebApiXafSecurity.Controllers
                         if (int.TryParse(Jdtl["Oid"].ToString(), out intkeyvalue))
                         {
                             PurchaseDeliveryDetail dtl = objectSpace.GetObjectByKey<PurchaseDeliveryDetail>(intkeyvalue);
+                            cnt++;
+                            dtl.VisOrder = cnt;
                             employee.PurchaseDeliveryDetail.Add(dtl);
                         }
                         else
@@ -86,6 +89,8 @@ namespace WebApiXafSecurity.Controllers
                     GenHelper.WriteLog("[Error]", "[" + securityProvider.GetUserName() + "]" + controllername + "-GenGRN:[Document series is not found][" + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "]");
                     throw new Exception("Document series is not found");
                 }
+                employee.DocStatus.AddDocStatus(DocStatus.Accepted, "WebApi Generated");
+                employee.DocStatus.CurrDocStatus = DocStatus.Accepted;
                 employee.AssignDocNumber();
                 objectSpace.CommitChanges();
                 return Ok(employee.DocNum);

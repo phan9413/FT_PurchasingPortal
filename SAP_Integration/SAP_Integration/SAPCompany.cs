@@ -869,6 +869,402 @@ where isnull(T0.SAPPosted,0) = 0 and T0.Status = @status";
             }
             return true;
         }
+        public bool UpdateDocuments(Models.Documents doc, string docentry, string docstatus)
+        {
+            //if (!generateLog(doc, doc.DocObject, doc.LogUserID)) return false;
+
+            oCom.StartTransaction();
+            try
+            {
+
+                SAPbobsCOM.Documents oDoc = (SAPbobsCOM.Documents)oCom.GetBusinessObject((SAPbobsCOM.BoObjectTypes)Enum.Parse(typeof(SAPbobsCOM.BoObjectTypes), doc.DocObject));
+
+                if (!oDoc.GetByKey(int.Parse(docentry)))
+                {
+                    errMsg = "Unknown Error! Please try again!";
+                    if (oCom.InTransaction) oCom.EndTransaction(SAPbobsCOM.BoWfTransOpt.wf_RollBack);
+                    oDoc = null;
+                    return false;
+                }
+
+                #region Header
+
+                oDoc.DocDate = doc.DocDate;
+                if (doc.TaxDate != DateTime.MinValue) oDoc.TaxDate = doc.TaxDate;
+                if (doc.DocDueDate != DateTime.MinValue) oDoc.DocDueDate = doc.DocDueDate;
+
+                if (!String.IsNullOrEmpty(doc.CardCode)) oDoc.CardCode = doc.CardCode;
+                if (!String.IsNullOrEmpty(doc.Address)) oDoc.Address = doc.Address;
+                if (!String.IsNullOrEmpty(doc.Address2)) oDoc.Address2 = doc.Address2;
+                if (!String.IsNullOrEmpty(doc.AgentCode)) oDoc.AgentCode = doc.AgentCode;
+                if (doc.ApplyCurrentVATRatesForDownPaymentsToDraw) oDoc.ApplyCurrentVATRatesForDownPaymentsToDraw = SAPbobsCOM.BoYesNoEnum.tYES; else oDoc.ApplyCurrentVATRatesForDownPaymentsToDraw = SAPbobsCOM.BoYesNoEnum.tNO;
+                if (doc.ApplyTaxOnFirstInstallment) oDoc.ApplyTaxOnFirstInstallment = SAPbobsCOM.BoYesNoEnum.tYES; else oDoc.ApplyTaxOnFirstInstallment = SAPbobsCOM.BoYesNoEnum.tNO;
+                if (doc.ArchiveNonremovableSalesQuotation) oDoc.ArchiveNonremovableSalesQuotation = SAPbobsCOM.BoYesNoEnum.tYES; else oDoc.ArchiveNonremovableSalesQuotation = SAPbobsCOM.BoYesNoEnum.tNO;
+                if (doc.AssetValueDate != DateTime.MinValue) oDoc.AssetValueDate = doc.AssetValueDate;
+                if (!String.IsNullOrEmpty(doc.ATDocumentType)) oDoc.ATDocumentType = doc.ATDocumentType;
+                if (!String.IsNullOrEmpty(doc.AuthorizationCode)) oDoc.AuthorizationCode = doc.AuthorizationCode;
+                if (doc.BlanketAgreementNumber > 0) oDoc.BlanketAgreementNumber = doc.BlanketAgreementNumber;
+                if (doc.BlockDunning) oDoc.BlockDunning = SAPbobsCOM.BoYesNoEnum.tYES;
+                if (!String.IsNullOrEmpty(doc.Box1099)) oDoc.Box1099 = doc.Box1099;
+                if (!String.IsNullOrEmpty(doc.BPChannelCode)) oDoc.BPChannelCode = doc.BPChannelCode;
+                if (doc.BPChannelContact > 0) oDoc.BPChannelContact = doc.BPChannelContact;
+                if (doc.BPL_IDAssignedToInvoice > 0) oDoc.BPL_IDAssignedToInvoice = doc.BPL_IDAssignedToInvoice;
+                if (doc.CashDiscountDateOffset > 0) oDoc.CashDiscountDateOffset = doc.CashDiscountDateOffset;
+                if (!String.IsNullOrEmpty(doc.CentralBankIndicator)) oDoc.CentralBankIndicator = doc.CentralBankIndicator;
+                if (doc.ClosingDate != DateTime.MinValue) oDoc.ClosingDate = doc.ClosingDate;
+                if (!String.IsNullOrEmpty(doc.ClosingRemarks)) oDoc.ClosingRemarks = doc.ClosingRemarks;
+                if (!String.IsNullOrEmpty(doc.Comments)) oDoc.Comments = doc.Comments;
+                if (doc.ContactPersonCode > 0) oDoc.ContactPersonCode = doc.ContactPersonCode;
+                if (doc.DeferredTax) oDoc.DeferredTax = SAPbobsCOM.BoYesNoEnum.tYES;
+                if (doc.DiscountPercent != 0) oDoc.DiscountPercent = doc.DiscountPercent;
+                if (!String.IsNullOrEmpty(doc.DocCurrency)) oDoc.DocCurrency = doc.DocCurrency;
+                if (doc.DocRate > 0) oDoc.DocRate = doc.DocRate;
+                if (doc.DocumentsOwner > 0) oDoc.DocumentsOwner = doc.DocumentsOwner;
+                if (doc.DocType > 0) oDoc.DocType = SAPbobsCOM.BoDocumentTypes.dDocument_Service; else oDoc.DocType = SAPbobsCOM.BoDocumentTypes.dDocument_Items;
+                if (doc.FolioNumber > 0) oDoc.FolioNumber = doc.FolioNumber;
+                if (doc.ImportFileNum > 0) oDoc.ImportFileNum = doc.ImportFileNum;
+                if (doc.InsuranceOperation347) oDoc.InsuranceOperation347 = SAPbobsCOM.BoYesNoEnum.tYES;
+                if (!String.IsNullOrEmpty(doc.JournalMemo)) oDoc.JournalMemo = doc.JournalMemo;
+                if (!String.IsNullOrEmpty(doc.ManualNumber)) oDoc.ManualNumber = doc.ManualNumber;
+                if (doc.LanguageCode > 0) oDoc.LanguageCode = doc.LanguageCode;
+                if (doc.MaximumCashDiscount) oDoc.MaximumCashDiscount = SAPbobsCOM.BoYesNoEnum.tYES;
+                if (doc.NTSApproved)
+                {
+                    oDoc.NTSApproved = SAPbobsCOM.BoYesNoEnum.tYES;
+                    oDoc.NTSApprovedNumber = doc.NTSApprovedNumber;
+                }
+                if (!String.IsNullOrEmpty(doc.NumAtCard)) oDoc.NumAtCard = doc.NumAtCard;
+                if (doc.NumberOfInstallments > 0) oDoc.NumberOfInstallments = doc.NumberOfInstallments;
+                if (doc.OpenForLandedCosts) oDoc.OpenForLandedCosts = SAPbobsCOM.BoYesNoEnum.tYES;
+                if (!String.IsNullOrEmpty(doc.OpeningRemarks)) oDoc.OpeningRemarks = doc.OpeningRemarks;
+                if (doc.PartialSupply) oDoc.PartialSupply = SAPbobsCOM.BoYesNoEnum.tYES;
+                if (doc.PaymentBlock) oDoc.PaymentBlock = SAPbobsCOM.BoYesNoEnum.tYES;
+                if (doc.PaymentBlockEntry > 0) oDoc.PaymentBlockEntry = doc.PaymentBlockEntry;
+                if (doc.PaymentGroupCode > 0) oDoc.PaymentGroupCode = doc.PaymentGroupCode;
+                if (!String.IsNullOrEmpty(doc.PaymentMethod)) oDoc.PaymentMethod = doc.PaymentMethod;
+                if (!String.IsNullOrEmpty(doc.PaymentReference)) oDoc.PaymentReference = doc.PaymentReference;
+                if (!String.IsNullOrEmpty(doc.PayToBankAccountNo)) oDoc.PayToBankAccountNo = doc.PayToBankAccountNo;
+                if (!String.IsNullOrEmpty(doc.PayToBankBranch)) oDoc.PayToBankBranch = doc.PayToBankBranch;
+                if (!String.IsNullOrEmpty(doc.PayToBankCode)) oDoc.PayToBankCode = doc.PayToBankCode;
+                if (!String.IsNullOrEmpty(doc.PayToBankCountry)) oDoc.PayToBankCountry = doc.PayToBankCountry;
+                if (!String.IsNullOrEmpty(doc.PayToCode)) oDoc.PayToCode = doc.PayToCode;
+                if (doc.POSCashierNumber > 0) oDoc.POSCashierNumber = doc.POSCashierNumber;
+                if (!String.IsNullOrEmpty(doc.POSEquipmentNumber)) oDoc.POSEquipmentNumber = doc.POSEquipmentNumber;
+                if (!String.IsNullOrEmpty(doc.POSManufacturerSerialNumber)) oDoc.POSManufacturerSerialNumber = doc.POSManufacturerSerialNumber;
+                if (!String.IsNullOrEmpty(doc.Project)) oDoc.Project = doc.Project;
+                if (doc.Receiver > 0) oDoc.Receiver = doc.Receiver;
+                if (!String.IsNullOrEmpty(doc.Reference1)) oDoc.Reference1 = doc.Reference1;
+                if (!String.IsNullOrEmpty(doc.Reference2)) oDoc.Reference2 = doc.Reference2;
+                if (doc.Releaser > 0) oDoc.Releaser = doc.Releaser;
+                if (doc.RelevantToGTS) oDoc.RelevantToGTS = SAPbobsCOM.BoYesNoEnum.tYES;
+                if (doc.ReopenManuallyClosedOrCanceledDocument) oDoc.ReopenManuallyClosedOrCanceledDocument = SAPbobsCOM.BoYesNoEnum.tYES;
+                if (doc.ReopenOriginalDocument) oDoc.ReopenOriginalDocument = SAPbobsCOM.BoYesNoEnum.tYES;
+                if (doc.ReqType > 0) oDoc.ReqType = doc.ReqType;
+                if (!String.IsNullOrEmpty(doc.Requester)) oDoc.Requester = doc.Requester;
+                if (doc.RequesterBranch > 0) oDoc.RequesterBranch = doc.RequesterBranch;
+                if (doc.RequesterDepartment > 0) oDoc.RequesterDepartment = doc.RequesterDepartment;
+                if (!String.IsNullOrEmpty(doc.RequesterEmail)) oDoc.RequesterEmail = doc.RequesterEmail;
+                if (!String.IsNullOrEmpty(doc.RequesterName)) oDoc.RequesterName = doc.RequesterName;
+                if (doc.RequriedDate != DateTime.MinValue) oDoc.RequriedDate = doc.RequriedDate;
+                if (doc.ReserveInvoice) oDoc.ReserveInvoice = SAPbobsCOM.BoYesNoEnum.tYES;
+                if (doc.RevisionPo) oDoc.RevisionPo = SAPbobsCOM.BoYesNoEnum.tYES;
+                if (doc.Rounding) oDoc.Rounding = SAPbobsCOM.BoYesNoEnum.tYES;
+                if (doc.RoundingDiffAmount != 0) oDoc.RoundingDiffAmount = doc.RoundingDiffAmount;
+                if (doc.SalesPersonCode > 0) oDoc.SalesPersonCode = doc.SalesPersonCode;
+                if (doc.SendNotification) oDoc.SendNotification = SAPbobsCOM.BoYesNoEnum.tYES;
+                if (doc.SequenceCode > 0) oDoc.SequenceCode = doc.SequenceCode;
+                if (!String.IsNullOrEmpty(doc.SequenceModel)) oDoc.SequenceModel = doc.SequenceModel;
+                if (doc.SequenceSerial > 0) oDoc.SequenceSerial = doc.SequenceSerial;
+                if (!String.IsNullOrEmpty(doc.SeriesString)) oDoc.SeriesString = doc.SeriesString;
+                if (doc.ServiceGrossProfitPercent > 0) oDoc.ServiceGrossProfitPercent = doc.ServiceGrossProfitPercent;
+                if (!string.IsNullOrEmpty(doc.ShipToCode)) oDoc.ShipToCode = doc.ShipToCode;
+                if (doc.ShowSCN) oDoc.ShowSCN = SAPbobsCOM.BoYesNoEnum.tYES;
+                if (doc.SpecifiedClosingDate != DateTime.MinValue) oDoc.SpecifiedClosingDate = doc.SpecifiedClosingDate;
+                if (!String.IsNullOrEmpty(doc.SubSeriesString)) oDoc.SubSeriesString = doc.SubSeriesString;
+                if (!String.IsNullOrEmpty(doc.Supplier)) oDoc.Supplier = doc.Supplier;
+                if (!String.IsNullOrEmpty(doc.TaxExemptionLetterNum)) oDoc.TaxExemptionLetterNum = doc.TaxExemptionLetterNum;
+                if (!String.IsNullOrEmpty(doc.TrackingNumber)) oDoc.TrackingNumber = doc.TrackingNumber;
+                if (doc.TransportationCode > 0) oDoc.TransportationCode = doc.TransportationCode;
+                if (doc.UseCorrectionVATGroup) oDoc.UseCorrectionVATGroup = SAPbobsCOM.BoYesNoEnum.tYES;
+
+                foreach (PropertyInfo info in doc.UserFields.GetType().GetProperties())
+                {
+                    //if (info.Name == "U_P_ID")
+                    //{
+                    //    if ((int)doc.UserFields.GetType().GetProperty(info.Name).GetValue(doc.UserFields) > 0)
+                    //    {
+                    //        oDoc.UserFields.Fields.Item(info.Name).Value = doc.UserFields.GetType().GetProperty(info.Name).GetValue(doc.UserFields);
+                    //    }
+                    //}
+                    //else
+                    //{
+                        if (doc.UserFields.GetType().GetProperty(info.Name).GetValue(doc.UserFields) != null)
+                        {
+                            oDoc.UserFields.Fields.Item(info.Name).Value = doc.UserFields.GetType().GetProperty(info.Name).GetValue(doc.UserFields);
+                        }
+                    //}
+                }
+                #endregion
+                #region remove details
+                bool found = false;
+                for (int x = oDoc.Lines.Count - 1; x >= 0; x--)
+                {
+                    oDoc.Lines.SetCurrentLine(x);
+                    found = false;
+                    if (doc.Lines != null)
+                    {
+                        for (int i = 0; i < doc.Lines.Count; i++)
+                        {
+                            if (doc.Lines[i].SAPDocEntry == oDoc.Lines.DocEntry && doc.Lines[i].SAPLineNum == oDoc.Lines.LineNum) found = true;
+                        }
+                    }
+                    if (!found)
+                        oDoc.Lines.Delete();
+                }
+                #endregion
+                #region Details
+                if (doc.Lines != null)
+                {
+                    for (int i = 0; i < doc.Lines.Count; i++)
+                    {
+                        if (doc.Lines[i].SAPDocEntry == 0)
+                        {
+                            oDoc.Lines.Add();
+                            oDoc.Lines.SetCurrentLine(oDoc.Lines.Count - 1);
+                        }
+                        else
+                        {
+                            for (int x = oDoc.Lines.Count - 1; x >= 0; x--)
+                            {
+                                oDoc.Lines.SetCurrentLine(x);
+                                if (doc.Lines[i].SAPDocEntry == oDoc.Lines.DocEntry && doc.Lines[i].SAPLineNum == oDoc.Lines.LineNum) break;
+                            }
+                        }
+                        if (!String.IsNullOrEmpty(doc.Lines[i].AccountCode)) oDoc.Lines.AccountCode = doc.Lines[i].AccountCode;
+                        if (doc.Lines[i].AgreementNo > 0)
+                        {
+                            oDoc.Lines.AgreementNo = doc.Lines[i].AgreementNo;
+                            oDoc.Lines.AgreementRowNumber = doc.Lines[i].AgreementRowNumber;
+                        }
+                        if (doc.Lines[i].BackOrder) oDoc.Lines.BackOrder = SAPbobsCOM.BoYesNoEnum.tYES;
+                        if (doc.Lines[i].BaseEntry > 0)
+                        {
+                            oDoc.Lines.BaseEntry = doc.Lines[i].BaseEntry;
+                            oDoc.Lines.BaseLine = doc.Lines[i].BaseLine;
+                            oDoc.Lines.BaseType = doc.Lines[i].BaseType;
+                        }
+                        if (!String.IsNullOrEmpty(doc.Lines[i].LineVendor)) oDoc.Lines.LineVendor = doc.Lines[i].LineVendor;
+                        if (!String.IsNullOrEmpty(doc.Lines[i].WarehouseCode)) oDoc.Lines.WarehouseCode = doc.Lines[i].WarehouseCode;
+                        if (!String.IsNullOrEmpty(doc.Lines[i].CostingCode)) oDoc.Lines.CostingCode = doc.Lines[i].CostingCode;
+                        if (!String.IsNullOrEmpty(doc.Lines[i].CostingCode2)) oDoc.Lines.CostingCode2 = doc.Lines[i].CostingCode2;
+                        if (!String.IsNullOrEmpty(doc.Lines[i].CostingCode3)) oDoc.Lines.CostingCode3 = doc.Lines[i].CostingCode3;
+                        if (!String.IsNullOrEmpty(doc.Lines[i].CostingCode4)) oDoc.Lines.CostingCode4 = doc.Lines[i].CostingCode4;
+                        if (!String.IsNullOrEmpty(doc.Lines[i].CostingCode5)) oDoc.Lines.CostingCode5 = doc.Lines[i].CostingCode5;
+                        if (doc.Lines[i].DiscountPercent != 0) oDoc.Lines.DiscountPercent = doc.Lines[i].DiscountPercent;
+                        if (!String.IsNullOrEmpty(doc.Lines[i].ItemCode)) 
+                            if (oDoc.Lines.ItemCode != doc.Lines[i].ItemCode)
+                                oDoc.Lines.ItemCode = doc.Lines[i].ItemCode;
+                        if (!String.IsNullOrEmpty(doc.Lines[i].ItemDescription)) oDoc.Lines.ItemDescription = doc.Lines[i].ItemDescription;
+                        if (!String.IsNullOrEmpty(doc.Lines[i].ItemDetails)) oDoc.Lines.ItemDetails = doc.Lines[i].ItemDetails;
+                        if (doc.Lines[i].LineTotal > 0 && doc.DocType > 0) oDoc.Lines.LineTotal = doc.Lines[i].LineTotal;
+                        if (doc.Lines[i].LocationCode > 0) oDoc.Lines.LocationCode = doc.Lines[i].LocationCode;
+                        if (doc.Lines[i].Price > 0) oDoc.Lines.Price = doc.Lines[i].Price;
+                        if (doc.Lines[i].PriceAfterVAT > 0) oDoc.Lines.PriceAfterVAT = doc.Lines[i].PriceAfterVAT;
+                        if (!String.IsNullOrEmpty(doc.Lines[i].ProjectCode)) oDoc.Lines.ProjectCode = doc.Lines[i].ProjectCode;
+                        if (doc.Lines[i].Quantity > 0) oDoc.Lines.Quantity = doc.Lines[i].Quantity;
+                        if (doc.Lines[i].RequiredDate != DateTime.MinValue) oDoc.Lines.RequiredDate = doc.Lines[i].RequiredDate;
+                        if (doc.Lines[i].ShipDate != DateTime.MinValue) oDoc.Lines.ShipDate = doc.Lines[i].ShipDate;
+                        if (doc.Lines[i].ShippingMethod > 0) oDoc.Lines.ShippingMethod = doc.Lines[i].ShippingMethod;
+                        if (!String.IsNullOrEmpty(doc.Lines[i].SWW)) oDoc.Lines.SWW = doc.Lines[i].SWW;
+                        if (!String.IsNullOrEmpty(doc.Lines[i].TaxCode)) oDoc.Lines.TaxCode = doc.Lines[i].TaxCode;
+                        if (doc.Lines[i].TaxOnly) oDoc.Lines.TaxOnly = SAPbobsCOM.BoYesNoEnum.tYES;
+                        if (doc.Lines[i].TaxTotal > 0) oDoc.Lines.TaxTotal = doc.Lines[i].TaxTotal;
+                        if (doc.Lines[i].UnitPrice > 0) oDoc.Lines.UnitPrice = doc.Lines[i].UnitPrice;
+                        if (!String.IsNullOrEmpty(doc.Lines[i].VatGroup)) oDoc.Lines.VatGroup = doc.Lines[i].VatGroup;
+
+                        foreach (PropertyInfo info in doc.Lines[i].UserFields.GetType().GetProperties())
+                        {
+                            //if (info.Name == "U_P_ID")
+                            //{
+                            //    if ((int)doc.Lines[i].UserFields.GetType().GetProperty(info.Name).GetValue(doc.Lines[i].UserFields) > 0)
+                            //    {
+                            //        oDoc.Lines.UserFields.Fields.Item(info.Name).Value = doc.Lines[i].UserFields.GetType().GetProperty(info.Name).GetValue(doc.Lines[i].UserFields);
+                            //    }
+                            //}
+                            //else
+                            //{
+                                if (doc.Lines[i].UserFields.GetType().GetProperty(info.Name).GetValue(doc.Lines[i].UserFields) != null)
+                                {
+                                    oDoc.Lines.UserFields.Fields.Item(info.Name).Value = doc.Lines[i].UserFields.GetType().GetProperty(info.Name).GetValue(doc.Lines[i].UserFields);
+                                }
+                            //}
+                        }
+
+                        #region Serial Numbers
+                        if (doc.Lines[i].Serials != null)
+                        {
+                            for (int j = 0; j < doc.Lines[i].Serials.Count; j++)
+                            {
+                                if (j > 0) oDoc.Lines.SerialNumbers.Add();
+                                oDoc.Lines.SerialNumbers.SetCurrentLine(j);
+                                if (!String.IsNullOrEmpty(doc.Lines[i].Serials[j].InternalSerialNumber)) oDoc.Lines.SerialNumbers.InternalSerialNumber = doc.Lines[i].Serials[j].InternalSerialNumber;
+                                if (!String.IsNullOrEmpty(doc.Lines[i].Serials[j].ManufacturerSerialNumber)) oDoc.Lines.SerialNumbers.ManufacturerSerialNumber = doc.Lines[i].Serials[j].ManufacturerSerialNumber;
+                                if (doc.Lines[i].Serials[j].ExpiryDate != DateTime.MinValue) oDoc.Lines.SerialNumbers.ExpiryDate = doc.Lines[i].Serials[j].ExpiryDate;
+                                if (!String.IsNullOrEmpty(doc.Lines[i].Serials[j].Location)) oDoc.Lines.SerialNumbers.Location = doc.Lines[i].Serials[j].Location;
+                                if (doc.Lines[i].Serials[j].ManufactureDate != DateTime.MinValue) oDoc.Lines.SerialNumbers.ManufactureDate = doc.Lines[i].Serials[j].ManufactureDate;
+                                if (!String.IsNullOrEmpty(doc.Lines[i].Serials[j].Notes)) oDoc.Lines.SerialNumbers.Notes = doc.Lines[i].Serials[j].Notes;
+                                if (doc.Lines[i].Serials[j].WarrantyStart != DateTime.MinValue) oDoc.Lines.SerialNumbers.WarrantyStart = doc.Lines[i].Serials[j].WarrantyStart;
+                                if (doc.Lines[i].Serials[j].WarrantyEnd != DateTime.MinValue) oDoc.Lines.SerialNumbers.WarrantyEnd = doc.Lines[i].Serials[j].WarrantyEnd;
+
+                                foreach (PropertyInfo info in doc.Lines[i].Serials[j].UserFields.GetType().GetProperties())
+                                {
+                                    if (doc.Lines[i].Serials[j].UserFields.GetType().GetProperty(info.Name).GetValue(doc.Lines[i].Serials[j].UserFields) != null)
+                                    {
+                                        oDoc.Lines.SerialNumbers.UserFields.Fields.Item(info.Name).Value = doc.Lines[i].Serials[j].UserFields.GetType().GetProperty(info.Name).GetValue(doc.Lines[i].Serials[j].UserFields);
+                                    }
+                                }
+                            }
+                        }
+                        #endregion
+
+                        #region Batch Numbers
+                        if (doc.Lines[i].Batches != null)
+                        {
+                            for (int j = 0; j < doc.Lines[i].Batches.Count; j++)
+                            {
+                                if (j > 0) oDoc.Lines.BatchNumbers.Add();
+                                oDoc.Lines.BatchNumbers.SetCurrentLine(j);
+                                if (!String.IsNullOrEmpty(doc.Lines[i].Batches[j].InternalSerialNumber)) oDoc.Lines.BatchNumbers.InternalSerialNumber = doc.Lines[i].Batches[j].InternalSerialNumber;
+                                if (!String.IsNullOrEmpty(doc.Lines[i].Batches[j].BatchNumber)) oDoc.Lines.BatchNumbers.BatchNumber = doc.Lines[i].Batches[j].BatchNumber;
+                                if (doc.Lines[i].Batches[j].Quantity > 0) oDoc.Lines.BatchNumbers.Quantity = doc.Lines[i].Batches[j].Quantity;
+                                if (doc.Lines[i].Batches[j].AddmisionDate != DateTime.MinValue) oDoc.Lines.BatchNumbers.AddmisionDate = doc.Lines[i].Batches[j].AddmisionDate;
+                                if (doc.Lines[i].Batches[j].ExpiryDate != DateTime.MinValue) oDoc.Lines.BatchNumbers.ExpiryDate = doc.Lines[i].Batches[j].ExpiryDate;
+                                if (!String.IsNullOrEmpty(doc.Lines[i].Batches[j].Location)) oDoc.Lines.BatchNumbers.Location = doc.Lines[i].Batches[j].Location;
+                                if (doc.Lines[i].Batches[j].ManufacturingDate != DateTime.MinValue) oDoc.Lines.BatchNumbers.ManufacturingDate = doc.Lines[i].Batches[j].ManufacturingDate;
+                                if (!String.IsNullOrEmpty(doc.Lines[i].Batches[j].ManufacturerSerialNumber)) oDoc.Lines.BatchNumbers.ManufacturerSerialNumber = doc.Lines[i].Batches[j].ManufacturerSerialNumber;
+                                if (!String.IsNullOrEmpty(doc.Lines[i].Batches[j].Notes)) oDoc.Lines.BatchNumbers.Notes = doc.Lines[i].Batches[j].Notes;
+
+                                foreach (PropertyInfo info in doc.Lines[i].Batches[j].UserFields.GetType().GetProperties())
+                                {
+                                    if (doc.Lines[i].Batches[j].UserFields.GetType().GetProperty(info.Name).GetValue(doc.Lines[i].Batches[j].UserFields) != null)
+                                    {
+                                        oDoc.Lines.BatchNumbers.UserFields.Fields.Item(info.Name).Value = doc.Lines[i].Batches[j].UserFields.GetType().GetProperty(info.Name).GetValue(doc.Lines[i].Batches[j].UserFields);
+                                    }
+                                }
+                            }
+                        }
+
+                        #endregion
+
+                        #region Expenses
+                        if (doc.Lines[i].Expenses != null)
+                        {
+                            for (int j = 0; j < doc.Lines[i].Expenses.Count; j++)
+                            {
+                                if (j > 0) oDoc.Lines.Expenses.Add();
+                                oDoc.Lines.Expenses.SetCurrentLine(j);
+                                if (doc.Lines[i].Expenses[j].ExpenseCode > 0) oDoc.Lines.Expenses.ExpenseCode = doc.Lines[i].Expenses[j].ExpenseCode;
+                                if (doc.Lines[i].Expenses[j].LineTotal != 0) oDoc.Lines.Expenses.LineTotal = doc.Lines[i].Expenses[j].LineTotal;
+                                if (!String.IsNullOrEmpty(doc.Lines[i].Expenses[j].VatGroup)) oDoc.Lines.Expenses.VatGroup = doc.Lines[i].Expenses[j].VatGroup;
+                            }
+                        }
+                        #endregion
+                    }
+                }
+                #endregion
+                #region Downpayment to draw
+                if (doc.DownPaymentToDraw != null)
+                {
+                    for (int i = 0; i < doc.DownPaymentToDraw.Count; i++)
+                    {
+                        if (i > 0) oDoc.DownPaymentsToDraw.Add();
+                        oDoc.DownPaymentsToDraw.SetCurrentLine(i);
+
+                        if (doc.DownPaymentToDraw[i].AmountToDraw > 0) oDoc.DownPaymentsToDraw.AmountToDraw = doc.DownPaymentToDraw[i].AmountToDraw;
+                        if (doc.DownPaymentToDraw[i].AmountToDrawFC > 0) oDoc.DownPaymentsToDraw.AmountToDrawFC = doc.DownPaymentToDraw[i].AmountToDrawFC;
+                        if (doc.DownPaymentToDraw[i].DocEntry > 0) oDoc.DownPaymentsToDraw.DocEntry = doc.DownPaymentToDraw[i].DocEntry;
+                        if (doc.DownPaymentToDraw[i].GrossAmountToDraw > 0) oDoc.DownPaymentsToDraw.GrossAmountToDraw = doc.DownPaymentToDraw[i].GrossAmountToDraw;
+                        if (doc.DownPaymentToDraw[i].GrossAmountToDrawFC > 0) oDoc.DownPaymentsToDraw.GrossAmountToDrawFC = doc.DownPaymentToDraw[i].GrossAmountToDrawFC;
+
+                    }
+                }
+                #endregion
+
+                if (oDoc.Update() != 0)
+                {
+                    errMsg = oCom.GetLastErrorDescription();
+                    if (oCom.InTransaction) oCom.EndTransaction(SAPbobsCOM.BoWfTransOpt.wf_RollBack);
+                    oDoc = null;
+                    return false;
+                }
+
+                SAPbobsCOM.Documents getDoc = (SAPbobsCOM.Documents)oCom.GetBusinessObject((SAPbobsCOM.BoObjectTypes)Enum.Parse(typeof(SAPbobsCOM.BoObjectTypes), doc.DocObject));
+
+                if (!getDoc.GetByKey(int.Parse(docentry)))
+                {
+                    errMsg = "Unknown Error! Please try again!";
+                    if (oCom.InTransaction) oCom.EndTransaction(SAPbobsCOM.BoWfTransOpt.wf_RollBack);
+                    oDoc = null;
+                    return false;
+                }
+                for (int x = 0; x < getDoc.Lines.Count; x++)
+                {
+                    getDoc.Lines.SetCurrentLine(x);
+
+                    for (int i = 0; i < doc.Lines.Count; i++)
+                    {
+                        foreach (PropertyInfo info in doc.Lines[i].UserFields.GetType().GetProperties())
+                        {
+                            if (info.Name == "U_P_ID")
+                            {
+                                if (doc.Lines[i].UserFields.GetType().GetProperty(info.Name).GetValue(doc.Lines[i].UserFields) != null)
+                                {
+                                    if ((int)getDoc.Lines.UserFields.Fields.Item(info.Name).Value == (int)doc.Lines[i].UserFields.GetType().GetProperty(info.Name).GetValue(doc.Lines[i].UserFields))
+                                    {
+                                        doc.Lines[i].SAPObjType = string.Format("{0}", (int)(SAPbobsCOM.BoObjectTypes)Enum.Parse(typeof(SAPbobsCOM.BoObjectTypes), doc.DocObject));
+                                        doc.Lines[i].SAPDocEntry = getDoc.Lines.DocEntry;
+                                        doc.Lines[i].SAPLineNum = getDoc.Lines.LineNum;
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                }
+                if (docstatus == "CLOSE")
+                {
+                    if (getDoc.Close() != 0)
+                    {
+                        errMsg = "Unknown Error (Close)! Please try again!";
+                        if (oCom.InTransaction) oCom.EndTransaction(SAPbobsCOM.BoWfTransOpt.wf_RollBack);
+                        oDoc = null;
+                        return false;
+                    }
+                }   
+                else if (docstatus == "CANCEL")
+                {
+                    if (getDoc.Cancel() != 0)
+                    {
+                        errMsg = "Unknown Error (Cancel)! Please try again!";
+                        if (oCom.InTransaction) oCom.EndTransaction(SAPbobsCOM.BoWfTransOpt.wf_RollBack);
+                        oDoc = null;
+                        return false;
+                    }
+                }
+
+                if (oCom.InTransaction) oCom.EndTransaction(SAPbobsCOM.BoWfTransOpt.wf_Commit);
+                System.Runtime.InteropServices.Marshal.ReleaseComObject(oDoc);
+                System.Runtime.InteropServices.Marshal.ReleaseComObject(getDoc);
+                oDoc = null;
+            }
+            catch (Exception ex)
+            {
+                if (oCom.InTransaction) oCom.EndTransaction(SAPbobsCOM.BoWfTransOpt.wf_RollBack);
+                errMsg = ex.Message;
+                return false;
+            }
+            return true;
+        }
 
         public bool CreateDocuments(Models.Documents doc, ref string docentry)
         {
@@ -1168,12 +1564,31 @@ where isnull(T0.SAPPosted,0) = 0 and T0.Status = @status";
                     oDoc = null;
                     return false;
                 }
-                for (int i = 0; i < getDoc.Lines.Count; i++)
+                doc.SAPDocEntry = int.Parse(docentry);
+                for (int x = 0; x < getDoc.Lines.Count; x++)
                 {
-                    getDoc.Lines.SetCurrentLine(i);
-                    doc.Lines[i].SAPObjType = string.Format("{0}", (int)(SAPbobsCOM.BoObjectTypes)Enum.Parse(typeof(SAPbobsCOM.BoObjectTypes), doc.DocObject));
-                    doc.Lines[i].SAPDocEntry = getDoc.Lines.DocEntry;
-                    doc.Lines[i].SAPLineNum = getDoc.Lines.LineNum;
+                    getDoc.Lines.SetCurrentLine(x);
+                    //doc.Lines[i].SAPObjType = string.Format("{0}", (int)(SAPbobsCOM.BoObjectTypes)Enum.Parse(typeof(SAPbobsCOM.BoObjectTypes), doc.DocObject));
+                    //doc.Lines[i].SAPDocEntry = getDoc.Lines.DocEntry;
+                    //doc.Lines[i].SAPLineNum = getDoc.Lines.LineNum;
+                    for (int i = 0; i < doc.Lines.Count; i++)
+                    {
+                        foreach (PropertyInfo info in doc.Lines[i].UserFields.GetType().GetProperties())
+                        {
+                            if (info.Name == "U_P_ID")
+                            {
+                                if (doc.Lines[i].UserFields.GetType().GetProperty(info.Name).GetValue(doc.Lines[i].UserFields) != null)
+                                {
+                                    if ((int)getDoc.Lines.UserFields.Fields.Item(info.Name).Value == (int)doc.Lines[i].UserFields.GetType().GetProperty(info.Name).GetValue(doc.Lines[i].UserFields))
+                                    {
+                                        doc.Lines[i].SAPObjType = string.Format("{0}", (int)(SAPbobsCOM.BoObjectTypes)Enum.Parse(typeof(SAPbobsCOM.BoObjectTypes), doc.DocObject));
+                                        doc.Lines[i].SAPDocEntry = getDoc.Lines.DocEntry;
+                                        doc.Lines[i].SAPLineNum = getDoc.Lines.LineNum;
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
                 if (oCom.InTransaction) oCom.EndTransaction(SAPbobsCOM.BoWfTransOpt.wf_Commit);
                 System.Runtime.InteropServices.Marshal.ReleaseComObject(oDoc);

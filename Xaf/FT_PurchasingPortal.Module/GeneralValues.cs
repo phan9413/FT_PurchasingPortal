@@ -15,7 +15,8 @@ namespace FT_PurchasingPortal.Module
         public const string PurchaseRequest = "PurchaseRequest";
         public const string PurchaseOrder = "PurchaseOrder";
         public const string PurchaseDelivery = "PurchaseDelivery";
-        
+        public const string PurchaseReturn = "PurchaseReturn";
+
         public const string StockTransferRequest = "StockTransferRequest";
 
     }

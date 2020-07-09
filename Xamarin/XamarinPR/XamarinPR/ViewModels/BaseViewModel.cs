@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Text;
+using ZXing.Client.Result;
+using Acr.UserDialogs;
 
 namespace XamarinPR.ViewModels
 {
@@ -34,5 +36,28 @@ namespace XamarinPR.ViewModels
         //        App.Current.MainPage.DisplayAlert(title, message, okBtn);
 
         //}
+
+        private bool _OnProcessLoading;
+        public bool OnProcessLoading
+        {
+            get => _OnProcessLoading;
+            set
+            {
+                _OnProcessLoading = value;
+                OnPropertyChanged(nameof(OnProcessLoading));
+            }
+        }
+
+        public void ShowLoading(string msg = "")
+        {
+            if (OnProcessLoading) return;
+            OnProcessLoading = true;
+            UserDialogs.Instance.ShowLoading(msg);
+        }
+        public void HideLoading()
+        {
+            OnProcessLoading = false;
+            UserDialogs.Instance.HideLoading();
+        }
     }
 }

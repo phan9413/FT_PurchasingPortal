@@ -15,6 +15,7 @@
     <None Remove="Images\icons8-barcode-scanner-96.png" />
     <None Remove="Images\icons8-container-truck-96.png" />
     <None Remove="Images\icons8-tire-track-96.png" />
+    <None Remove="Images\icons8-trash-96.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -22,9 +23,11 @@
     <EmbeddedResource Include="Images\icons8-barcode-scanner-96.png" />
     <EmbeddedResource Include="Images\icons8-container-truck-96.png" />
     <EmbeddedResource Include="Images\icons8-tire-track-96.png" />
+    <EmbeddedResource Include="Images\icons8-trash-96.png" />
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Acr.UserDialogs" Version="7.1.0.446" />
     <PackageReference Include="Dapper" Version="2.0.35" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="Plugin.Badge" Version="2.3.0" />
@@ -75,6 +78,9 @@
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Views\MainPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\SettingPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
   </ItemGroup>

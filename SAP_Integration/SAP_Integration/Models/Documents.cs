@@ -8,6 +8,7 @@ namespace SAP_Integration.Models
 {
     public class Documents : MarketingDocument
     {
+        public int SAPDocEntry { get; set; }
         public List<DocumentLines> Lines { get; set; }
         public List<DocumentDownPayments> DownPaymentToDraw { get; set; }
 
@@ -73,7 +74,7 @@ namespace SAP_Integration.Models
     {
         //public string TypeCode { get; set; }
         //public string TypeName { get; set; }
-        public int U_P_ID { get; set; }
+        public int? U_P_ID { get; set; }
         //public string U_P_DOCNO { get; set; }
         //public string U_PersistentProperty1 { get; set; }
     }
@@ -82,7 +83,7 @@ namespace SAP_Integration.Models
     }
     public class DocumentLinesUDF : IUserFields
     {
-        public int U_P_ID { get; set; }
+        public int? U_P_ID { get; set; }
     }
     public class DocumentBatchsUDF : IUserFields
     {

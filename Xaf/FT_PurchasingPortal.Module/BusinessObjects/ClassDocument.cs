@@ -570,6 +570,7 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
         [XafDisplayName("Create User")]
         //[ModelDefault("EditMask", "(000)-00"), VisibleInListView(false)]
         [Index(300), VisibleInListView(false), VisibleInDetailView(false), VisibleInLookupListView(false)]
+        [Appearance("CreateUser", Enabled = false)]
         public SystemUsers CreateUser
         {
             get { return _CreateUser; }
@@ -581,6 +582,7 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
 
         private DateTime? _CreateDate;
         [Index(301), VisibleInListView(false), VisibleInDetailView(false), VisibleInLookupListView(false)]
+        [Appearance("CreateDate", Enabled = false)]
         public DateTime? CreateDate
         {
             get { return _CreateDate; }
@@ -594,6 +596,7 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
         [XafDisplayName("Update User"), ToolTip("Enter Text")]
         //[ModelDefault("EditMask", "(000)-00"), VisibleInListView(false)]
         [Index(302), VisibleInListView(false), VisibleInDetailView(false), VisibleInLookupListView(false)]
+        [Appearance("UpdateUser", Enabled = false)]
         public SystemUsers UpdateUser
         {
             get { return _UpdateUser; }
@@ -605,12 +608,46 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
 
         private DateTime? _UpdateDate;
         [Index(303), VisibleInListView(false), VisibleInDetailView(false), VisibleInLookupListView(false)]
+        [Appearance("UpdateDate", Enabled = false)]
         public DateTime? UpdateDate
         {
             get { return _UpdateDate; }
             set
             {
                 SetPropertyValue("UpdateDate", ref _UpdateDate, value);
+            }
+        }
+        private int _SAPDocEntry;
+        [Index(331), VisibleInListView(false), VisibleInDetailView(false), VisibleInLookupListView(false)]
+        [Appearance("SAPDocEntry", Enabled = false)]
+        public int SAPDocEntry
+        {
+            get { return _SAPDocEntry; }
+            set
+            {
+                SetPropertyValue("SAPDocEntry", ref _SAPDocEntry, value);
+            }
+        }
+        private int _VerNo;
+        //[Browsable(false)]
+        [Appearance("VerNo", Enabled = false)]
+        public int VerNo
+        {
+            get { return _VerNo; }
+            set
+            {
+                SetPropertyValue("VerNo", ref _VerNo, value);
+            }
+        }
+        private int _PostVerNo;
+        //[Browsable(false)]
+        [Appearance("PostVerNo", Enabled = false)]
+        public int PostVerNo
+        {
+            get { return _PostVerNo; }
+            set
+            {
+                SetPropertyValue("PostVerNo", ref _PostVerNo, value);
             }
         }
 
@@ -689,6 +726,8 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
                         UpdateUser = Session.FindObject<SystemUsers>(CriteriaOperator.Parse("UserName=?", GeneralValues.NetCoreUserName));
                     UpdateDate = DateTime.Now;
                 }
+                // VerNo ++ in controller
+                //VerNo++;
             }
         }
         

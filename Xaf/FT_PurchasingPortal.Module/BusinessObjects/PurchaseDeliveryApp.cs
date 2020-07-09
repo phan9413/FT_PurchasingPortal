@@ -34,7 +34,7 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
             base.AfterConstruction();
             // Place your initialization code here (https://documentation.devexpress.com/eXpressAppFramework/CustomDocument112834.aspx).
         }
-        [Association("POAppStageDoc-AppStage")]
+        [Association("PDAppStageDoc-AppStage")]
         [XafDisplayName("Approval Stages")]
         [DevExpress.Xpo.Aggregated]
         public XPCollection<PurchaseDeliveryAppStage> AppStage
@@ -42,7 +42,7 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
             get { return GetCollection<PurchaseDeliveryAppStage>("AppStage"); }
         }
 
-        [Association("POAppStageDoc-AppStatus")]
+        [Association("PDAppStageDoc-AppStatus")]
         [XafDisplayName("Approval Status")]
         [DevExpress.Xpo.Aggregated]
         public XPCollection<PurchaseDeliveryAppStatus> AppStatus
@@ -145,7 +145,7 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
 
         private PurchaseDeliveryApp _AppStageDoc;
         [Browsable(false)]
-        [Association("POAppStageDoc-AppStage")]
+        [Association("PDAppStageDoc-AppStage")]
         public PurchaseDeliveryApp AppStageDoc
         {
             get { return _AppStageDoc; }
@@ -173,7 +173,7 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
 
         private PurchaseDeliveryApp _AppStageDoc;
         [Browsable(false)]
-        [Association("POAppStageDoc-AppStatus")]
+        [Association("PDAppStageDoc-AppStatus")]
         public PurchaseDeliveryApp AppStageDoc
         {
             get { return _AppStageDoc; }

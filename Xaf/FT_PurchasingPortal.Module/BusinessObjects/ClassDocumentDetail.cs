@@ -601,7 +601,7 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
         [XafDisplayName("Create User")]
         //[ModelDefault("EditMask", "(000)-00"), VisibleInListView(false)]
         [Index(300), VisibleInListView(false), VisibleInDetailView(false), VisibleInLookupListView(false)]
-        [NonCloneableAttribute()]
+        [Appearance("CreateUser", Enabled = false)]
         public SystemUsers CreateUser
         {
             get { return _CreateUser; }
@@ -613,7 +613,7 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
         [NonCloneable]
         private DateTime? _CreateDate;
         [Index(301), VisibleInListView(false), VisibleInDetailView(false), VisibleInLookupListView(false)]
-        [NonCloneableAttribute()]
+        [Appearance("CreateDate", Enabled = false)]
         public DateTime? CreateDate
         {
             get { return _CreateDate; }
@@ -627,6 +627,7 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
         [XafDisplayName("Update User"), ToolTip("Enter Text")]
         //[ModelDefault("EditMask", "(000)-00"), VisibleInListView(false)]
         [Index(302), VisibleInListView(false), VisibleInDetailView(false), VisibleInLookupListView(false)]
+        [Appearance("UpdateUser", Enabled = false)]
         public SystemUsers UpdateUser
         {
             get { return _UpdateUser; }
@@ -638,6 +639,7 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
         [NonCloneable]
         private DateTime? _UpdateDate;
         [Index(303), VisibleInListView(false), VisibleInDetailView(false), VisibleInLookupListView(false)]
+        [Appearance("UpdateDate", Enabled = false)]
         public DateTime? UpdateDate
         {
             get { return _UpdateDate; }
@@ -650,6 +652,7 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
         private double _CopyQty;
         [Index(310), VisibleInListView(false), VisibleInDetailView(false), VisibleInLookupListView(false)]
         [DbType("numeric(19,6)")]
+        [Appearance("CopyQty", Enabled = false)]
         public double CopyQty
         {
             get { return _CopyQty; }
@@ -662,6 +665,7 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
         private double _CopyCreQty;
         [Index(311), VisibleInListView(false), VisibleInDetailView(false), VisibleInLookupListView(false)]
         [DbType("numeric(19,6)")]
+        [Appearance("CopyCreQty", Enabled = false)]
         public double CopyCreQty
         {
             get { return _CopyCreQty; }
@@ -674,6 +678,7 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
         private double _OpenQty;
         [Index(312), VisibleInListView(false), VisibleInDetailView(false), VisibleInLookupListView(false)]
         [DbType("numeric(19,6)")]
+        [Appearance("OpenQty", Enabled = false)]
         public double OpenQty
         {
             get { return _OpenQty; }
@@ -686,6 +691,7 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
         private double _OpenCreQty;
         [Index(313), VisibleInListView(false), VisibleInDetailView(false), VisibleInLookupListView(false)]
         [DbType("numeric(19,6)")]
+        [Appearance("OpenCreQty", Enabled = false)]
         public double OpenCreQty
         {
             get { return _OpenCreQty; }
@@ -696,6 +702,7 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
         }
         private DocType _BaseType;
         [Index(320), VisibleInListView(false), VisibleInDetailView(false), VisibleInLookupListView(false)]
+        [Appearance("BaseType", Enabled = false)]
         public DocType BaseType  
         {
             get { return _BaseType; }
@@ -706,6 +713,7 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
         }
         private int _Baseline;
         [Index(321), VisibleInListView(false), VisibleInDetailView(false), VisibleInLookupListView(false)]
+        [Appearance("Baseline", Enabled = false)]
         public int Baseline
         {
             get { return _Baseline; }
@@ -716,6 +724,7 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
         }
         private string _BaseDocNo;
         [Index(322), VisibleInListView(false), VisibleInDetailView(false), VisibleInLookupListView(false)]
+        [Appearance("BaseDocNo", Enabled = false)]
         public string BaseDocNo
         {
             get { return _BaseDocNo; }
@@ -727,6 +736,7 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
         #region sap ref
         private string _SAPObjType;
         [Index(330), VisibleInListView(false), VisibleInDetailView(false), VisibleInLookupListView(false)]
+        [Appearance("SAPObjType", Enabled = false)]
         public string SAPObjType
         {
             get { return _SAPObjType; }
@@ -737,6 +747,7 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
         }
         private int _SAPDocEntry;
         [Index(331), VisibleInListView(false), VisibleInDetailView(false), VisibleInLookupListView(false)]
+        [Appearance("SAPDocEntry", Enabled = false)]
         public int SAPDocEntry
         {
             get { return _SAPDocEntry; }
@@ -747,6 +758,7 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
         }
         private int _SAPLineNum;
         [Index(332), VisibleInListView(false), VisibleInDetailView(false), VisibleInLookupListView(false)]
+        [Appearance("SAPLineNum", Enabled = false)]
         public int SAPLineNum
         {
             get { return _SAPLineNum; }
@@ -757,6 +769,7 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
         }
         private string _SAPBaseType;
         [Index(340), VisibleInListView(false), VisibleInDetailView(false), VisibleInLookupListView(false)]
+        [Appearance("SAPBaseType", Enabled = false)]
         public string SAPBaseType
         {
             get { return _SAPBaseType; }
@@ -767,6 +780,7 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
         }
         private int _SAPBaseEntry;
         [Index(341), VisibleInListView(false), VisibleInDetailView(false), VisibleInLookupListView(false)]
+        [Appearance("SAPBaseEntry", Enabled = false)]
         public int SAPBaseEntry
         {
             get { return _SAPBaseEntry; }
@@ -777,6 +791,7 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
         }
         private int _SAPBaseLine;
         [Index(342), VisibleInListView(false), VisibleInDetailView(false), VisibleInLookupListView(false)]
+        [Appearance("SAPBaseLine", Enabled = false)]
         public int SAPBaseLine
         {
             get { return _SAPBaseLine; }
@@ -788,6 +803,7 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
         #endregion
         private int _MasterOid;
         [Index(400), VisibleInListView(false), VisibleInDetailView(false), VisibleInLookupListView(false)]
+        [Appearance("MasterOid", Enabled = false)]
         public int MasterOid
         {
             get { return _MasterOid; }
@@ -798,6 +814,7 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
         }
         private SystemUsers _DeleteBy;
         [Index(401), VisibleInListView(false), VisibleInDetailView(false), VisibleInLookupListView(false)]
+        [Appearance("DeleteBy", Enabled = false)]
         public SystemUsers DeleteBy
         {
             get { return _DeleteBy; }
@@ -808,12 +825,35 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
         }
         private DateTime? _DeleteDate;
         [Index(402), VisibleInListView(false), VisibleInDetailView(false), VisibleInLookupListView(false)]
+        [Appearance("DeleteDate", Enabled = false)]
         public DateTime? DeleteDate
         {
             get { return _DeleteDate; }
             set
             {
                 SetPropertyValue("DeleteDate", ref _DeleteDate, value);
+            }
+        }
+        private int _VerNo;
+        //[Browsable(false)]
+        [Appearance("VerNo", Enabled = false)]
+        public int VerNo
+        {
+            get { return _VerNo; }
+            set
+            {
+                SetPropertyValue("VerNo", ref _VerNo, value);
+            }
+        }
+        private int _PostVerNo;
+        //[Browsable(false)]
+        [Appearance("PostVerNo", Enabled = false)]
+        public int PostVerNo
+        {
+            get { return _PostVerNo; }
+            set
+            {
+                SetPropertyValue("PostVerNo", ref _PostVerNo, value);
             }
         }
         public void AssignTaxAmt()
@@ -854,6 +894,7 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
                         UpdateUser = Session.FindObject<SystemUsers>(CriteriaOperator.Parse("UserName=?", GeneralValues.NetCoreUserName));
                     UpdateDate = DateTime.Now;
                 }
+                VerNo++;
             }
         }
     }

@@ -7,6 +7,7 @@ using Android.Views;
 using Android.Widget;
 using Android.OS;
 using ZXing.Mobile;
+using Acr.UserDialogs;
 
 namespace XamarinPR.Droid
 {
@@ -20,9 +21,20 @@ namespace XamarinPR.Droid
 
             base.OnCreate(savedInstanceState);
 
+            #region scan barcode wich camera
+            MobileBarcodeScanner.Initialize(this.Application);
+            #endregion
+            #region set SwipeView_Experimental
+            global::Xamarin.Forms.Forms.SetFlags("SwipeView_Experimental");
+            #endregion
+            #region set CollectionView_Experimental
+            //global::Xamarin.Forms.Forms.SetFlags("CollectionView_Experimental");
+            #endregion
+            #region Acr.UserDialogs
+            UserDialogs.Init(this);
+            #endregion
             Xamarin.Essentials.Platform.Init(this, savedInstanceState);
             global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
-            MobileBarcodeScanner.Initialize(this.Application);
 
             LoadApplication(new App());
             //SetContentView(Resource.Layout.Login);

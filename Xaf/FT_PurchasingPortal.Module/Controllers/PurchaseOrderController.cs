@@ -174,6 +174,19 @@ namespace FT_PurchasingPortal.Module.Controllers
         private void CopyToDO_Execute(object sender, SimpleActionExecuteEventArgs e)
         {
             PurchaseOrder sObject = (PurchaseOrder)View.CurrentObject;
+            if (sObject.VerNo > sObject.PostVerNo)
+            {
+                genCon.showMsg("Operation fail", "Document has not yet sync. Please wait.", InformationType.Error);
+                return;
+            }
+            foreach (PurchaseOrderDetail dtl in sObject.PurchaseOrderDetail)
+            {
+                if (dtl.VerNo > dtl.PostVerNo)
+                {
+                    genCon.showMsg("Operation fail", "Document has not yet sync. Please wait.", InformationType.Error);
+                    return;
+                }
+            }
             IObjectSpace ios = Application.CreateObjectSpace();
             PurchaseDelivery tObject = ios.CreateObject<PurchaseDelivery>();
 

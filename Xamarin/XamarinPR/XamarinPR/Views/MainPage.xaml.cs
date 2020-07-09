@@ -23,6 +23,8 @@ namespace XamarinPR.Views
             BindingContext = vm;
             InitializeComponent();
             _CartPage = this.CartTab;
+            Xamarin.Forms.PlatformConfiguration.AndroidSpecific.TabbedPage.SetIsSwipePagingEnabled(this, false);
+
         }
 
         protected override async void OnAppearing()
@@ -31,6 +33,8 @@ namespace XamarinPR.Views
             base.OnAppearing();
             await vm.refreshCount();
             setbadgetext(vm.CartCount);
+            vm.HideLoading();
+
             //CartTab.SetBinding(TabBadge.BadgeTextProperty, new Binding("Source=CartCount"));
         }
         public void setbadgetext(string value)

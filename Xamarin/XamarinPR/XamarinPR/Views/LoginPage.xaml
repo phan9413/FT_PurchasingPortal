@@ -19,7 +19,7 @@
                 <Entry x:Name="Url" Text="{Binding Url}" Placeholder="Url Address"   
                         HeightRequest="40"   
                         Keyboard="Url"
-                        TextColor="White"/>
+                        TextColor="White" IsVisible="false"/>
                 <Entry x:Name="UserName" Text="{Binding UserName}" Placeholder="User Name"   
                         HeightRequest="40"   
                         TextColor="White"/>

@@ -7,7 +7,8 @@
              xmlns:local="clr-namespace:XamarinPR.Views"
              xmlns:markextensions="clr-namespace:XamarinPR.MarkExtensions"
              xmlns:plugin="clr-namespace:Plugin.Badge.Abstractions;assembly=Plugin.Badge.Abstractions" 
-             x:Class="XamarinPR.Views.MainPage">
+             x:Class="XamarinPR.Views.MainPage"
+            >
     <TabbedPage.Padding>
         <OnPlatform x:TypeArguments="Thickness"
                 iOS="10,20,10,10"

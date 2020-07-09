@@ -135,7 +135,7 @@ namespace FT_PurchasingPortal.Module.Controllers
             if (BusinessPartner == "")
                 collectionSource.Criteria["filter01"] = CriteriaOperator.Parse("1=0");
             else
-                collectionSource.Criteria["Filter01"] = CriteriaOperator.Parse("OpenQty > CopyQty and PurchaseOrder is not null and PurchaseOrder.DocStatus.CurrDocStatus in (?, ?, ?) and LineStatus in (?) and (PurchaseOrder.CardCode=?)", DocStatus.Accepted, DocStatus.Closed, DocStatus.Posted, LineStatusEnum.Open, BusinessPartner);
+                collectionSource.Criteria["Filter01"] = CriteriaOperator.Parse("PostVerNo = VerNo and OpenQty > CopyQty and PurchaseOrder is not null and PurchaseOrder.DocStatus.CurrDocStatus in (?, ?, ?) and LineStatus in (?) and (PurchaseOrder.CardCode=?)", DocStatus.Accepted, DocStatus.Closed, DocStatus.Posted, LineStatusEnum.Open, BusinessPartner);
 
             e.View = Application.CreateListView(listViewId, collectionSource, true);
             //e.View = Application.CreateListView(typeof(PurchaseRequestDetail), true);

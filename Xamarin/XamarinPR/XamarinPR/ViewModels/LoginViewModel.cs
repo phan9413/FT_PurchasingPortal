@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using XamarinPR.Services;
 using System.Threading.Tasks;
+using Acr.UserDialogs;
 
 namespace XamarinPR.ViewModels
 {
@@ -61,56 +62,78 @@ namespace XamarinPR.ViewModels
         public ICommand SubmitCommand { protected set; get; }
         public async Task OnSubmit()
         {
-            Application.Current.Properties[PropertyHelper.CompanyProp] = null;
-            Application.Current.Properties[PropertyHelper.WarehouseProp] = null;
-            Application.Current.Properties[PropertyHelper.BusinessPartnerProp] = null;
-            Application.Current.Properties[PropertyHelper.PurchaseOrderProp] = null;
-
-            if (string.IsNullOrEmpty(UserName))
+            if (this.OnProcessLoading) return;
+            this.ShowLoading("Signing...");
+            try
             {
-                await _pageService.DisplayAlert("Alert", "User Name is empty", "OK");
-                return;
-            }
-            string address = Url + "/login";
-            UserLogin request = new UserLogin()
-            {
-                UserName = UserName,
-                Password = Password
-            };
-
-            using (var client = new HttpClientWapi())
-            {
-
-                var content = await client.RequestSvrAsync(address, request);
-                if (client.isSuccessStatusCode)
+                if (UserName == FTSetting.SettingPageUser && Password == FTSetting.SettingPageUserPassword)
                 {
-                    if (Settings.GeneralUrl != Url)
-                        Settings.GeneralUrl = Url;
+                    this.HideLoading();
+                    Application.Current.MainPage = new SettingPage();
 
-                    Settings.CurrentUser = UserName;
-                    #region get user details
-                    content = await client.RequestSvrAsync(Url + "/api/systemusers/" + UserName);
+                }
+                else
+                {
+                    Application.Current.Properties[PropertyHelper.CompanyProp] = null;
+                    Application.Current.Properties[PropertyHelper.WarehouseProp] = null;
+                    Application.Current.Properties[PropertyHelper.BusinessPartnerProp] = null;
+                    Application.Current.Properties[PropertyHelper.PurchaseOrderProp] = null;
 
-                    if (client.isSuccessStatusCode)
+                    if (string.IsNullOrEmpty(UserName))
                     {
-                        UserLogin usr = JsonConvert.DeserializeObject<UserLogin>(content);
-                        if (usr.Company != null)
-                            Application.Current.Properties[PropertyHelper.CompanyProp] = usr.Company;
-                        if (usr.Employee.WhsCode != null)
+                        await _pageService.DisplayAlert("Alert", "User Name is empty", "OK");
+                        return;
+                    }
+                    string address = Url + "/login";
+                    UserLogin request = new UserLogin()
+                    {
+                        UserName = UserName,
+                        Password = Password
+                    };
+
+                    using (var client = new HttpClientWapi())
+                    {
+
+                        var content = await client.RequestSvrAsync(address, request);
+                        if (client.isSuccessStatusCode)
                         {
-                            Application.Current.Properties[PropertyHelper.WarehouseProp] = usr.Employee.WhsCode;
+                            if (Settings.GeneralUrl != Url)
+                                Settings.GeneralUrl = Url;
+
+                            Settings.CurrentUser = UserName;
+                            #region get user details
+                            content = await client.RequestSvrAsync(Url + "/api/systemusers/" + UserName);
+
+                            if (client.isSuccessStatusCode)
+                            {
+                                UserLogin usr = JsonConvert.DeserializeObject<UserLogin>(content);
+                                if (usr.Company != null)
+                                    Application.Current.Properties[PropertyHelper.CompanyProp] = usr.Company;
+                                if (usr.Employee.WhsCode != null)
+                                {
+                                    Application.Current.Properties[PropertyHelper.WarehouseProp] = usr.Employee.WhsCode;
+                                }
+                            }
+                            #endregion
+                            this.HideLoading();
+                            Application.Current.MainPage = new MainPage();
+                            //Application.Current.MainPage = new NavigationPage(new MainPage());
+                            //await _pageService.PushAsync(new GetPODetail());
+                            return;
+                        }
+                        else
+                        {
+                            await _pageService.DisplayAlert("Alert", client.lastErrorDesc +
+                                "\nLog in Failed", "OK");
                         }
                     }
-                    #endregion
-                    Application.Current.MainPage = new MainPage();
-                    //Application.Current.MainPage = new NavigationPage(new MainPage());
-                    //await _pageService.PushAsync(new GetPODetail());
-                    return;
                 }
-
-                await _pageService.DisplayAlert("Alert", client.lastErrorDesc +
-                    "\nLog in Failed", "OK");
             }
+            catch (Exception ex)
+            {
+                await _pageService.DisplayAlert("Error", ex.Message, "OK");
+            }
+            this.HideLoading();
 
         }
     }

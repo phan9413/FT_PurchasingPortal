@@ -131,6 +131,9 @@
     <Reference Include="System.Numerics.Vectors" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Acr.UserDialogs">
+      <Version>7.1.0.446</Version>
+    </PackageReference>
     <PackageReference Include="Plugin.Badge">
       <Version>2.3.0</Version>
     </PackageReference>

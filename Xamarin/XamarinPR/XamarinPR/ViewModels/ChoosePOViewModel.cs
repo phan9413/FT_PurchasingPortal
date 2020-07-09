@@ -118,10 +118,13 @@ namespace XamarinPR.ViewModels
         public async Task getPO()
         {
             string Url = Settings.GeneralUrl;
-            string cardcodekey = ((vwBusinessPartners)Application.Current.Properties[PropertyHelper.BusinessPartnerProp]).BoKey;
+            string cardcodekey = "";
+            if (Application.Current.Properties[PropertyHelper.BusinessPartnerProp] != null)
+                cardcodekey = ((vwBusinessPartners)Application.Current.Properties[PropertyHelper.BusinessPartnerProp]).BoKey;
+
             using (var client = new HttpClientWapi())
             {
-                var content = await client.RequestSvrAsync(Url + "/api/getopenpo/" + cardcodekey);
+                string content = await client.RequestSvrAsync(Url + "/api/getopenpo/" + cardcodekey);
 
                 if (client.isSuccessStatusCode)
                 {

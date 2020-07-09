@@ -41,13 +41,40 @@ namespace WebApiXafSecurity.Controllers
             {
                 GenHelper.WriteLog("[Log]", "[" + securityProvider.GetUserName() + "]" + controllername + "-GetPO(" + cardcodekey + "):[" + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "]");
 
-                List<PurchaseOrder> obj = objectSpace.GetObjects<PurchaseOrder>(CriteriaOperator.Parse("[CardCode.BoKey]=? and [DocStatus.CurrDocStatus] in (?,?,?) and [PurchaseOrderDetail][[Quantity] > [CopyQty]]", cardcodekey, DocStatus.Accepted, DocStatus.Closed, DocStatus.Posted)).ToList();
+                List<PurchaseOrder> obj = objectSpace.GetObjects<PurchaseOrder>(CriteriaOperator.Parse("[CardCode.BoKey]=? and [DocStatus.CurrDocStatus] in (?,?,?) and [PurchaseOrderDetail][[Quantity] > [CopyQty] and [VerNo] = [PostVerNo]]", cardcodekey, DocStatus.Accepted, DocStatus.Closed, DocStatus.Posted)).ToList();
 
                 return Ok(obj);
             }
             catch (Exception ex)
             {
                 GenHelper.WriteLog("[Error]", "[" + securityProvider.GetUserName() + "]" + controllername + "-GetPO:[" + ex.Message + "][" + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "]");
+                throw new Exception(ex.Message);
+            }
+        }
+        /// <summary>
+        /// Get PO from API
+        /// </summary>
+        /// <remarks>
+        /// Note that the key is a Oid and an integer.
+        /// </remarks>
+        /// <param name="docno">PO No</param>       
+        /// <response code="200">Returns found item</response>
+        /// <response code="400">Not Found</response>
+        [HttpGet]
+        [Route("api/getopenpoitem/{cardcodekey}")]
+        public IActionResult GetOpenPOItem(string cardcodekey)
+        {
+            try
+            {
+                GenHelper.WriteLog("[Log]", "[" + securityProvider.GetUserName() + "]" + controllername + "-GetOpenPOItem(" + cardcodekey + "):[" + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "]");
+
+                List<PurchaseOrderDetail> obj = objectSpace.GetObjects<PurchaseOrderDetail>(CriteriaOperator.Parse("!isnull([PurchaseOrder]) and [PurchaseOrder.CardCode.BoKey]=? and [PurchaseOrder.DocStatus.CurrDocStatus] in (?,?,?) and [Quantity] > [CopyQty] and [VerNo] = [PostVerNo]", cardcodekey, DocStatus.Accepted, DocStatus.Closed, DocStatus.Posted)).OrderBy(pp => pp.PurchaseOrder.DocNo).ToList();
+
+                return Ok(obj);
+            }
+            catch (Exception ex)
+            {
+                GenHelper.WriteLog("[Error]", "[" + securityProvider.GetUserName() + "]" + controllername + "-GetOpenPOItem:[" + ex.Message + "][" + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "]");
                 throw new Exception(ex.Message);
             }
 
@@ -62,20 +89,20 @@ namespace WebApiXafSecurity.Controllers
         /// <response code="200">Returns found item</response>
         /// <response code="400">Not Found</response>
         [HttpGet]
-        [Route("api/getopenpoitem/{cardcodekey}")]
-        public IActionResult GetPO(string cardcodekey)
+        [Route("api/getopenpoitembydoc/{docno}")]
+        public IActionResult GetOpenPOItemByDoc(string docno)
         {
             try
             {
-                GenHelper.WriteLog("[Log]", "[" + securityProvider.GetUserName() + "]" + controllername + "-GetPO(" + cardcodekey + "):[" + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "]");
+                GenHelper.WriteLog("[Log]", "[" + securityProvider.GetUserName() + "]" + controllername + "-GetOpenPOItemByDoc(" + docno + "):[" + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "]");
 
-                List<PurchaseOrderDetail> obj = objectSpace.GetObjects<PurchaseOrderDetail>(CriteriaOperator.Parse("!isnull([PurchaseOrder]) and [PurchaseOrder.CardCode.BoKey]=? and [PurchaseOrder.DocStatus.CurrDocStatus] in (?,?,?) and [Quantity] > [CopyQty]", cardcodekey, DocStatus.Accepted, DocStatus.Closed, DocStatus.Posted)).OrderBy(pp => pp.PurchaseOrder.DocNo).ToList();
+                List<PurchaseOrderDetail> obj = objectSpace.GetObjects<PurchaseOrderDetail>(CriteriaOperator.Parse("!isnull([PurchaseOrder]) and [PurchaseOrder.DocNo]=? and [PurchaseOrder.DocStatus.CurrDocStatus] in (?,?,?) and [Quantity] > [CopyQty] and [VerNo] = [PostVerNo]", docno, DocStatus.Accepted, DocStatus.Closed, DocStatus.Posted)).OrderBy(pp => pp.PurchaseOrder.DocNo).ToList();
 
                 return Ok(obj);
             }
             catch (Exception ex)
             {
-                GenHelper.WriteLog("[Error]", "[" + securityProvider.GetUserName() + "]" + controllername + "-GetPO:[" + ex.Message + "][" + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "]");
+                GenHelper.WriteLog("[Error]", "[" + securityProvider.GetUserName() + "]" + controllername + "-GetOpenPOItemByDoc:[" + ex.Message + "][" + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "]");
                 throw new Exception(ex.Message);
             }
 

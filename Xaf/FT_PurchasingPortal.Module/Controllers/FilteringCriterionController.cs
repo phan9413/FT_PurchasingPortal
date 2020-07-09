@@ -8,6 +8,7 @@ using DevExpress.ExpressApp.Actions;
 using DevExpress.ExpressApp.Editors;
 using DevExpress.ExpressApp.Layout;
 using DevExpress.ExpressApp.Model.NodeGenerators;
+using DevExpress.ExpressApp.Security.Strategy;
 using DevExpress.ExpressApp.SystemModule;
 using DevExpress.ExpressApp.Templates;
 using DevExpress.ExpressApp.Utils;
@@ -20,6 +21,7 @@ namespace FT_PurchasingPortal.Module.Controllers
     // For more typical usage scenarios, be sure to check out https://documentation.devexpress.com/eXpressAppFramework/clsDevExpressExpressAppViewControllertopic.aspx.
     public partial class FilteringCriterionController : ViewController
     {
+
         private SingleChoiceAction filteringCriterionAction;
         public FilteringCriterionController()
         {
@@ -39,6 +41,7 @@ namespace FT_PurchasingPortal.Module.Controllers
                 CriteriaEditorHelper.GetCriteriaOperator(
                 e.SelectedChoiceActionItem.Data as string, View.ObjectTypeInfo.Type, ObjectSpace);
             ((ListView)View).CollectionSource.EndUpdateCriteria();
+
         }
         protected override void OnActivated()
         {

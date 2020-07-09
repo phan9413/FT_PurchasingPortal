@@ -67,7 +67,6 @@ namespace XamarinPR.ViewModels
             get { return _SelectedWhs; }
             set
             {
-                _SelectedWhs = value;
                 SetValue(ref _SelectedWhs, value);
             }
         }
@@ -78,7 +77,6 @@ namespace XamarinPR.ViewModels
             get { return _SelectedBP; }
             set
             {
-                _SelectedBP = value;
                 SetValue(ref _SelectedBP, value);
             }
         }
@@ -88,55 +86,75 @@ namespace XamarinPR.ViewModels
         public ICommand submit { get; private set; }
         public async Task getWhs()
         {
-            string Url = Settings.GeneralUrl;
-            string company = ((Company)Application.Current.Properties[PropertyHelper.CompanyProp]).BoCode;
-            using (var client = new HttpClientWapi())
+            if (this.OnProcessLoading) return;
+            this.ShowLoading("Loading...");
+            try
             {
-                var content = await client.RequestSvrAsync(Url + "/api/wh/whslist/" + company);
-
-                if (client.isSuccessStatusCode)
+                string Url = Settings.GeneralUrl;
+                string company = ((Company)Application.Current.Properties[PropertyHelper.CompanyProp]).BoCode;
+                using (var client = new HttpClientWapi())
                 {
-                    //whslist = new ObservableCollection<vwWarehouses>();
-                    //whslist = JsonConvert.DeserializeObject<ObservableCollection<vwWarehouses>>(content);
-                    iwhslist = JsonConvert.DeserializeObject<IEnumerable<vwWarehouses>>(content);
-                    whslist = new ObservableCollection<vwWarehouses>(iwhslist);
+                    var content = await client.RequestSvrAsync(Url + "/api/wh/whslist/" + company);
 
-                    page._whspick.ItemsSource = whslist;
-                    //page._whspick.SetBinding(Picker.SelectedItemProperty, "SelectedWhs");
-                    //page._whspick.ItemDisplayBinding = new Binding("WhsName");
-
-                    if (Application.Current.Properties[PropertyHelper.WarehouseProp] != null)
+                    if (client.isSuccessStatusCode)
                     {
-                        SelectedWhs = Application.Current.Properties[PropertyHelper.WarehouseProp] as vwWarehouses;
-                        page._whspick.SelectedIndex = page._whspick.Items.IndexOf(SelectedWhs.WhsName);
+                        //whslist = new ObservableCollection<vwWarehouses>();
+                        //whslist = JsonConvert.DeserializeObject<ObservableCollection<vwWarehouses>>(content);
+                        iwhslist = JsonConvert.DeserializeObject<IEnumerable<vwWarehouses>>(content);
+                        whslist = new ObservableCollection<vwWarehouses>(iwhslist);
+
+                        page._whspick.ItemsSource = whslist;
+                        //page._whspick.SetBinding(Picker.SelectedItemProperty, "SelectedWhs");
+                        //page._whspick.ItemDisplayBinding = new Binding("WhsName");
+
+                        if (Application.Current.Properties[PropertyHelper.WarehouseProp] != null)
+                        {
+                            SelectedWhs = Application.Current.Properties[PropertyHelper.WarehouseProp] as vwWarehouses;
+                            page._whspick.SelectedIndex = page._whspick.Items.IndexOf(SelectedWhs.WhsName);
+                        }
                     }
-                }
                 
+                }
             }
+            catch (Exception ex)
+            {
+                await _pageService.DisplayAlert("Error", ex.Message, "OK");
+            }
+            this.HideLoading();
         }
 
         public async Task getBP()
         {
-            string Url = Settings.GeneralUrl;
-            string company = ((Company)Application.Current.Properties[PropertyHelper.CompanyProp]).BoCode;
-            using (var client = new HttpClientWapi())
+            if (this.OnProcessLoading) return;
+            this.ShowLoading("Loading...");
+            try
             {
-                var content = await client.RequestSvrAsync(Url + "/api/bp/supplierlist/" + company);
-
-                if (client.isSuccessStatusCode)
+                string Url = Settings.GeneralUrl;
+                string company = ((Company)Application.Current.Properties[PropertyHelper.CompanyProp]).BoCode;
+                using (var client = new HttpClientWapi())
                 {
-                    //bplist = new ObservableCollection<vwBusinessPartners>();
-                    //bplist = JsonConvert.DeserializeObject<ObservableCollection<vwBusinessPartners>>(content);
-                    ibplist = JsonConvert.DeserializeObject<IEnumerable<vwBusinessPartners>>(content);
-                    bplist = new ObservableCollection<vwBusinessPartners>(ibplist);
+                    var content = await client.RequestSvrAsync(Url + "/api/bp/supplierlist/" + company);
 
-                    page._bplist.ItemsSource = bplist;
-                    //page._bplist.SetBinding(ListView.SelectedItemProperty, "SelectedBP");
-                    //page._bplist.ItemDisplayBinding = new Binding("WhsName");
+                    if (client.isSuccessStatusCode)
+                    {
+                        //bplist = new ObservableCollection<vwBusinessPartners>();
+                        //bplist = JsonConvert.DeserializeObject<ObservableCollection<vwBusinessPartners>>(content);
+                        ibplist = JsonConvert.DeserializeObject<IEnumerable<vwBusinessPartners>>(content);
+                        bplist = new ObservableCollection<vwBusinessPartners>(ibplist);
+
+                        page._bplist.ItemsSource = bplist;
+                        //page._bplist.SetBinding(ListView.SelectedItemProperty, "SelectedBP");
+                        //page._bplist.ItemDisplayBinding = new Binding("WhsName");
+
+                    }
 
                 }
-
             }
+            catch (Exception ex)
+            {
+                await _pageService.DisplayAlert("Error", ex.Message, "OK");
+            }
+            this.HideLoading();
         }
 
         public void filterList(string text)

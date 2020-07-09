@@ -7,9 +7,12 @@
              xmlns:markextensions="clr-namespace:XamarinPR.MarkExtensions"
              x:Class="XamarinPR.Views.MainMenu">
     <StackLayout Orientation="Vertical" Padding="20" Spacing="10">
-        <Button Text="New GRN" TextColor="White"  
+        <Button Text="GRN From Supplier" TextColor="White"  
             FontAttributes="Bold" FontSize="Large" HorizontalOptions="FillAndExpand" CornerRadius="20"
             BackgroundColor="DarkSlateBlue" Clicked="newgrn_Clicked"/>
+        <Button Text="GRN From PO" TextColor="White"  
+            FontAttributes="Bold" FontSize="Large" HorizontalOptions="FillAndExpand" CornerRadius="20"
+            BackgroundColor="DarkSlateBlue" Clicked="newpogrn_Clicked"/>
         <Image Aspect="AspectFit" VerticalOptions="FillAndExpand" x:Name="FTLogo" Source="{markextensions:EmbeddedImage ResourceId=XamarinPR.Images.FT_Logo.png}"/>
         <Button Text="Logout"
             FontAttributes="Bold" FontSize="Large" HorizontalOptions="FillAndExpand" CornerRadius="20" IsTabStop="True"

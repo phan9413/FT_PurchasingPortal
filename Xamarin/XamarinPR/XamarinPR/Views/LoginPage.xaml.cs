@@ -20,6 +20,7 @@ namespace XamarinPR.Views
             var vm = new LoginViewModel(new PageService());
             this.BindingContext = vm;
             InitializeComponent();
+
             UserName.Completed += (object sender, EventArgs e) =>
             {
                 Password.Focus();

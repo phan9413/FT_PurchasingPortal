@@ -13,5 +13,13 @@ namespace XamarinPR.Helpers
         public static string WarehouseProp = "Warehouse";
         public static string BusinessPartnerProp = "BusinessPartner";
         public static string PurchaseOrderProp = "PurchaseOrder";
+
+    }
+    public static class FTSetting
+    {
+        public static string SettingPageUser = "FastTrack";
+        public static string SettingPageUserPassword = "776340-FT";
+
+
     }
 }

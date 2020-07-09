@@ -85,6 +85,15 @@ namespace FT_PurchasingPortal.Module.DatabaseUpdate {
                 doctype.BoName = temp;
                 doctype.Save();
             }
+            temp = DocTypeCodes.PurchaseReturn;
+            doctype = ObjectSpace.FindObject<DocType>(new BinaryOperator("BoCode", temp));
+            if (doctype == null)
+            {
+                doctype = ObjectSpace.CreateObject<DocType>();
+                doctype.BoCode = temp;
+                doctype.BoName = temp;
+                doctype.Save();
+            }
             temp = DocTypeCodes.StockTransferRequest;
             doctype = ObjectSpace.FindObject<DocType>(new BinaryOperator("BoCode", temp));
             if (doctype == null)
@@ -266,6 +275,35 @@ namespace FT_PurchasingPortal.Module.DatabaseUpdate {
                 newrole = ObjectSpace.CreateObject<PermissionPolicyRole>();
                 newrole.Name = rolename;
             }
+            #region PurchaseReturn
+            rolename = DocTypeCodes.PurchaseReturn;
+            newrole = ObjectSpace.FindObject<PermissionPolicyRole>(new BinaryOperator("Name", rolename));
+            if (newrole == null)
+            {
+                newrole = ObjectSpace.CreateObject<PermissionPolicyRole>();
+                newrole.Name = rolename;
+                newrole.AddNavigationPermission(@"Application/NavigationItems/Items/Purchase Return/Items/PurchaseReturn_ListView", SecurityPermissionState.Allow);
+                newrole.AddTypePermissionsRecursively<PurchaseReturn>(SecurityOperations.CRUDAccess, SecurityPermissionState.Allow);
+                newrole.AddTypePermissionsRecursively<PurchaseReturnApp>(SecurityOperations.CRUDAccess, SecurityPermissionState.Allow);
+                newrole.AddTypePermissionsRecursively<PurchaseReturnAppStage>(SecurityOperations.CRUDAccess, SecurityPermissionState.Allow);
+                newrole.AddTypePermissionsRecursively<PurchaseReturnAppStatus>(SecurityOperations.CRUDAccess, SecurityPermissionState.Allow);
+                newrole.AddTypePermissionsRecursively<PurchaseReturnAttachment>(SecurityOperations.CRUDAccess, SecurityPermissionState.Allow);
+                newrole.AddTypePermissionsRecursively<PurchaseReturnDetail>(SecurityOperations.CRUDAccess, SecurityPermissionState.Allow);
+                newrole.AddTypePermissionsRecursively<PurchaseReturnDetailUDF>(SecurityOperations.CRUDAccess, SecurityPermissionState.Allow);
+                newrole.AddTypePermissionsRecursively<PurchaseReturnDoc>(SecurityOperations.CRUDAccess, SecurityPermissionState.Allow);
+                newrole.AddTypePermissionsRecursively<PurchaseReturnDocStatus>(SecurityOperations.CRUDAccess, SecurityPermissionState.Allow);
+                newrole.AddTypePermissionsRecursively<PurchaseReturnUDF>(SecurityOperations.CRUDAccess, SecurityPermissionState.Allow);
+            }
+            createGeneralPermission(newrole);
+
+            rolename = rolename + viewpricerole;
+            newrole = ObjectSpace.FindObject<PermissionPolicyRole>(new BinaryOperator("Name", rolename));
+            if (newrole == null)
+            {
+                newrole = ObjectSpace.CreateObject<PermissionPolicyRole>();
+                newrole.Name = rolename;
+            }
+            #endregion
 
             #region PurchaseDelivery
             rolename = DocTypeCodes.PurchaseDelivery;
@@ -274,7 +312,7 @@ namespace FT_PurchasingPortal.Module.DatabaseUpdate {
             {
                 newrole = ObjectSpace.CreateObject<PermissionPolicyRole>();
                 newrole.Name = rolename;
-                newrole.AddNavigationPermission(@"Application/NavigationItems/Items/Purchasing/Items/PurchaseDelivery_ListView", SecurityPermissionState.Allow);
+                newrole.AddNavigationPermission(@"Application/NavigationItems/Items/Purchase GRN/Items/PurchaseDelivery_ListView", SecurityPermissionState.Allow);
                 newrole.AddTypePermissionsRecursively<PurchaseDelivery>(SecurityOperations.CRUDAccess, SecurityPermissionState.Allow);
                 newrole.AddTypePermissionsRecursively<PurchaseDeliveryApp>(SecurityOperations.CRUDAccess, SecurityPermissionState.Allow);
                 newrole.AddTypePermissionsRecursively<PurchaseDeliveryAppStage>(SecurityOperations.CRUDAccess, SecurityPermissionState.Allow);

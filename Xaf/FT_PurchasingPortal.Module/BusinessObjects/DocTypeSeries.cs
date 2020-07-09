@@ -20,6 +20,9 @@ using DevExpress.ExpressApp.ConditionalAppearance;
 
 namespace FT_PurchasingPortal.Module.BusinessObjects
 {
+    /// <summary>
+    /// 20200707 force PostToDocument = document
+    /// </summary>
     [DefaultClassOptions]
     [Persistent("ODTS")]
     [NavigationItem("Setup")]
@@ -61,7 +64,7 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
             {
                 Company = Session.GetObjectByKey<Company>(usr.Company.Oid);
             }
-            PostToDocument = PostToDocument.Draft;
+            PostToDocument = PostToDocument.Document;
 
             DocTypeSeriesDoc doc = new DocTypeSeriesDoc(Session);
             doc.NextDocNo = 1000001;
@@ -142,6 +145,7 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
         private PostToDocument _PostToDocument;
         //[ModelDefault("EditMask", "(000)-00"), VisibleInListView(false)]
         //[RuleRequiredField(DefaultContexts.Save)]
+        [Browsable(false)]
         [Index(20)]
         public PostToDocument PostToDocument
         {

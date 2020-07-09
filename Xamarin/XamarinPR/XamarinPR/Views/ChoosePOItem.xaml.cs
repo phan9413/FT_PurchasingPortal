@@ -19,7 +19,6 @@ namespace XamarinPR.Views
         public ListView _poitemlist;
         public Label _NoItemFound;
         private ViewCell _lastCell;
-        private Entry _batchnumber;
         public ChoosePOItem()
         {
             var vm = new ChoosePOItemViewModel(new PageService());
@@ -48,6 +47,11 @@ namespace XamarinPR.Views
             var vm = BindingContext as ChoosePOItemViewModel;
             var item = e.Item as PurchaseOrderDetail;
             vm.hideOrShowItem(item);
+        }
+        private void gotomenu_Clicked(object sender, EventArgs e)
+        {
+            MainPage page = new MainPage();
+            Application.Current.MainPage = page;
         }
         private void gotocart_Clicked(object sender, EventArgs e)
         {

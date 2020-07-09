@@ -11,7 +11,8 @@
       <Item Id="KPI" Visible="False" />
       <Item Id="Purchasing">
         <Items>
-          <Item Id="PurchaseDelivery_ListView" Visible="False" />
+          <Item Id="PurchaseRequest_ListView" Index="0" />
+          <Item Id="PurchaseOrder_ListView" Index="1" />
         </Items>
       </Item>
       <Item Id="Task" Visible="False" />

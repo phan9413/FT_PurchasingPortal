@@ -79,8 +79,11 @@
 	- CreateDate
 	- [UpdateUser->SystemUser]
 	- UpdateDate
+	- VerNo
+	- SapVerNo
 
 [ClassDocumentDetail] (class, transaction document detail)
+	- IsBeingDelete (delete flag)
 	- [ObjType->DocType]
 	- [Company]
 	- VisOrder
@@ -119,10 +122,17 @@
 	- OpenCreQty
 	- BaseType
 	- Baseline
+	- SAPObjType
+	- SAPDocEntry
+	- SAPLineNum
+	- SAPBaseType
+	- SAPBaseEntry
+	- SAPBaseLine
 	- MasterOid
-	- IsBeingDelete
 	- [DeleteBy->SystemUser]
 	- DeleteDate
+	- VerNo
+	- SapVerNo
 
 [ClassStockTransferDocument] (class, stock transaction document)
 	- [Company]
@@ -263,43 +273,83 @@
 =================================================================
 #purchase delivery start
 
-[PurchaseDeliveryApp->ClassAppStatusDoc] (select from OPRNA, purchase request approval document)
+[PurchaseDeliveryApp->ClassAppStatusDoc] (select from OPRNA, purchase delivery approval document)
 	- [CurrAppStage->PurchaseDeliveryAppStage]
 	---- <[PurchaseDeliveryAppStage]> (1 to many)
 	---- <[PurchaseDeliveryAppStatus]> (1 to many)
 
-[PurchaseDeliveryAppStage->ClassAppStage] (select from OPRNA1, purchase request approval stage)
+[PurchaseDeliveryAppStage->ClassAppStage] (select from OPRNA1, purchase delivery approval stage)
 	- [AppStageDoc->PurchaseDeliveryApp] (purchase request approval document)
 
-[PurchaseDeliveryAppStatus->ClassAppStatus] (select from OPRNA2, purchase request approval status done)
+[PurchaseDeliveryAppStatus->ClassAppStatus] (select from OPRNA2, purchase delivery approval status done)
 	- [AppStageDoc->PurchaseDeliveryApp] (purchase request approval document)
 	- [AppStage->PurchaseDeliveryAppStage] 
 
 
-[PurchaseDeliveryDoc->ClassDocStatusDoc] (select from OPRND, purchase request doc status document)
+[PurchaseDeliveryDoc->ClassDocStatusDoc] (select from OPRND, purchase delivery doc status document)
 	---- <[PurchaseDeliveryDocStatus]> (1 to many)
 
-[PurchaseDeliveryDocStatus->ClassDocStatus] (select from OPRND1, purchase request doc status)
-	- [DocStatusDoc->PurchaseDeliveryDoc] (purchase request doc status document)
+[PurchaseDeliveryDocStatus->ClassDocStatus] (select from OPRND1, purchase delivery doc status)
+	- [DocStatusDoc->PurchaseDeliveryDoc] (purchase delivery doc status document)
 
 
-[PurchaseOrder->ClassDocument] (select from OPRN, purchase request)
-	- [DocStatus->PurchaseDeliveryDoc] (purchase request doc status document)
-	- [AppStatus->PurchaseDeliveryApproval] (purchase request approval document)
-	- [UDFs->PurchaseDeliveryUDF] (purchase request udf)
+[PurchaseOrder->ClassDocument] (select from OPRN, purchase delivery)
+	- [DocStatus->PurchaseDeliveryDoc] (purchase delivery doc status document)
+	- [AppStatus->PurchaseDeliveryApproval] (purchase delivery approval document)
+	- [UDFs->PurchaseDeliveryUDF] (purchase delivery udf)
 	---- <[PurchaseDeliveryDetail]> (1 to many)
 
-[PurchaseDeliveryDetail->ClassDocumentDetail] (select from OPRN1, purchase request detail)
-	- [UDFs->PurchaseDeliveryDetailUDF] (purchase request detail udf)
+[PurchaseDeliveryDetail->ClassDocumentDetail] (select from OPRN1, purchase delivery detail)
+	- [UDFs->PurchaseDeliveryDetailUDF] (purchase delivery detail udf)
 	- [PurchaseDelivery] (purchase request)
 
-[PurchaseDeliveryUDF->ClassUDFHeader] (select from OPRNU, purchase request udf)
+[PurchaseDeliveryUDF->ClassUDFHeader] (select from OPRNU, purchase delivery udf)
 	-
 
-[PurchaseDeliveryDetailUDF->ClassUDFDetail] (select from OPRN1U, purchase request detail udf)
+[PurchaseDeliveryDetailUDF->ClassUDFDetail] (select from OPRN1U, purchase delivery detail udf)
 	-
 
 #purchase delivery end
+=================================================================
+#purchase return start
+
+[PurchaseReturnApp->ClassAppStatusDoc] (select from OPRRA, purchase return approval document)
+	- [CurrAppStage->PurchaseReturnAppStage]
+	---- <[PurchaseReturnAppStage]> (1 to many)
+	---- <[PurchaseReturnAppStatus]> (1 to many)
+
+[PurchaseReturnAppStage->ClassAppStage] (select from OPRRA1, purchase return approval stage)
+	- [AppStageDoc->PurchaseReturnApp] (purchase return approval document)
+
+[PurchaseReturnAppStatus->ClassAppStatus] (select from OPRRA2, purchase return approval status done)
+	- [AppStageDoc->PurchaseReturnApp] (purchase return approval document)
+	- [AppStage->PurchaseReturnAppStage] 
+
+
+[PurchaseReturnDoc->ClassDocStatusDoc] (select from OPRRD, purchase return doc status document)
+	---- <[PurchaseReturnDocStatus]> (1 to many)
+
+[PurchaseReturnDocStatus->ClassDocStatus] (select from OPRRD1, purchase return doc status)
+	- [DocStatusDoc->PurchaseReturnDoc] (purchase return doc status document)
+
+
+[PurchaseReturn->ClassDocument] (select from OPRR, purchase return)
+	- [DocStatus->PurchaseReturnDoc] (purchase return doc status document)
+	- [AppStatus->PurchaseReturnApproval] (purchase return approval document)
+	- [UDFs->PurchaseReturnUDF] (purchase return udf)
+	---- <[PurchaseReturnDetail]> (1 to many)
+
+[PurchaseReturnDetail->ClassDocumentDetail] (select from OPRR1, purchase return detail)
+	- [UDFs->PurchaseReturnDetailUDF] (purchase return detail udf)
+	- [PurchaseReturn] (purchase request)
+
+[PurchaseReturnUDF->ClassUDFHeader] (select from OPRRU, purchase return udf)
+	-
+
+[PurchaseReturnDetailUDF->ClassUDFDetail] (select from OPRR1U, purchase return detail udf)
+	-
+
+#purchase return end
 =================================================================
 #stock transfer request start
 [StockTransferRequestApp->ClassAppStatusDoc] (select from OSTFEA, stock transfer request approval document)

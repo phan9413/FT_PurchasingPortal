@@ -18,7 +18,7 @@ namespace XamarinPR.Helpers
 
         #region Setting Constants
         private const string BaseUrl = "BaseUrl";
-        private static readonly string BaseUrlDefault = @"http://10.0.2.2/prwebapiv2";
+        private static readonly string BaseUrlDefault = @"http://216.81.183.227/prwebapiv2";
         #endregion
         public static string GeneralUrl
         {
@@ -48,20 +48,5 @@ namespace XamarinPR.Helpers
             }
         }
 
-        //#region bearer Constants
-        //private const string bearer = "bearer";
-        //private static readonly string bearerDefault = string.Empty;
-        //#endregion
-        //public static string Currentbearer
-        //{
-        //    get
-        //    {
-        //        return AppSettings.GetValueOrDefault(bearer, bearerDefault);
-        //    }
-        //    set
-        //    {
-        //        AppSettings.AddOrUpdateValue(bearer, value);
-        //    }
-        //}
     }
 }
