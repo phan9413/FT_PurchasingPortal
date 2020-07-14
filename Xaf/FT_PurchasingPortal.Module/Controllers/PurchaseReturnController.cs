@@ -18,18 +18,17 @@ using FT_PurchasingPortal.Module.BusinessObjects;
 namespace FT_PurchasingPortal.Module.Controllers
 {
     // For more typical usage scenarios, be sure to check out https://documentation.devexpress.com/eXpressAppFramework/clsDevExpressExpressAppViewControllertopic.aspx.
-    public partial class PurchaseDeliveryController : ViewController
+    public partial class PurchaseReturnController : ViewController
     {
         RecordsNavigationController recordnaviator;
         GenController genCon;
         CopyController copyCon;
-        public PurchaseDeliveryController()
+        public PurchaseReturnController()
         {
             InitializeComponent();
             // Target required Views (via the TargetXXX properties) and create their Actions.
-            TargetObjectType = typeof(PurchaseDelivery);
+            TargetObjectType = typeof(PurchaseReturn);
             TargetViewType = ViewType.DetailView;
-
         }
         protected override void OnActivated()
         {
@@ -73,15 +72,14 @@ namespace FT_PurchasingPortal.Module.Controllers
         }
         public void resetButton()
         {
-            this.CopyFromPO.Active.SetItemValue("Enabled", false);
-            this.CopyToGR.Active.SetItemValue("Enabled", false);
+            this.CopyFromDO.Active.SetItemValue("Enabled", false);
 
-            PurchaseDelivery selectobject = (PurchaseDelivery)View.CurrentObject;
+            PurchaseReturn selectobject = (PurchaseReturn)View.CurrentObject;
             SystemUsers user = ObjectSpace.GetObjectByKey<SystemUsers>(SecuritySystem.CurrentUserId);
 
             if (selectobject.DocStatus.CurrDocStatus == DocStatus.Draft)
             {
-                this.CopyFromPO.Active.SetItemValue("Enabled", true);
+                this.CopyFromDO.Active.SetItemValue("Enabled", true);
             }
             else
             {
@@ -93,18 +91,7 @@ namespace FT_PurchasingPortal.Module.Controllers
                     case DocStatus.PostedCancel:
                         break;
                     default:
-                        this.CopyFromPO.Active.SetItemValue("Enabled", true);
-                        break;
-                }
-                switch (selectobject.DocStatus.CurrDocStatus)
-                {
-                    case DocStatus.Posted:
-                        if (user.Roles.Where(pp => pp.Name == DocTypeCodes.PurchaseReturn).Count() > 0)
-                        {
-                            this.CopyToGR.Active.SetItemValue("Enabled", true);
-                        }
-                        break;
-                    default:
+                        this.CopyFromDO.Active.SetItemValue("Enabled", true);
                         break;
                 }
             }
@@ -112,7 +99,7 @@ namespace FT_PurchasingPortal.Module.Controllers
         }
         private void enableButton()
         {
-            this.CopyFromPO.Enabled.SetItemValue("EditMode", ((DetailView)View).ViewEditMode == ViewEditMode.Edit);
+            this.CopyFromDO.Enabled.SetItemValue("EditMode", ((DetailView)View).ViewEditMode == ViewEditMode.Edit);
         }
         protected override void OnViewControlsCreated()
         {
@@ -136,28 +123,28 @@ namespace FT_PurchasingPortal.Module.Controllers
             base.OnDeactivated();
         }
 
-        private void CopyFromPO_CustomizePopupWindowParams(object sender, CustomizePopupWindowParamsEventArgs e)
+        private void CopyFromDO_CustomizePopupWindowParams(object sender, CustomizePopupWindowParamsEventArgs e)
         {
-            PurchaseDelivery masterobject = (PurchaseDelivery)View.CurrentObject;
+            PurchaseReturn masterobject = (PurchaseReturn)View.CurrentObject;
 
             string ObjType = masterobject.DocType.BoCode;
             string BusinessPartner = masterobject.CardCode == null ? "" : masterobject.CardCode.CardCode;
 
-            IObjectSpace newObjectSpace = Application.CreateObjectSpace(typeof(PurchaseOrderDetail));
-            string listViewId = Application.FindLookupListViewId(typeof(PurchaseOrderDetail));
-            CollectionSourceBase collectionSource = Application.CreateCollectionSource(newObjectSpace, typeof(PurchaseOrderDetail), listViewId);
+            IObjectSpace newObjectSpace = Application.CreateObjectSpace(typeof(PurchaseDeliveryDetail));
+            string listViewId = Application.FindLookupListViewId(typeof(PurchaseDeliveryDetail));
+            CollectionSourceBase collectionSource = Application.CreateCollectionSource(newObjectSpace, typeof(PurchaseDeliveryDetail), listViewId);
             if (BusinessPartner == "")
                 collectionSource.Criteria["filter01"] = CriteriaOperator.Parse("1=0");
             else
-                collectionSource.Criteria["Filter01"] = CriteriaOperator.Parse("PostVerNo = VerNo and OpenQty > CopyQty and PurchaseOrder is not null and PurchaseOrder.DocStatus.CurrDocStatus in (?, ?, ?) and LineStatus in (?) and (PurchaseOrder.CardCode=?)", DocStatus.Accepted, DocStatus.Closed, DocStatus.Posted, LineStatusEnum.Open, BusinessPartner);
+                collectionSource.Criteria["Filter01"] = CriteriaOperator.Parse("PostVerNo = VerNo and OpenQty > CopyQty and PurchaseDelivery is not null and PurchaseDelivery.DocStatus.CurrDocStatus in (?) and LineStatus in (?) and (PurchaseDelivery.CardCode=?)", DocStatus.Posted, LineStatusEnum.Open, BusinessPartner);
 
             e.View = Application.CreateListView(listViewId, collectionSource, true);
             //e.View = Application.CreateListView(typeof(PurchaseRequestDetail), true);
         }
 
-        private void CopyFromPO_Execute(object sender, PopupWindowShowActionExecuteEventArgs e)
+        private void CopyFromDO_Execute(object sender, PopupWindowShowActionExecuteEventArgs e)
         {
-            PurchaseDelivery masterobject = (PurchaseDelivery)View.CurrentObject;
+            PurchaseReturn masterobject = (PurchaseReturn)View.CurrentObject;
             IObjectSpace ios = View is DetailView ? ObjectSpace : Application.CreateObjectSpace();
 
             if (copyCon.CopyFromDocument(masterobject, (ListView)e.PopupWindow.View, ios))
@@ -166,38 +153,7 @@ namespace FT_PurchasingPortal.Module.Controllers
                 genCon.showMsg("Operation Done", "Item Copied.", InformationType.Success);
                 return;
             }
-        }
 
-        private void CopyToGR_Execute(object sender, SimpleActionExecuteEventArgs e)
-        {
-            PurchaseDelivery sObject = (PurchaseDelivery)View.CurrentObject;
-            if (sObject.VerNo > sObject.PostVerNo)
-            {
-                genCon.showMsg("Operation fail", "Document has not yet sync. Please wait.", InformationType.Error);
-                return;
-            }
-            foreach (PurchaseDeliveryDetail dtl in sObject.PurchaseDeliveryDetail)
-            {
-                if (dtl.VerNo > dtl.PostVerNo)
-                {
-                    genCon.showMsg("Operation fail", "Document has not yet sync. Please wait.", InformationType.Error);
-                    return;
-                }
-            }
-            IObjectSpace ios = Application.CreateObjectSpace();
-            PurchaseReturn tObject = ios.CreateObject<PurchaseReturn>();
-
-            if (copyCon.CopyToDocument(sObject, tObject, ios, (DetailView)View))
-            {
-                if (tObject.CardCode != null)
-                    tObject.IsCopy = true;
-
-                genCon.showMsg("Operation Done", "New Purchase Return copied. Please save it.", InformationType.Success);
-                genCon.openNewView(ios, tObject, ViewEditMode.Edit);
-                return;
-            }
-
-            genCon.showMsg("Operation Done", "No Open Item for copied.", InformationType.Info);
         }
     }
 }

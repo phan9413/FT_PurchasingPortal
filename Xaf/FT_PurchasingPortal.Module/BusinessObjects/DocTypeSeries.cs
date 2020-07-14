@@ -145,7 +145,6 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
         private PostToDocument _PostToDocument;
         //[ModelDefault("EditMask", "(000)-00"), VisibleInListView(false)]
         //[RuleRequiredField(DefaultContexts.Save)]
-        [Browsable(false)]
         [Index(20)]
         public PostToDocument PostToDocument
         {

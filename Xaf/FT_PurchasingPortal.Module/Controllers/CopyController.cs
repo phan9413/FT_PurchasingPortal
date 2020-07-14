@@ -94,6 +94,10 @@ namespace FT_PurchasingPortal.Module.Controllers
                     {
                         tDtl = ios.CreateObject<PurchaseDeliveryDetail>();
                     }
+                    else if (tObject.GetType() == typeof(PurchaseReturn))
+                    {
+                        tDtl = ios.CreateObject<PurchaseReturnDetail>();
+                    }
                     #endregion
 
                     #region assign udf detail
@@ -111,6 +115,10 @@ namespace FT_PurchasingPortal.Module.Controllers
                     {
                         sClassD = ((PurchaseDeliveryDetail)dtl).UDFs;
                     }
+                    else if (dtl.GetType() == typeof(PurchaseReturnDetail))
+                    {
+                        sClassD = ((PurchaseReturnDetail)dtl).UDFs;
+                    }
 
                     if (tDtl.GetType() == typeof(PurchaseRequestDetail))
                     {
@@ -123,6 +131,10 @@ namespace FT_PurchasingPortal.Module.Controllers
                     else if (tDtl.GetType() == typeof(PurchaseDeliveryDetail))
                     {
                         tClassD = ((PurchaseDeliveryDetail)tDtl).UDFs;
+                    }
+                    else if (tDtl.GetType() == typeof(PurchaseReturnDetail))
+                    {
+                        tClassD = ((PurchaseReturnDetail)tDtl).UDFs;
                     }
                     AssignUDFDetail(ref sClassD, ref tClassD);
                     #endregion
@@ -185,6 +197,10 @@ namespace FT_PurchasingPortal.Module.Controllers
                     {
                         ((PurchaseDelivery)tObject).PurchaseDeliveryDetail.Add((PurchaseDeliveryDetail)tDtl);
                     }
+                    else if (tObject.GetType() == typeof(PurchaseReturn))
+                    {
+                        ((PurchaseReturn)tObject).PurchaseReturnDetail.Add((PurchaseReturnDetail)tDtl);
+                    }
                     #endregion
 
                 }
@@ -202,6 +218,10 @@ namespace FT_PurchasingPortal.Module.Controllers
             else if (tObject.GetType() == typeof(PurchaseDelivery))
             {
                 ((PurchaseDelivery)tObject).DocB4Total = ((PurchaseDelivery)tObject).PurchaseDeliveryDetail.Sum(pp => pp.LineTotal);
+            }
+            else if (tObject.GetType() == typeof(PurchaseReturn))
+            {
+                ((PurchaseReturn)tObject).DocB4Total = ((PurchaseReturn)tObject).PurchaseReturnDetail.Sum(pp => pp.LineTotal);
             }
             #endregion
             return added;
@@ -251,6 +271,10 @@ namespace FT_PurchasingPortal.Module.Controllers
                 {
                     sClass = ((PurchaseDelivery)sObject).UDFs;
                 }
+                else if (sObject.GetType() == typeof(PurchaseReturn))
+                {
+                    sClass = ((PurchaseReturn)sObject).UDFs;
+                }
 
                 if (tObject.GetType() == typeof(PurchaseRequest))
                 {
@@ -263,6 +287,10 @@ namespace FT_PurchasingPortal.Module.Controllers
                 else if (tObject.GetType() == typeof(PurchaseDelivery))
                 {
                     tClass = ((PurchaseDelivery)tObject).UDFs;
+                }
+                else if (tObject.GetType() == typeof(PurchaseReturn))
+                {
+                    tClass = ((PurchaseReturn)tObject).UDFs;
                 }
                 AssignUDFHeader(ref sClass, ref tClass);
                 #endregion
@@ -298,6 +326,10 @@ namespace FT_PurchasingPortal.Module.Controllers
                         {
                             tDtl = ios.CreateObject<PurchaseDeliveryDetail>();
                         }
+                        else if (tObject.GetType() == typeof(PurchaseReturn))
+                        {
+                            tDtl = ios.CreateObject<PurchaseReturnDetail>();
+                        }
                         #endregion
 
                         #region assign udf detail
@@ -315,6 +347,10 @@ namespace FT_PurchasingPortal.Module.Controllers
                         {
                             sClassD = ((PurchaseDeliveryDetail)dtl).UDFs;
                         }
+                        else if (dtl.GetType() == typeof(PurchaseReturn))
+                        {
+                            sClassD = ((PurchaseReturnDetail)dtl).UDFs;
+                        }
 
                         if (tDtl.GetType() == typeof(PurchaseRequestDetail))
                         {
@@ -327,6 +363,10 @@ namespace FT_PurchasingPortal.Module.Controllers
                         else if (tDtl.GetType() == typeof(PurchaseDeliveryDetail))
                         {
                             tClassD = ((PurchaseDeliveryDetail)tDtl).UDFs;
+                        }
+                        else if (tDtl.GetType() == typeof(PurchaseReturnDetail))
+                        {
+                            tClassD = ((PurchaseReturnDetail)tDtl).UDFs;
                         }
                         AssignUDFDetail(ref sClassD, ref tClassD);
                         #endregion
@@ -389,6 +429,10 @@ namespace FT_PurchasingPortal.Module.Controllers
                         {
                             ((PurchaseDelivery)tObject).PurchaseDeliveryDetail.Add((PurchaseDeliveryDetail)tDtl);
                         }
+                        else if (tObject.GetType() == typeof(PurchaseReturn))
+                        {
+                            ((PurchaseReturn)tObject).PurchaseReturnDetail.Add((PurchaseReturnDetail)tDtl);
+                        }
                         #endregion
 
                     }
@@ -408,6 +452,10 @@ namespace FT_PurchasingPortal.Module.Controllers
             else if (tObject.GetType() == typeof(PurchaseDelivery))
             {
                 ((PurchaseDelivery)tObject).DocB4Total = ((PurchaseDelivery)tObject).PurchaseDeliveryDetail.Sum(pp => pp.LineTotal);
+            }
+            else if (tObject.GetType() == typeof(PurchaseReturn))
+            {
+                ((PurchaseReturn)tObject).DocB4Total = ((PurchaseReturn)tObject).PurchaseReturnDetail.Sum(pp => pp.LineTotal);
             }
             #endregion
             return added;
@@ -453,6 +501,10 @@ namespace FT_PurchasingPortal.Module.Controllers
             {
                 sClassD = ((PurchaseDeliveryDetail)dtl).UDFs;
             }
+            else if (dtl.GetType() == typeof(PurchaseReturnDetail))
+            {
+                sClassD = ((PurchaseReturnDetail)dtl).UDFs;
+            }
 
             if (tDtl.GetType() == typeof(PurchaseRequestDetail))
             {
@@ -465,6 +517,10 @@ namespace FT_PurchasingPortal.Module.Controllers
             else if (tDtl.GetType() == typeof(PurchaseDeliveryDetail))
             {
                 tClassD = ((PurchaseDeliveryDetail)tDtl).UDFs;
+            }
+            else if (tDtl.GetType() == typeof(PurchaseReturnDetail))
+            {
+                tClassD = ((PurchaseReturnDetail)tDtl).UDFs;
             }
             AssignUDFDetail(ref sClassD, ref tClassD);
             #endregion

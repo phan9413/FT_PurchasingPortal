@@ -317,6 +317,12 @@
     <Compile Include="Controllers\PurchaseRequestController.Designer.cs">
       <DependentUpon>PurchaseRequestController.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controllers\PurchaseReturnController.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controllers\PurchaseReturnController.Designer.cs">
+      <DependentUpon>PurchaseReturnController.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controllers\vwSAP_ITEM_AVAILABILITYController.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -351,6 +357,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Controllers\PurchaseRequestController.resx">
       <DependentUpon>PurchaseRequestController.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controllers\PurchaseReturnController.resx">
+      <DependentUpon>PurchaseReturnController.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controllers\vwSAP_ITEM_AVAILABILITYController.resx">
       <DependentUpon>vwSAP_ITEM_AVAILABILITYController.cs</DependentUpon>
