@@ -97,15 +97,23 @@ namespace FT_PurchasingPortal.Module.Controllers
                 }
                 switch (selectobject.DocStatus.CurrDocStatus)
                 {
-                    case DocStatus.Draft:
-                    case DocStatus.Submited:
-                    case DocStatus.Cancelled:
-                        break;
-                    default:
+                    case DocStatus.Accepted:
+                    case DocStatus.Closed:
+                    case DocStatus.Posted:
                         if (user.Roles.Where(pp => pp.Name == DocTypeCodes.PurchaseDelivery).Count() > 0)
                         {
-                            this.CopyToDO.Active.SetItemValue("Enabled", true);
+                            if (GeneralValues.LiveWithPost)
+                            {
+                                if (selectobject.VerNo == selectobject.PostVerNo)
+                                    this.CopyToDO.Active.SetItemValue("Enabled", true);
+                            }
+                            else
+                            {
+                                this.CopyToDO.Active.SetItemValue("Enabled", true);
+                            }
                         }
+                        break;
+                    default:
                         break;
                 }
             }
@@ -174,17 +182,20 @@ namespace FT_PurchasingPortal.Module.Controllers
         private void CopyToDO_Execute(object sender, SimpleActionExecuteEventArgs e)
         {
             PurchaseOrder sObject = (PurchaseOrder)View.CurrentObject;
-            if (sObject.VerNo > sObject.PostVerNo)
+            if (GeneralValues.LiveWithPost)
             {
-                genCon.showMsg("Operation fail", "Document has not yet sync. Please wait.", InformationType.Error);
-                return;
-            }
-            foreach (PurchaseOrderDetail dtl in sObject.PurchaseOrderDetail)
-            {
-                if (dtl.VerNo > dtl.PostVerNo)
+                if (sObject.VerNo > sObject.PostVerNo)
                 {
                     genCon.showMsg("Operation fail", "Document has not yet sync. Please wait.", InformationType.Error);
                     return;
+                }
+                foreach (PurchaseOrderDetail dtl in sObject.PurchaseOrderDetail)
+                {
+                    if (dtl.VerNo > dtl.PostVerNo)
+                    {
+                        genCon.showMsg("Operation fail", "Document has not yet sync. Please wait.", InformationType.Error);
+                        return;
+                    }
                 }
             }
             IObjectSpace ios = Application.CreateObjectSpace();

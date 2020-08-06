@@ -58,6 +58,15 @@ namespace FT_PurchasingPortal.Module.DatabaseUpdate {
                 doctype.BoName = temp;
                 doctype.Save();
             }
+            temp = DocTypeCodes.PurchaseQuotation;
+            doctype = ObjectSpace.FindObject<DocType>(new BinaryOperator("BoCode", temp));
+            if (doctype == null)
+            {
+                doctype = ObjectSpace.CreateObject<DocType>();
+                doctype.BoCode = temp;
+                doctype.BoName = temp;
+                doctype.Save();
+            }
             temp = DocTypeCodes.PurchaseOrder;
             doctype = ObjectSpace.FindObject<DocType>(new BinaryOperator("BoCode", temp));
             if (doctype == null)
@@ -275,6 +284,36 @@ namespace FT_PurchasingPortal.Module.DatabaseUpdate {
                 newrole = ObjectSpace.CreateObject<PermissionPolicyRole>();
                 newrole.Name = rolename;
             }
+            #region PurchaseQuotation
+            rolename = DocTypeCodes.PurchaseQuotation;
+            newrole = ObjectSpace.FindObject<PermissionPolicyRole>(new BinaryOperator("Name", rolename));
+            if (newrole == null)
+            {
+                newrole = ObjectSpace.CreateObject<PermissionPolicyRole>();
+                newrole.Name = rolename;
+                newrole.AddNavigationPermission(@"Application/NavigationItems/Items/Purchasing/Items/PurchaseQuotation_ListView", SecurityPermissionState.Allow);
+                newrole.AddTypePermissionsRecursively<PurchaseQuotation>(SecurityOperations.CRUDAccess, SecurityPermissionState.Allow);
+                newrole.AddTypePermissionsRecursively<PurchaseQuotationApp>(SecurityOperations.CRUDAccess, SecurityPermissionState.Allow);
+                newrole.AddTypePermissionsRecursively<PurchaseQuotationAppStage>(SecurityOperations.CRUDAccess, SecurityPermissionState.Allow);
+                newrole.AddTypePermissionsRecursively<PurchaseQuotationAppStatus>(SecurityOperations.CRUDAccess, SecurityPermissionState.Allow);
+                newrole.AddTypePermissionsRecursively<PurchaseQuotationAttachment>(SecurityOperations.CRUDAccess, SecurityPermissionState.Allow);
+                newrole.AddTypePermissionsRecursively<PurchaseQuotationDetail>(SecurityOperations.CRUDAccess, SecurityPermissionState.Allow);
+                newrole.AddTypePermissionsRecursively<PurchaseQuotationDetailUDF>(SecurityOperations.CRUDAccess, SecurityPermissionState.Allow);
+                newrole.AddTypePermissionsRecursively<PurchaseQuotationDoc>(SecurityOperations.CRUDAccess, SecurityPermissionState.Allow);
+                newrole.AddTypePermissionsRecursively<PurchaseQuotationDocStatus>(SecurityOperations.CRUDAccess, SecurityPermissionState.Allow);
+                newrole.AddTypePermissionsRecursively<PurchaseQuotationUDF>(SecurityOperations.CRUDAccess, SecurityPermissionState.Allow);
+            }
+            createGeneralPermission(newrole);
+
+            rolename = rolename + viewpricerole;
+            newrole = ObjectSpace.FindObject<PermissionPolicyRole>(new BinaryOperator("Name", rolename));
+            if (newrole == null)
+            {
+                newrole = ObjectSpace.CreateObject<PermissionPolicyRole>();
+                newrole.Name = rolename;
+            }
+            #endregion
+
             #region PurchaseReturn
             rolename = DocTypeCodes.PurchaseReturn;
             newrole = ObjectSpace.FindObject<PermissionPolicyRole>(new BinaryOperator("Name", rolename));

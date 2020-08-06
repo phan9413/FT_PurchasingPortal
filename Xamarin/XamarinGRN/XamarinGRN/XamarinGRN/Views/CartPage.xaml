@@ -1,0 +1,70 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             xmlns:markextensions="clr-namespace:XamarinGRN.MarkExtensions"
+             x:Class="XamarinGRN.Views.CartPage" BackgroundColor="Bisque">
+    <ContentPage.Padding>
+        <OnPlatform x:TypeArguments="Thickness"
+                iOS="10,20,10,10"
+                Android="10,10,10,10">
+        </OnPlatform>
+    </ContentPage.Padding>
+    <StackLayout Padding="0,0" Spacing="10">
+        <Label x:Name="NoItemFound" Text="No item found..." HorizontalOptions="Center"/>
+        <ListView x:Name="grnitemlist" HorizontalOptions="FillAndExpand" 
+                  ItemsSource="{Binding grnitem}" 
+                  SelectedItem="{Binding SelectedGRNItem}"
+                  IsPullToRefreshEnabled="True"
+                  Refreshing="grnitemlist_Refreshing"
+                  >
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ViewCell Tapped="ViewCell_Tapped">
+                        <SwipeView>
+                            <SwipeView.RightItems>
+                                <SwipeItems>
+                                    <SwipeItem 
+                                       IconImageSource="{markextensions:EmbeddedImage ResourceId=XamarinGRN.Images.icons8-trash-96.png}"
+                                       BackgroundColor="LightPink"
+                                       Invoked="SwipeItem_Invoked"
+                                       CommandParameter="{Binding Oid}"
+                                       />
+                                </SwipeItems>
+                            </SwipeView.RightItems>
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="*" />
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Label Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Text="{Binding vendor}" FontSize="Small" FontAttributes="Bold"  TextColor="Black"/>
+                                <Label Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="2" Text="{Binding BaseDocNo}" FontSize="Small" FontAttributes="None"  TextColor="Black"/>
+                                <Label Grid.Row="0" Grid.Column="4" Grid.ColumnSpan="3" Text="{Binding BatchNumber}" FontSize="Small" FontAttributes="Italic" TextColor="Black"/>
+                                <Label Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="5" Text="{Binding title}" FontSize="Small" HorizontalTextAlignment="Start"  VerticalTextAlignment="Center" FontAttributes="None" TextColor="Black"/>
+                                <Label Grid.Row="1" Grid.Column="5" Text="{Binding Quantity}" FontSize="Small" HorizontalTextAlignment="End" FontAttributes="Bold" TextColor="Black"/>
+                                <Label Grid.Row="1" Grid.Column="6" Text="{Binding UnitMsr}" FontSize="Small" HorizontalTextAlignment="End" FontAttributes="None" TextColor="Black"/>
+                            </Grid>
+                        </SwipeView>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+        <Button Text="Submit" 
+                TextColor="White"  
+                FontAttributes="Bold" FontSize="Large" HorizontalOptions="FillAndExpand" CornerRadius="20"
+                BackgroundColor="ForestGreen"
+                Command="{Binding submit}" />
+
+    </StackLayout>
+</ContentPage>

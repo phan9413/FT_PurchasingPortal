@@ -98,6 +98,19 @@ namespace FT_PurchasingPortal.Module.Controllers
                 }
                 switch (selectobject.DocStatus.CurrDocStatus)
                 {
+                    case DocStatus.Accepted:
+                    case DocStatus.Closed:
+                        if (user.Roles.Where(pp => pp.Name == DocTypeCodes.PurchaseDelivery).Count() > 0)
+                        {
+                            if (GeneralValues.LiveWithPost)
+                            {
+                            }
+                            else
+                            {
+                                this.CopyToGR.Active.SetItemValue("Enabled", true);
+                            }
+                        }
+                        break;
                     case DocStatus.Posted:
                         if (user.Roles.Where(pp => pp.Name == DocTypeCodes.PurchaseReturn).Count() > 0)
                         {
@@ -149,8 +162,12 @@ namespace FT_PurchasingPortal.Module.Controllers
             if (BusinessPartner == "")
                 collectionSource.Criteria["filter01"] = CriteriaOperator.Parse("1=0");
             else
-                collectionSource.Criteria["Filter01"] = CriteriaOperator.Parse("PostVerNo = VerNo and OpenQty > CopyQty and PurchaseOrder is not null and PurchaseOrder.DocStatus.CurrDocStatus in (?, ?, ?) and LineStatus in (?) and (PurchaseOrder.CardCode=?)", DocStatus.Accepted, DocStatus.Closed, DocStatus.Posted, LineStatusEnum.Open, BusinessPartner);
-
+            {
+                if (GeneralValues.LiveWithPost)
+                    collectionSource.Criteria["Filter01"] = CriteriaOperator.Parse("PostVerNo = VerNo and OpenQty > CopyQty and PurchaseOrder is not null and PurchaseOrder.DocStatus.CurrDocStatus in (?, ?, ?) and LineStatus in (?) and (PurchaseOrder.CardCode=?)", DocStatus.Accepted, DocStatus.Closed, DocStatus.Posted, LineStatusEnum.Open, BusinessPartner);
+                else
+                    collectionSource.Criteria["Filter01"] = CriteriaOperator.Parse("OpenQty > CopyQty and PurchaseOrder is not null and PurchaseOrder.DocStatus.CurrDocStatus in (?, ?, ?) and LineStatus in (?) and (PurchaseOrder.CardCode=?)", DocStatus.Accepted, DocStatus.Closed, DocStatus.Posted, LineStatusEnum.Open, BusinessPartner);
+            }
             e.View = Application.CreateListView(listViewId, collectionSource, true);
             //e.View = Application.CreateListView(typeof(PurchaseRequestDetail), true);
         }
@@ -171,17 +188,20 @@ namespace FT_PurchasingPortal.Module.Controllers
         private void CopyToGR_Execute(object sender, SimpleActionExecuteEventArgs e)
         {
             PurchaseDelivery sObject = (PurchaseDelivery)View.CurrentObject;
-            if (sObject.VerNo > sObject.PostVerNo)
+            if (GeneralValues.LiveWithPost)
             {
-                genCon.showMsg("Operation fail", "Document has not yet sync. Please wait.", InformationType.Error);
-                return;
-            }
-            foreach (PurchaseDeliveryDetail dtl in sObject.PurchaseDeliveryDetail)
-            {
-                if (dtl.VerNo > dtl.PostVerNo)
+                if (sObject.VerNo > sObject.PostVerNo)
                 {
                     genCon.showMsg("Operation fail", "Document has not yet sync. Please wait.", InformationType.Error);
                     return;
+                }
+                foreach (PurchaseDeliveryDetail dtl in sObject.PurchaseDeliveryDetail)
+                {
+                    if (dtl.VerNo > dtl.PostVerNo)
+                    {
+                        genCon.showMsg("Operation fail", "Document has not yet sync. Please wait.", InformationType.Error);
+                        return;
+                    }
                 }
             }
             IObjectSpace ios = Application.CreateObjectSpace();

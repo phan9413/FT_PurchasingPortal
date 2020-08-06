@@ -12,6 +12,7 @@ namespace FT_PurchasingPortal.Module
         public const string SalesAgreement = "SalesAgreement";
         public const string SalesOrder = "SalesOrder";
 
+        public const string PurchaseQuotation = "PurchaseQuotation";
         public const string PurchaseRequest = "PurchaseRequest";
         public const string PurchaseOrder = "PurchaseOrder";
         public const string PurchaseDelivery = "PurchaseDelivery";
@@ -20,8 +21,10 @@ namespace FT_PurchasingPortal.Module
         public const string StockTransferRequest = "StockTransferRequest";
 
     }
-    public class GeneralValues
+    public static class GeneralValues
     {
+        public static bool LiveWithPost;
+
         public const string viewpricestring = "_ViewPrice";
         //public static bool IsBeingLookup = false;
         //public static string ObjType = "";
@@ -59,5 +62,6 @@ namespace FT_PurchasingPortal.Module
 
         public static bool IsNetCore = false;
         public static string NetCoreUserName;
+
     }
 }

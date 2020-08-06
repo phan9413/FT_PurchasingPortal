@@ -112,6 +112,8 @@ namespace WebApiXafSecurity.Helpers
 			objectSpaceProvider.TypesInfo.RegisterEntity(typeof(PurchaseOrderDetail));
 			objectSpaceProvider.TypesInfo.RegisterEntity(typeof(PurchaseDelivery));
 			objectSpaceProvider.TypesInfo.RegisterEntity(typeof(PurchaseDeliveryDetail));
+			objectSpaceProvider.TypesInfo.RegisterEntity(typeof(PurchaseReturn));
+			objectSpaceProvider.TypesInfo.RegisterEntity(typeof(PurchaseReturnDetail));
 			objectSpaceProvider.TypesInfo.RegisterEntity(typeof(Company));
 			objectSpaceProvider.TypesInfo.RegisterEntity(typeof(vwBusinessPartners));
 			objectSpaceProvider.TypesInfo.RegisterEntity(typeof(vwWarehouses));

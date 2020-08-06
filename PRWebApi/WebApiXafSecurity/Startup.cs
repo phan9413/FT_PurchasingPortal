@@ -32,6 +32,11 @@ namespace WebApiXafSecurity
 		// This method gets called by the runtime. Use this method to add services to the container.
 		public void ConfigureServices(IServiceCollection services)
 		{
+			string temp = Configuration["LiveWithPost"];
+			Helpers.GenHelper.LiveWithPost = false;
+			if (temp.ToUpper() == "Y" || temp.ToUpper() == "YES" || temp.ToUpper() == "TRUE" || temp == "1")
+				Helpers.GenHelper.LiveWithPost = true;
+
 			Helpers.GenHelper.FilePath = Configuration["FilePath:LogPath"];
 
 			JsonResolver resolver = new JsonResolver();

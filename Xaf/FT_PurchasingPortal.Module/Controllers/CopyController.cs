@@ -149,6 +149,8 @@ namespace FT_PurchasingPortal.Module.Controllers
                     tDtl.Dscription = dtl.Dscription;
                     if (dtl.WhsCode != null)
                         tDtl.WhsCode = ios.FindObject<vwWarehouses>(CriteriaOperator.Parse("BoKey=?", dtl.WhsCode.BoKey));
+                    if (dtl.BinCode != null)
+                        tDtl.BinCode = ios.FindObject<vwWarehouseBins>(CriteriaOperator.Parse("BoKey=?", dtl.BinCode.BoKey));
                     if (dtl.OcrCode != null)
                         tDtl.OcrCode = ios.FindObject<vwDimension1>(CriteriaOperator.Parse("BoKey=?", dtl.OcrCode.BoKey));
                     if (dtl.OcrCode2 != null)
@@ -168,6 +170,7 @@ namespace FT_PurchasingPortal.Module.Controllers
                     if (dtl.FreightCharge != null)
                         tDtl.FreightCharge = ios.FindObject<vwExpenses>(CriteriaOperator.Parse("BoKey=?", dtl.FreightCharge.BoKey));
 
+                    tDtl.BatchNumber = dtl.BatchNumber;
                     tDtl.UnitMsr = dtl.UnitMsr;
                     tDtl.UnitPrice = dtl.UnitPrice;
                     tDtl.TaxPerc = dtl.TaxPerc;
@@ -299,7 +302,7 @@ namespace FT_PurchasingPortal.Module.Controllers
             foreach (ViewItem item in sDetailView.Items)
             {
                 if ((item is ListPropertyEditor))
-                    if (item.Id == "PurchaseRequestDetail" || item.Id == "PurchaseOrderDetail")
+                    if (item.Id == "PurchaseRequestDetail" || item.Id == "PurchaseOrderDetail" || item.Id == "PurchaseDeliveryDetail")
                         listviewDetail = item as ListPropertyEditor;
             }
             if (listviewDetail != null && listviewDetail.ListView != null)
@@ -381,6 +384,8 @@ namespace FT_PurchasingPortal.Module.Controllers
                         tDtl.Dscription = dtl.Dscription;
                         if (dtl.WhsCode != null)
                             tDtl.WhsCode = ios.FindObject<vwWarehouses>(CriteriaOperator.Parse("BoKey=?", dtl.WhsCode.BoKey));
+                        if (dtl.BinCode != null)
+                            tDtl.BinCode = ios.FindObject<vwWarehouseBins>(CriteriaOperator.Parse("BoKey=?", dtl.BinCode.BoKey));
                         if (dtl.OcrCode != null)
                             tDtl.OcrCode = ios.FindObject<vwDimension1>(CriteriaOperator.Parse("BoKey=?", dtl.OcrCode.BoKey));
                         if (dtl.OcrCode2 != null)
@@ -400,6 +405,7 @@ namespace FT_PurchasingPortal.Module.Controllers
                         if (dtl.FreightCharge != null)
                             tDtl.FreightCharge = ios.FindObject<vwExpenses>(CriteriaOperator.Parse("BoKey=?", dtl.FreightCharge.BoKey));
 
+                        tDtl.BatchNumber = dtl.BatchNumber;
                         tDtl.UnitMsr = dtl.UnitMsr;
                         tDtl.UnitPrice = dtl.UnitPrice;
                         tDtl.TaxPerc = dtl.TaxPerc;
@@ -533,6 +539,8 @@ namespace FT_PurchasingPortal.Module.Controllers
             tDtl.Dscription = dtl.Dscription;
             if (dtl.WhsCode != null)
                 tDtl.WhsCode = ios.FindObject<vwWarehouses>(CriteriaOperator.Parse("BoKey=?", dtl.WhsCode.BoKey));
+            if (dtl.BinCode != null)
+                tDtl.BinCode = ios.FindObject<vwWarehouseBins>(CriteriaOperator.Parse("BoKey=?", dtl.BinCode.BoKey));
             if (dtl.OcrCode != null)
                 tDtl.OcrCode = ios.FindObject<vwDimension1>(CriteriaOperator.Parse("BoKey=?", dtl.OcrCode.BoKey));
             if (dtl.OcrCode2 != null)
@@ -552,6 +560,7 @@ namespace FT_PurchasingPortal.Module.Controllers
             if (dtl.FreightCharge != null)
                 tDtl.FreightCharge = ios.FindObject<vwExpenses>(CriteriaOperator.Parse("BoKey=?", dtl.FreightCharge.BoKey));
 
+            tDtl.BatchNumber = dtl.BatchNumber;
             tDtl.UnitMsr = dtl.UnitMsr;
             tDtl.UnitPrice = dtl.UnitPrice;
             tDtl.TaxPerc = dtl.TaxPerc;
@@ -567,6 +576,7 @@ namespace FT_PurchasingPortal.Module.Controllers
             tDtl.SAPBaseType = dtl.SAPBaseType;
             tDtl.SAPBaseEntry = dtl.SAPBaseEntry;
             tDtl.SAPBaseLine = dtl.SAPBaseLine;
+
 
             tDtl.IsDuplicated = true;
         }

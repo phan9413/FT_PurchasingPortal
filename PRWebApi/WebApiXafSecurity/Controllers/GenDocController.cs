@@ -27,6 +27,7 @@ namespace WebApiXafSecurity.Controllers
             this.securityProvider = securityProvider;
             objectSpace = securityProvider.ObjectSpaceProvider.CreateObjectSpace();
         }
+        #region GRN
         /// <summary>
         /// Get PR from API
         /// </summary>
@@ -167,5 +168,150 @@ namespace WebApiXafSecurity.Controllers
                 throw new Exception(ex.Message);
             }
         }
+        #endregion
+
+        #region PUR
+        /// <summary>
+        /// Get PR from API
+        /// </summary>
+        /// <remarks>
+        /// Note that the key is a Oid and an integer.
+        /// </remarks>
+        /// <param name="username">user name</param>       
+        /// <response code="200">Returns found item</response>
+        /// <response code="400">Not Found</response>
+        [HttpPost]
+        [Route("api/genpur")]
+        public IActionResult GenPUR([FromBody] JObject values)
+        {
+            try
+            {
+                GenHelper.WriteLog("[Log]", "[" + securityProvider.GetUserName() + "]" + controllername + "-GenPUR:[" + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "]");
+                GenHelper.WriteLog("[Json]", "[" + securityProvider.GetUserName() + "]" + controllername + "-GenPUR:[" + Environment.NewLine + values.ToString() + Environment.NewLine + "][" + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "]");
+
+                //
+                //JsonParser.ParseJObjectXPO<PurchaseDelivery>(values, employee, objectSpace);
+                string temp = "";
+                JToken token;
+                PurchaseReturn employee = objectSpace.CreateObject<PurchaseReturn>();
+                token = values["CardCode"];
+                temp = token["BoKey"].ToString();
+                employee.CardCode = objectSpace.FindObject<vwBusinessPartners>(CriteriaOperator.Parse("BoKey=?", temp));
+                employee.NumAtCard = values["NumAtCard"].ToString();
+
+                //JsonPopulateObjectHelper.PopulateObjectWODetail(values.ToString(), employee.Session, employee);
+
+                string detalclassname = "PurchaseReturnDetail";
+                int intkeyvalue = -1;
+                JArray jarray = (JArray)values[detalclassname];
+                int cnt = 0;
+                foreach (JObject Jdtl in jarray.Children())
+                {
+                    if (Jdtl.ContainsKey("Oid"))
+                    {
+                        if (int.TryParse(Jdtl["Oid"].ToString(), out intkeyvalue))
+                        {
+                            PurchaseReturnDetail dtl = objectSpace.GetObjectByKey<PurchaseReturnDetail>(intkeyvalue);
+                            cnt++;
+                            dtl.VisOrder = cnt;
+                            employee.PurchaseReturnDetail.Add(dtl);
+                        }
+                        else
+                        {
+                            GenHelper.WriteLog("[Error]", "[" + securityProvider.GetUserName() + "]" + controllername + "-GenPUR:[Details Key value is invalid][" + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "]");
+                            throw new Exception("Details Key value is invalid");
+                        }
+                    }
+                    else
+                    {
+                        GenHelper.WriteLog("[Error]", "[" + securityProvider.GetUserName() + "]" + controllername + "-GenPUR:[Details Key Column Not found][" + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "]");
+                        throw new Exception("Details Key Column Not found");
+                    }
+                }
+                if (employee.DocTypeSeries == null)
+                {
+                    GenHelper.WriteLog("[Error]", "[" + securityProvider.GetUserName() + "]" + controllername + "-GenPUR:[Document series is not found][" + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "]");
+                    throw new Exception("Document series is not found");
+                }
+                employee.DocStatus.AddDocStatus(DocStatus.Accepted, "WebApi Generated");
+                employee.DocStatus.CurrDocStatus = DocStatus.Accepted;
+                employee.AssignDocNumber();
+                objectSpace.CommitChanges();
+                return Ok(employee.DocNum);
+            }
+            catch (Exception ex)
+            {
+                GenHelper.WriteLog("[Error]", "[" + securityProvider.GetUserName() + "]" + controllername + "-GenPUR:[" + ex.Message + "][" + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "]");
+                throw new Exception(ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Get PR from API
+        /// </summary>
+        /// <remarks>
+        /// Note that the key is a Oid and an integer.
+        /// </remarks>
+        /// <param name="username">user name</param>       
+        /// <response code="200">Returns found item</response>
+        /// <response code="400">Not Found</response>
+        [HttpPost]
+        [Route("api/genpuritem")]
+        public IActionResult GenPURItem([FromBody] JArray values)
+        {
+            try
+            {
+                GenHelper.WriteLog("[Log]", "[" + securityProvider.GetUserName() + "]" + controllername + "-GenPURItem:[" + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "]");
+                GenHelper.WriteLog("[Json]", "[" + securityProvider.GetUserName() + "]" + controllername + "-GenPURItem:[" + Environment.NewLine + values.ToString() + Environment.NewLine + "][" + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "]");
+
+                PurchaseReturnDetail dtl;
+                string temp = "";
+                JToken token;
+                foreach (JObject Jdtl in values.Children())
+                {
+                    dtl = objectSpace.CreateObject<PurchaseReturnDetail>();
+                    temp = Jdtl["Baseline"].ToString();
+                    dtl.Baseline = int.Parse(temp);
+
+                    if (Jdtl.ContainsKey("BaseDocNo"))
+                    {
+                        temp = Jdtl["BaseDocNo"].ToString();
+                        dtl.BaseDocNo = temp;
+                    }
+
+                    temp = DocTypeCodes.PurchaseDelivery;
+                    dtl.BaseType = objectSpace.FindObject<DocType>(CriteriaOperator.Parse("BoCode=?", temp));
+
+                    temp = Jdtl["Quantity"].ToString();
+                    dtl.Quantity = double.Parse(temp);
+
+                    if (Jdtl.ContainsKey("BatchNumber"))
+                    {
+                        if (Jdtl["BatchNumber"] != null)
+                            temp = Jdtl["BatchNumber"].ToString();
+                        if (!string.IsNullOrEmpty(temp))
+                            dtl.BatchNumber = temp;
+                    }
+
+                    token = Jdtl["BinCode"];
+                    temp = token["BoKey"].ToString();
+                    dtl.BinCode = objectSpace.FindObject<vwWarehouseBins>(CriteriaOperator.Parse("BoKey=?", temp));
+
+                    token = Jdtl["LineVendor"];
+                    temp = token["BoKey"].ToString();
+                    dtl.LineVendor = objectSpace.FindObject<vwBusinessPartners>(CriteriaOperator.Parse("BoKey=?", temp));
+
+                }
+                objectSpace.CommitChanges();
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                GenHelper.WriteLog("[Error]", "[" + securityProvider.GetUserName() + "]" + controllername + "-GenPURItem:[" + ex.Message + "][" + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "]");
+                throw new Exception(ex.Message);
+            }
+        }
+        #endregion
+
     }
 }

@@ -1,0 +1,57 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             xmlns:markextensions="clr-namespace:XamarinGRN.MarkExtensions"
+             x:Class="XamarinGRN.Views.ChooseBP" BackgroundColor="Bisque">
+    <ContentPage.Padding>
+        <OnPlatform x:TypeArguments="Thickness"
+                iOS="10,20,10,10"
+                Android="10,10,10,10">
+        </OnPlatform>
+    </ContentPage.Padding>
+    <ContentPage.ToolbarItems>
+        <ToolbarItem x:Name="gotomenu" IconImageSource="{markextensions:EmbeddedImage ResourceId=XamarinGRN.Images.icons8-tire-track-96.png}" Text="Menu"
+                     Clicked="gotomenu_Clicked" />
+    </ContentPage.ToolbarItems>
+    <StackLayout Padding="10,0" Spacing="10">
+        <Picker x:Name="whspicker" HorizontalOptions="FillAndExpand" Title="Select Warehouse" 
+                ItemsSource="{Binding whslist}"
+                ItemDisplayBinding="{Binding WhsName}"
+                SelectedItem="{Binding SelectedWhs}"
+                />
+        <SearchBar x:Name="bpsearch" HorizontalOptions="FillAndExpand" Placeholder="Search Supplier..." TextChanged="bpsearch_TextChanged"
+                />
+        <ListView x:Name="bplist" HorizontalOptions="FillAndExpand" 
+                  ItemsSource="{Binding bplist}" 
+                  SelectedItem="{Binding SelectedBP}" 
+                  IsPullToRefreshEnabled="True"
+                  Refreshing="bplist_Refreshing"
+                  
+                  >
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <!--<TextCell Text="" Detail="{Binding CardName}" TextColor="Blue" DetailColor="BlueViolet" />-->
+                    <ViewCell Tapped="ViewCell_Tapped">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+                            <Label Grid.Row="0" Text="{Binding CardCode}" TextColor="Black" />
+                            <Label Grid.Row="1" Text="{Binding CardName}" TextColor="Black" />
+                        </Grid>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+        <Button Text="Submit" 
+                TextColor="White"  
+                FontAttributes="Bold" FontSize="Large" HorizontalOptions="FillAndExpand" CornerRadius="20"
+                BackgroundColor="ForestGreen"
+                Command="{Binding submit}" />
+
+    </StackLayout>
+</ContentPage>

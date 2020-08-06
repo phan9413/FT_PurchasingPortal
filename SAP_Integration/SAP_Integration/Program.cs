@@ -76,6 +76,28 @@ namespace SAP_Integration
         {
             XpoTypesInfoHelper.GetXpoTypeInfoSource();
 
+            XafTypesInfo.Instance.RegisterEntity(typeof(PurchaseReturn));
+            XafTypesInfo.Instance.RegisterEntity(typeof(PurchaseReturnApp));
+            XafTypesInfo.Instance.RegisterEntity(typeof(PurchaseReturnAppStage));
+            XafTypesInfo.Instance.RegisterEntity(typeof(PurchaseReturnAppStatus));
+            XafTypesInfo.Instance.RegisterEntity(typeof(PurchaseReturnAttachment));
+            XafTypesInfo.Instance.RegisterEntity(typeof(PurchaseReturnDetail));
+            XafTypesInfo.Instance.RegisterEntity(typeof(PurchaseReturnDetailUDF));
+            XafTypesInfo.Instance.RegisterEntity(typeof(PurchaseReturnDoc));
+            XafTypesInfo.Instance.RegisterEntity(typeof(PurchaseReturnDocStatus));
+            XafTypesInfo.Instance.RegisterEntity(typeof(PurchaseReturnUDF));
+
+            XafTypesInfo.Instance.RegisterEntity(typeof(PurchaseDelivery));
+            XafTypesInfo.Instance.RegisterEntity(typeof(PurchaseDeliveryApp));
+            XafTypesInfo.Instance.RegisterEntity(typeof(PurchaseDeliveryAppStage));
+            XafTypesInfo.Instance.RegisterEntity(typeof(PurchaseDeliveryAppStatus));
+            XafTypesInfo.Instance.RegisterEntity(typeof(PurchaseDeliveryAttachment));
+            XafTypesInfo.Instance.RegisterEntity(typeof(PurchaseDeliveryDetail));
+            XafTypesInfo.Instance.RegisterEntity(typeof(PurchaseDeliveryDetailUDF));
+            XafTypesInfo.Instance.RegisterEntity(typeof(PurchaseDeliveryDoc));
+            XafTypesInfo.Instance.RegisterEntity(typeof(PurchaseDeliveryDocStatus));
+            XafTypesInfo.Instance.RegisterEntity(typeof(PurchaseDeliveryUDF));
+
             XafTypesInfo.Instance.RegisterEntity(typeof(PurchaseRequest));
             XafTypesInfo.Instance.RegisterEntity(typeof(PurchaseRequestApp));
             XafTypesInfo.Instance.RegisterEntity(typeof(PurchaseRequestAppStage));

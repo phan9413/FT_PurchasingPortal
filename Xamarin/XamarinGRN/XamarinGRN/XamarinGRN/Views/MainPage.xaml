@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<TabbedPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             mc:Ignorable="d"
+             xmlns:local="clr-namespace:XamarinGRN.Views"
+             xmlns:markextensions="clr-namespace:XamarinGRN.MarkExtensions"
+             xmlns:plugin="clr-namespace:Plugin.Badge.Abstractions;assembly=Plugin.Badge.Abstractions" 
+             x:Class="XamarinGRN.Views.MainPage"
+             BackgroundColor="Bisque">
+    <TabbedPage.Padding>
+        <OnPlatform x:TypeArguments="Thickness"
+                iOS="10,20,10,10"
+                Android="10,10,10,10">
+        </OnPlatform>
+    </TabbedPage.Padding>
+    <TabbedPage.Children>
+        <local:MainMenu Title="Menu" IconImageSource="{markextensions:EmbeddedImage ResourceId=XamarinGRN.Images.icons8-tire-track-96.png}" />
+        <local:CartPage x:Name="CartTab" Title="Cart" IconImageSource="{markextensions:EmbeddedImage ResourceId=XamarinGRN.Images.icons8-fork-lift-96.png}" 
+                          plugin:TabBadge.BadgeText="{Binding CartCount}"
+        />
+    </TabbedPage.Children>
+</TabbedPage>

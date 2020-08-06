@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             mc:Ignorable="d"
+             xmlns:markextensions="clr-namespace:XamarinGRN.MarkExtensions"
+             x:Class="XamarinGRN.Views.LoginPage" BackgroundColor="Bisque">
+    <ContentPage.Padding>
+        <OnPlatform x:TypeArguments="Thickness"
+                    iOS="0,20,10,10"
+                    Android="10,10,10,10">
+        </OnPlatform>
+    </ContentPage.Padding>
+    <StackLayout Orientation="Vertical" Padding="10" Spacing="10">
+        <!--<BoxView HeightRequest="10" Color="Blue"/>-->
+        <Frame BackgroundColor="CadetBlue" HasShadow="False" CornerRadius="10">
+            <StackLayout Orientation="Vertical" Spacing="10">
+                <Entry x:Name="Url" Text="{Binding Url}" Placeholder="Url Address"   
+                        HeightRequest="40"   
+                        Keyboard="Url"
+                        TextColor="White" IsVisible="false"/>
+                <Entry x:Name="UserName" Text="{Binding UserName}" Placeholder="User Name"   
+                        HeightRequest="40"   
+                        TextColor="White"/>
+                <Entry x:Name="Password" Text="{Binding Password}" Placeholder="Password"   
+                        HeightRequest="40"   
+                        IsPassword="True"  
+                        TextColor="White"/>
+            </StackLayout>
+        </Frame>
+        <Button Command="{Binding SubmitCommand}" Text="Login" TextColor="White"  
+                FontAttributes="Bold" FontSize="Large" HorizontalOptions="FillAndExpand" CornerRadius="20"
+                BackgroundColor="DarkSlateBlue" />
+        <Image Aspect="AspectFit" VerticalOptions="FillAndExpand" x:Name="FTLogo" Source="{markextensions:EmbeddedImage ResourceId=XamarinGRN.Images.FT_Logo.png}"/>
+    </StackLayout>
+</ContentPage>

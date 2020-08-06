@@ -2,20 +2,28 @@
 <Application CurrentUserDisplayMode="CaptionAndImage">
   <NavigationItems GenerateRelatedAnalysisGroup="False" GenerateRelatedReportsGroup="False" GenerateRelatedViewVariantsGroup="False" StartupNavigationItem="MyDetails">
     <Items>
-      <Item Id="Default">
+      <Item Id="Default" Index="0">
         <Items>
           <Item Id="Event_ListView" Index="" Visible="False" />
           <Item Id="MyDetails" ViewId="SystemUsers_DetailView_Copy" />
         </Items>
       </Item>
-      <Item Id="KPI" Visible="False" />
-      <Item Id="Purchasing">
+      <Item Id="SAP Setup" Index="1" />
+      <Item Id="Setup" Index="2" />
+      <Item Id="Approval" Index="3" />
+      <Item Id="Purchasing" Index="4">
         <Items>
+          <Item Id="PurchaseQuotation_ListView" Index="-1" />
           <Item Id="PurchaseRequest_ListView" Index="0" />
-          <Item Id="PurchaseOrder_ListView" Index="1" />
+          <Item Id="PurchaseOrder_ListView" Index="2" />
         </Items>
       </Item>
-      <Item Id="Task" Visible="False" />
+      <Item Id="Purchase GRN" Index="5" />
+      <Item Id="Purchase Return" Index="6" />
+      <Item Id="Inventory" Index="7" />
+      <Item Id="Reports" Index="8" />
+      <Item Id="KPI" Visible="False" Index="9" />
+      <Item Id="Task" Visible="False" Index="10" />
     </Items>
   </NavigationItems>
   <SchemaModules>

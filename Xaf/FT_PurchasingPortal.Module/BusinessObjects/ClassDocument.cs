@@ -410,7 +410,7 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
         // hide price
         [EditorAlias("VPDec")]
         [Appearance("dhpDocB4Total", Visibility = DevExpress.ExpressApp.Editors.ViewItemVisibility.Hide, Criteria = "not IsViewItemPriceRole")]
-        [Index(200), VisibleInDetailView(true), VisibleInListView(true), VisibleInLookupListView(false)]
+        [Index(200), VisibleInDetailView(true), VisibleInListView(true), VisibleInLookupListView(true)]
         [Appearance("DocB4Total", Enabled = false)]
         [ModelDefault("DisplayFormat", "{0:n2}")]
         [DbType("numeric(19,6)")]
@@ -436,7 +436,7 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
         [XafDisplayName("Discount %")]
         [EditorAlias("VPDou")]
         [Appearance("dhpDiscountPerc", Visibility = DevExpress.ExpressApp.Editors.ViewItemVisibility.Hide, Criteria = "not IsViewItemPriceRole")]
-        [Index(201), VisibleInDetailView(true), VisibleInListView(true), VisibleInLookupListView(false)]
+        [Index(201), VisibleInDetailView(true), VisibleInListView(true), VisibleInLookupListView(true)]
         [ModelDefault("DisplayFormat", "{0:n3}")]
         [DbType("numeric(19,6)")]
         public Double DiscountPerc
@@ -459,7 +459,7 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
         // hide price
         [EditorAlias("VPDec")]
         [Appearance("dhpDiscountAmt", Visibility = DevExpress.ExpressApp.Editors.ViewItemVisibility.Hide, Criteria = "not IsViewItemPriceRole")]
-        [Index(202), VisibleInDetailView(true), VisibleInListView(true), VisibleInLookupListView(false)]
+        [Index(202), VisibleInDetailView(true), VisibleInListView(true), VisibleInLookupListView(true)]
         [Appearance("DiscountAmt", Enabled = false)]
         [ModelDefault("DisplayFormat", "{0:n2}")]
         [DbType("numeric(19,6)")]
@@ -477,7 +477,7 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
         [ImmediatePostData]
         [EditorAlias("VPDec")]
         [Appearance("dhpDiscountAdj", Visibility = DevExpress.ExpressApp.Editors.ViewItemVisibility.Hide, Criteria = "not IsViewItemPriceRole")]
-        [Index(203), VisibleInDetailView(true), VisibleInListView(true), VisibleInLookupListView(false)]
+        [Index(203), VisibleInDetailView(true), VisibleInListView(true), VisibleInLookupListView(true)]
         [ModelDefault("DisplayFormat", "{0:n2}")]
         [DbType("numeric(19,6)")]
         public decimal DiscountAdj
@@ -500,7 +500,7 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
         [ImmediatePostData]
         [EditorAlias("VPDec")]
         [Appearance("dhpRounding", Visibility = DevExpress.ExpressApp.Editors.ViewItemVisibility.Hide, Criteria = "not IsViewItemPriceRole")]
-        [Index(210), VisibleInDetailView(true), VisibleInListView(true), VisibleInLookupListView(false)]
+        [Index(210), VisibleInDetailView(true), VisibleInListView(true), VisibleInLookupListView(true)]
         [ModelDefault("DisplayFormat", "{0:n2}")]
         [DbType("numeric(19,6)")]
         public decimal Rounding
@@ -523,7 +523,7 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
         [XafDisplayName("Total After Disc.")]
         [EditorAlias("VPDec")]
         [Appearance("dhpDocTotal", Visibility = DevExpress.ExpressApp.Editors.ViewItemVisibility.Hide, Criteria = "not IsViewItemPriceRole")]
-        [Index(211), VisibleInDetailView(true), VisibleInListView(true), VisibleInLookupListView(false)]
+        [Index(211), VisibleInDetailView(true), VisibleInListView(true), VisibleInLookupListView(true)]
         [Appearance("DocTotal", Enabled = false)]
         [ModelDefault("DisplayFormat", "{0:n2}")]
         [DbType("numeric(19,6)")]
@@ -539,7 +539,7 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
         //// hide price
         //[EditorAlias("VPDec")]
         //[Appearance("dhpDocTotalFC", Visibility = DevExpress.ExpressApp.Editors.ViewItemVisibility.Hide, Criteria = "not IsViewItemPriceRole")]
-        //[Index(201), VisibleInDetailView(true), VisibleInListView(true), VisibleInLookupListView(false)]
+        //[Index(201), VisibleInDetailView(true), VisibleInListView(true), VisibleInLookupListView(true)]
         //[Appearance("DocTotalFC", Enabled = false)]
         //[ModelDefault("DisplayFormat", "{0:n2}")]
         //[DbType("numeric(19,6)")]
@@ -555,7 +555,7 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
         [XafDisplayName("Document Owner")]
         //[ModelDefault("EditMask", "(000)-00"), VisibleInListView(false)]
         //[Appearance("DocOwner", Enabled = false)]
-        [Index(299), VisibleInListView(true), VisibleInDetailView(true), VisibleInLookupListView(false)]
+        [Index(299), VisibleInListView(true), VisibleInDetailView(true), VisibleInLookupListView(true)]
         [RuleRequiredField(DefaultContexts.Save)]
         public Employee DocOwner
         {

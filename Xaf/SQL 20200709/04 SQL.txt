@@ -1,0 +1,11 @@
+
+alter table OPRE1 add BinCode nvarchar(100)
+go
+alter table OPRQ1 add BinCode nvarchar(100)
+go
+
+
+alter table OPRE1 add BatchNumber nvarchar(100)
+go
+alter table OPRQ1 add BatchNumber nvarchar(100)
+go

@@ -215,6 +215,48 @@ DBCC CHECKIDENT ('OPRR', RESEED, 0)
 go
 
 
+update OPRU set DocStatus = null, AppStatus = null, UDFs = null
+go
+update OPRU1 set UDFs = null
+go
+update OPRUA set CurrAppStage = null
+go
+delete from OPRU1U
+go
+DBCC CHECKIDENT ('OPRU1U', RESEED, 0)
+go
+delete from OPRUU
+go
+DBCC CHECKIDENT ('OPRUU', RESEED, 0)
+go
+delete from OPRU1
+go
+DBCC CHECKIDENT ('OPRU1', RESEED, 0)
+go
+delete from OPRUD1
+go
+DBCC CHECKIDENT ('OPRUD1', RESEED, 0)
+go
+delete from OPRUD
+go
+DBCC CHECKIDENT ('OPRUD', RESEED, 0)
+go
+delete from OPRUA2
+go
+DBCC CHECKIDENT ('OPRUA2', RESEED, 0)
+go
+delete from OPRUA1
+go
+DBCC CHECKIDENT ('OPRUA1', RESEED, 0)
+go
+delete from OPRUA
+go
+DBCC CHECKIDENT ('OPRUA', RESEED, 0)
+go
+delete from OPRU
+go
+DBCC CHECKIDENT ('OPRU', RESEED, 0)
+go
 
 
 

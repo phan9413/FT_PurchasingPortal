@@ -36,6 +36,11 @@ namespace FT_PurchasingPortal.Web {
             #region GeneralSettings
             string temp = "";
 
+            temp = ConfigurationManager.AppSettings["LiveWithPost"].ToString();
+            FT_PurchasingPortal.Module.GeneralValues.LiveWithPost = false;
+            if (temp.ToUpper() == "Y" || temp.ToUpper() == "YES" || temp.ToUpper() == "TRUE" || temp == "1")
+                FT_PurchasingPortal.Module.GeneralValues.LiveWithPost = true;
+
             temp = ConfigurationManager.AppSettings["EmailSend"].ToString();
             FT_PurchasingPortal.Module.GeneralValues.EmailSend = false;
             if (temp.ToUpper() == "Y" || temp.ToUpper() == "YES" || temp.ToUpper() == "TRUE" || temp == "1")

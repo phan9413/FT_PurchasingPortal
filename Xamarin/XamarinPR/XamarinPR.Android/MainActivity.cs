@@ -21,7 +21,7 @@ namespace XamarinPR.Droid
 
             base.OnCreate(savedInstanceState);
 
-            #region scan barcode wich camera
+            #region zxing
             MobileBarcodeScanner.Initialize(this.Application);
             #endregion
             #region set SwipeView_Experimental
@@ -42,7 +42,9 @@ namespace XamarinPR.Droid
         public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Android.Content.PM.Permission[] grantResults)
         {
             Xamarin.Essentials.Platform.OnRequestPermissionsResult(requestCode, permissions, grantResults);
+            #region zxing
             global::ZXing.Net.Mobile.Android.PermissionsHandler.OnRequestPermissionsResult(requestCode, permissions, grantResults);
+            #endregion
 
             base.OnRequestPermissionsResult(requestCode, permissions, grantResults);
         }

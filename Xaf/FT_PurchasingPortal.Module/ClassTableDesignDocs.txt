@@ -92,6 +92,8 @@
 	- ItemDetails
 	- [LineVendor->vwBusinessPartners]
 	- [WhsCode->vwWarehouses]
+	- [BinCode->vwWarehouseBins]
+	- BatchNumber
 	- [OcrCode1->vwDimension1]
 	- [OcrCode2->vwDimension2]
 	- [OcrCode3->vwDimension3]
@@ -350,6 +352,46 @@
 	-
 
 #purchase return end
+=================================================================
+#purchase quotation start
+
+[PurchaseQuotationApp->ClassAppStatusDoc] (select from OPRUA, purchase return approval document)
+	- [CurrAppStage->PurchaseQuotationAppStage]
+	---- <[PurchaseQuotationAppStage]> (1 to many)
+	---- <[PurchaseQuotationAppStatus]> (1 to many)
+
+[PurchaseQuotationAppStage->ClassAppStage] (select from OPRUA1, purchase return approval stage)
+	- [AppStageDoc->PurchaseQuotationApp] (purchase return approval document)
+
+[PurchaseQuotationAppStatus->ClassAppStatus] (select from OPRUA2, purchase return approval status done)
+	- [AppStageDoc->PurchaseQuotationApp] (purchase return approval document)
+	- [AppStage->PurchaseQuotationAppStage] 
+
+
+[PurchaseQuotationDoc->ClassDocStatusDoc] (select from OPRUD, purchase return doc status document)
+	---- <[PurchaseQuotationDocStatus]> (1 to many)
+
+[PurchaseQuotationDocStatus->ClassDocStatus] (select from OPRUD1, purchase return doc status)
+	- [DocStatusDoc->PurchaseQuotationDoc] (purchase return doc status document)
+
+
+[PurchaseQuotation->ClassDocument] (select from OPRU, purchase return)
+	- [DocStatus->PurchaseQuotationDoc] (purchase return doc status document)
+	- [AppStatus->PurchaseQuotationApproval] (purchase return approval document)
+	- [UDFs->PurchaseQuotationUDF] (purchase return udf)
+	---- <[PurchaseQuotationDetail]> (1 to many)
+
+[PurchaseQuotationDetail->ClassDocumentDetail] (select from OPRU1, purchase return detail)
+	- [UDFs->PurchaseQuotationDetailUDF] (purchase return detail udf)
+	- [PurchaseQuotation] (purchase request)
+
+[PurchaseQuotationUDF->ClassUDFHeader] (select from OPRUU, purchase return udf)
+	-
+
+[PurchaseQuotationDetailUDF->ClassUDFDetail] (select from OPRU1U, purchase return detail udf)
+	-
+
+#purchase quotation end
 =================================================================
 #stock transfer request start
 [StockTransferRequestApp->ClassAppStatusDoc] (select from OSTFEA, stock transfer request approval document)

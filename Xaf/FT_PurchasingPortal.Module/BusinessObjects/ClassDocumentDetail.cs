@@ -261,6 +261,7 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
         }
 
         private vwWarehouses _WhsCode;
+        [ImmediatePostData]
         [Index(21), VisibleInListView(true), VisibleInDetailView(true), VisibleInLookupListView(true)]
         [XafDisplayName("Warehouse")]
         [DataSourceCriteria("CompanyCode = '@This.Company.BoCode' and IsActive")]
@@ -271,11 +272,45 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
             get { return _WhsCode; }
             set
             {
-                SetPropertyValue("WhsCode", ref _WhsCode, value);
+                if (SetPropertyValue("WhsCode", ref _WhsCode, value))
+                {
+                    if (!IsLoading && _WhsCode != null)
+                    {
+                        BinCode = Session.FindObject<vwWarehouseBins>(CriteriaOperator.Parse("WhsCode=? and BinAbsEntry>0", _WhsCode.WhsCode));
+                        if (BinCode == null)
+                            BinCode = Session.FindObject<vwWarehouseBins>(CriteriaOperator.Parse("WhsCode=? and BinAbsEntry=0", _WhsCode.WhsCode));
+                    }
+                }
+            }
+        }
+        private vwWarehouseBins _BinCode;
+        [Index(22), VisibleInListView(true), VisibleInDetailView(true), VisibleInLookupListView(true)]
+        [XafDisplayName("Bin")]
+        [DataSourceCriteria("CompanyCode = '@This.Company.BoCode' and WhsCode = '@This.WhsCode.WhsCode' and IsActive")]
+        [NoForeignKey]
+        [RuleRequiredField(DefaultContexts.Save)]
+        public vwWarehouseBins BinCode
+        {
+            get { return _BinCode; }
+            set
+            {
+                SetPropertyValue("BinCode", ref _BinCode, value);
+            }
+        }
+        private string _BatchNumber;
+        [Index(23), VisibleInListView(true), VisibleInDetailView(true), VisibleInLookupListView(true)]
+        [XafDisplayName("Batch Code")]
+        [DbType("nvarchar(100)")]
+        public string BatchNumber
+        {
+            get { return _BatchNumber; }
+            set
+            {
+                SetPropertyValue("BatchNumber", ref _BatchNumber, value);
             }
         }
         private vwDimension1 _OcrCode;
-        [Index(22), VisibleInListView(true), VisibleInDetailView(true), VisibleInLookupListView(true)]
+        [Index(31), VisibleInListView(true), VisibleInDetailView(true), VisibleInLookupListView(true)]
         [XafDisplayName("Dimension 1")]
         [DataSourceCriteria("CompanyCode = '@This.Company.BoCode' and IsActive")]
         [NoForeignKey]
@@ -288,7 +323,7 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
             }
         }
         private vwDimension2 _OcrCode2;
-        [Index(24), VisibleInListView(true), VisibleInDetailView(true), VisibleInLookupListView(true)]
+        [Index(32), VisibleInListView(true), VisibleInDetailView(true), VisibleInLookupListView(true)]
         [XafDisplayName("Dimension 2")]
         [DataSourceCriteria("CompanyCode = '@This.Company.BoCode' and IsActive")]
         [NoForeignKey]
@@ -301,7 +336,7 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
             }
         }
         private vwDimension3 _OcrCode3;
-        [Index(25), VisibleInListView(true), VisibleInDetailView(true), VisibleInLookupListView(true)]
+        [Index(33), VisibleInListView(true), VisibleInDetailView(true), VisibleInLookupListView(true)]
         [XafDisplayName("Dimension 3")]
         [DataSourceCriteria("CompanyCode = '@This.Company.BoCode' and IsActive")]
         [NoForeignKey]
@@ -314,7 +349,7 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
             }
         }
         private vwDimension4 _OcrCode4;
-        [Index(26), VisibleInListView(true), VisibleInDetailView(true), VisibleInLookupListView(true)]
+        [Index(34), VisibleInListView(true), VisibleInDetailView(true), VisibleInLookupListView(true)]
         [XafDisplayName("Dimension 4")]
         [DataSourceCriteria("CompanyCode = '@This.Company.BoCode' and IsActive")]
         [NoForeignKey]
@@ -327,7 +362,7 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
             }
         }
         private vwDimension5 _OcrCode5;
-        [Index(27), VisibleInListView(true), VisibleInDetailView(true), VisibleInLookupListView(true)]
+        [Index(35), VisibleInListView(true), VisibleInDetailView(true), VisibleInLookupListView(true)]
         [XafDisplayName("Dimension 5")]
         [DataSourceCriteria("CompanyCode = '@This.Company.BoCode' and IsActive")]
         [NoForeignKey]
@@ -340,7 +375,7 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
             }
         }
         private vwProjects _PrjCode;
-        [Index(28), VisibleInListView(true), VisibleInDetailView(true), VisibleInLookupListView(true)]
+        [Index(36), VisibleInListView(true), VisibleInDetailView(true), VisibleInLookupListView(true)]
         [XafDisplayName("Project Code")]
         [DataSourceCriteria("CompanyCode = '@This.Company.BoCode' and IsActive")]
         [NoForeignKey]
@@ -355,7 +390,7 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
 
         private double _Quantity;
         [ImmediatePostData]
-        [Index(90), VisibleInDetailView(true), VisibleInListView(true), VisibleInLookupListView(false)]
+        [Index(90), VisibleInDetailView(true), VisibleInListView(true), VisibleInLookupListView(true)]
         [ModelDefault("DisplayFormat", "{0:n4}")]
         [DbType("numeric(19,6)")]
         public double Quantity
@@ -373,7 +408,7 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
             }
         }
         private string _UnitMsr;
-        [Index(91), VisibleInDetailView(true), VisibleInListView(true), VisibleInLookupListView(false)]
+        [Index(91), VisibleInDetailView(true), VisibleInListView(true), VisibleInLookupListView(true)]
         public string UnitMsr
         {
             get { return _UnitMsr; }
@@ -385,9 +420,9 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
         private double _UnitPrice;
         [ImmediatePostData]
         // hide price
-        [EditorAlias("VPDec")]
+        [EditorAlias("VPDou")]
         [Appearance("dhpUnitPrice", Visibility = DevExpress.ExpressApp.Editors.ViewItemVisibility.Hide, Criteria = "not IsViewItemPriceRole")]
-        [Index(92), VisibleInDetailView(true), VisibleInListView(true), VisibleInLookupListView(false)]
+        [Index(92), VisibleInDetailView(true), VisibleInListView(true), VisibleInLookupListView(true)]
         [ModelDefault("DisplayFormat", "{0:n4}")]
         [DbType("numeric(19,6)")]
         public double UnitPrice
@@ -428,9 +463,9 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
         private double _TaxPerc;
         // hide price
         [XafDisplayName("Tax %")]
-        [EditorAlias("VPDec")]
+        [EditorAlias("VPDou")]
         [Appearance("dhpTaxPerc", Visibility = DevExpress.ExpressApp.Editors.ViewItemVisibility.Hide, Criteria = "not IsViewItemPriceRole")]
-        [Index(101), VisibleInDetailView(false), VisibleInListView(false), VisibleInLookupListView(false)]
+        [Index(101), VisibleInDetailView(false), VisibleInListView(false), VisibleInLookupListView(true)]
         [Appearance("TaxPerc", Enabled = false)]
         [ModelDefault("DisplayFormat", "{0:n2}")]
         [DbType("numeric(19,6)")]
@@ -448,7 +483,7 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
         [XafDisplayName("Tax Amount")]
         [EditorAlias("VPDec")]
         [Appearance("dhpTaxAmt", Visibility = DevExpress.ExpressApp.Editors.ViewItemVisibility.Hide, Criteria = "not IsViewItemPriceRole")]
-        [Index(102), VisibleInDetailView(false), VisibleInListView(false), VisibleInLookupListView(false)]
+        [Index(102), VisibleInDetailView(false), VisibleInListView(false), VisibleInLookupListView(true)]
         [ModelDefault("DisplayFormat", "{0:n2}")]
         [DbType("numeric(19,6)")]
         public decimal TaxAmt
@@ -472,7 +507,7 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
         [XafDisplayName("Discount")]
         [EditorAlias("VPDec")]
         [Appearance("dhpDiscount", Visibility = DevExpress.ExpressApp.Editors.ViewItemVisibility.Hide, Criteria = "not IsViewItemPriceRole")]
-        [Index(198), VisibleInDetailView(true), VisibleInListView(true), VisibleInLookupListView(false)]
+        [Index(198), VisibleInDetailView(true), VisibleInListView(true), VisibleInLookupListView(true)]
         [ModelDefault("DisplayFormat", "{0:n2}")]
         [DbType("numeric(19,6)")]
         public decimal DiscountAmt
@@ -518,7 +553,7 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
         [XafDisplayName("Freight Amount")]
         [EditorAlias("VPDec")]
         [Appearance("dhpFreightAmt", Visibility = DevExpress.ExpressApp.Editors.ViewItemVisibility.Hide, Criteria = "not IsViewItemPriceRole")]
-        [Index(200), VisibleInDetailView(true), VisibleInListView(true), VisibleInLookupListView(false)]
+        [Index(200), VisibleInDetailView(true), VisibleInListView(true), VisibleInLookupListView(true)]
         [Appearance("FreightAmt", Enabled = false, Criteria = "FreightCharge is null")]
         [ModelDefault("DisplayFormat", "{0:n2}")]
         [DbType("numeric(19,6)")]
@@ -542,7 +577,7 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
         // hide price
         [EditorAlias("VPDec")]
         [Appearance("dhpLineTotal", Visibility = DevExpress.ExpressApp.Editors.ViewItemVisibility.Hide, Criteria = "not IsViewItemPriceRole")]
-        [Index(201), VisibleInDetailView(true), VisibleInListView(true), VisibleInLookupListView(false)]
+        [Index(201), VisibleInDetailView(true), VisibleInListView(true), VisibleInLookupListView(true)]
         [Appearance("LineTotal", Enabled = false)]
         [ModelDefault("DisplayFormat", "{0:n2}")]
         [DbType("numeric(19,6)")]
@@ -558,7 +593,7 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
         //// hide price
         //[EditorAlias("VPDec")]
         //[Appearance("dhpLineTotalFC", Visibility = DevExpress.ExpressApp.Editors.ViewItemVisibility.Hide, Criteria = "not IsViewItemPriceRole")]
-        //[Index(201), VisibleInDetailView(true), VisibleInListView(true), VisibleInLookupListView(false)]
+        //[Index(201), VisibleInDetailView(true), VisibleInListView(true), VisibleInLookupListView(true)]
         //[Appearance("LineTotalFC", Enabled = false)]
         //[ModelDefault("DisplayFormat", "{0:n2}")]
         //[DbType("numeric(19,6)")]
@@ -572,7 +607,7 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
         //}
         private vwAccounts _AcctCode;
         [XafDisplayName("Account")]
-        [Index(210), VisibleInListView(true), VisibleInDetailView(true), VisibleInLookupListView(false)]
+        [Index(210), VisibleInListView(true), VisibleInDetailView(true), VisibleInLookupListView(true)]
         [NoForeignKey]
         [DataSourceCriteria("CompanyCode = '@This.Company.BoCode' and IsActive")]
         public vwAccounts AcctCode
@@ -586,7 +621,7 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
         private LineStatusEnum _LineStatus;
         [XafDisplayName("Status")]
         //[ModelDefault("EditMask", "(000)-00"), VisibleInListView(false)]
-        [Index(220), VisibleInListView(true), VisibleInDetailView(true), VisibleInLookupListView(false)]
+        [Index(220), VisibleInListView(true), VisibleInDetailView(true), VisibleInLookupListView(true)]
         [Appearance("LineStatus", Enabled = false)]
         public LineStatusEnum LineStatus
         {

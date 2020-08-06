@@ -175,7 +175,7 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
             if (CreateUser.Employee.WhsCode != null)
                 WhsCode = Session.FindObject<vwWarehouses>(CriteriaOperator.Parse("CompanyCode=? and WhsCode=?", Company.BoCode, CreateUser.Employee.WhsCode.WhsCode));
             else if (!string.IsNullOrEmpty(Company.WhsCode))
-                    WhsCode = Session.FindObject<vwWarehouses>(CriteriaOperator.Parse("CompanyCode=? and WhsCode=?", Company.BoCode, Company.WhsCode));
+                WhsCode = Session.FindObject<vwWarehouses>(CriteriaOperator.Parse("CompanyCode=? and WhsCode=?", Company.BoCode, Company.WhsCode));
         }
         protected override void OnLoaded()
         {
@@ -224,32 +224,6 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
                     else
                         this.PurchaseReturn.DocB4Total = 0;
                 }
-            }
-        }
-        private vwWarehouseBins _BinCode;
-        [VisibleInListView(true), VisibleInDetailView(true), VisibleInLookupListView(true)]
-        [XafDisplayName("Bin")]
-        [DataSourceCriteria("CompanyCode = '@This.Company.BoCode' and IsActive")]
-        [NoForeignKey]
-        [RuleRequiredField(DefaultContexts.Save)]
-        public vwWarehouseBins BinCode
-        {
-            get { return _BinCode; }
-            set
-            {
-                SetPropertyValue("BinCode", ref _BinCode, value);
-            }
-        }
-        private string _BatchNumber;
-        [VisibleInListView(true), VisibleInDetailView(true), VisibleInLookupListView(true)]
-        [XafDisplayName("Batch Code")]
-        [DbType("nvarchar(100)")]
-        public string BatchNumber
-        {
-            get { return _BatchNumber; }
-            set
-            {
-                SetPropertyValue("BatchNumber", ref _BatchNumber, value);
             }
         }
 

@@ -1,0 +1,502 @@
+
+CREATE TABLE [dbo].[OPRUU](
+	[OID] [int] IDENTITY(1,1) NOT FOR REPLICATION NOT NULL,
+	[U_PersistentProperty1] [nvarchar](100) NULL,
+	[OptimisticLockField] [int] NULL,
+	[GCRecord] [int] NULL,
+ CONSTRAINT [PK_OPRUU] PRIMARY KEY CLUSTERED 
+(
+	[OID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+CREATE TABLE [dbo].[OPRU1U](
+	[OID] [int] IDENTITY(1,1) NOT FOR REPLICATION NOT NULL,
+	[U_PersistentProperty] [nvarchar](100) NULL,
+	[OptimisticLockField] [int] NULL,
+	[GCRecord] [int] NULL,
+ CONSTRAINT [PK_OPRU1U] PRIMARY KEY CLUSTERED 
+(
+	[OID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+CREATE TABLE [dbo].[OPRUD](
+	[OID] [int] IDENTITY(1,1) NOT FOR REPLICATION NOT NULL,
+	[CurrDocStatus] [int] NULL,
+	[SAPPostCancelRemarks] [nvarchar](100) NULL,
+	[IsSAPPosted] [bit] NULL,
+	[OptimisticLockField] [int] NULL,
+	[GCRecord] [int] NULL,
+ CONSTRAINT [PK_OPRUD] PRIMARY KEY CLUSTERED 
+(
+	[OID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+
+CREATE TABLE [dbo].[OPRUD1](
+	[OID] [int] IDENTITY(1,1) NOT FOR REPLICATION NOT NULL,
+	[DocStatus] [int] NULL,
+	[DocStatusRemarks] [nvarchar](100) NULL,
+	[CreateUser] [uniqueidentifier] NULL,
+	[CreateDate] [datetime] NULL,
+	[DocStatusDoc] [int] NULL,
+	[OptimisticLockField] [int] NULL,
+	[GCRecord] [int] NULL,
+ CONSTRAINT [PK_OPRUD1] PRIMARY KEY CLUSTERED 
+(
+	[OID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+ALTER TABLE [dbo].[OPRUD1]  WITH NOCHECK ADD  CONSTRAINT [FK_OPRUD1_CreateUser] FOREIGN KEY([CreateUser])
+REFERENCES [dbo].[OSUR] ([Oid])
+NOT FOR REPLICATION 
+GO
+
+ALTER TABLE [dbo].[OPRUD1] CHECK CONSTRAINT [FK_OPRUD1_CreateUser]
+GO
+
+ALTER TABLE [dbo].[OPRUD1]  WITH NOCHECK ADD  CONSTRAINT [FK_OPRUD1_DocStatusDoc] FOREIGN KEY([DocStatusDoc])
+REFERENCES [dbo].[OPRUD] ([OID])
+NOT FOR REPLICATION 
+GO
+
+ALTER TABLE [dbo].[OPRUD1] CHECK CONSTRAINT [FK_OPRUD1_DocStatusDoc]
+GO
+
+
+CREATE TABLE [dbo].[OPRUA](
+	[OID] [int] IDENTITY(1,1) NOT FOR REPLICATION NOT NULL,
+	[ApprovalStatus] [int] NULL,
+	[CurrAppStage] [int] NULL,
+	[CurrApproval] [int] NULL,
+	[CurrAppointedUser] [int] NULL,
+	[ApprovedEmailCnt] [int] NULL,
+	[OptimisticLockField] [int] NULL,
+	[GCRecord] [int] NULL,
+ CONSTRAINT [PK_OPRUA] PRIMARY KEY CLUSTERED 
+(
+	[OID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+ALTER TABLE [dbo].[OPRUA]  WITH NOCHECK ADD  CONSTRAINT [FK_OPRUA_CurrAppointedUser] FOREIGN KEY([CurrAppointedUser])
+REFERENCES [dbo].[OEMP] ([OID])
+NOT FOR REPLICATION 
+GO
+
+ALTER TABLE [dbo].[OPRUA] CHECK CONSTRAINT [FK_OPRUA_CurrAppointedUser]
+GO
+
+ALTER TABLE [dbo].[OPRUA]  WITH NOCHECK ADD  CONSTRAINT [FK_OPRUA_CurrApproval] FOREIGN KEY([CurrApproval])
+REFERENCES [dbo].[OAPP] ([OID])
+NOT FOR REPLICATION 
+GO
+
+ALTER TABLE [dbo].[OPRUA] CHECK CONSTRAINT [FK_OPRUA_CurrApproval]
+GO
+
+
+
+CREATE TABLE [dbo].[OPRUA1](
+	[OID] [int] IDENTITY(1,1) NOT FOR REPLICATION NOT NULL,
+	[Approval] [int] NULL,
+	[EmailCnt] [int] NULL,
+	[EmailDate] [datetime] NULL,
+	[AppStageDoc] [int] NULL,
+	[OptimisticLockField] [int] NULL,
+	[GCRecord] [int] NULL,
+ CONSTRAINT [PK_OPRUA1] PRIMARY KEY CLUSTERED 
+(
+	[OID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+ALTER TABLE [dbo].[OPRUA1]  WITH NOCHECK ADD  CONSTRAINT [FK_OPRUA1_Approval] FOREIGN KEY([Approval])
+REFERENCES [dbo].[OAPP] ([OID])
+NOT FOR REPLICATION 
+GO
+
+ALTER TABLE [dbo].[OPRUA1] CHECK CONSTRAINT [FK_OPRUA1_Approval]
+GO
+
+ALTER TABLE [dbo].[OPRUA1]  WITH NOCHECK ADD  CONSTRAINT [FK_OPRUA1_AppStageDoc] FOREIGN KEY([AppStageDoc])
+REFERENCES [dbo].[OPRUA] ([OID])
+NOT FOR REPLICATION 
+GO
+
+ALTER TABLE [dbo].[OPRUA1] CHECK CONSTRAINT [FK_OPRUA1_AppStageDoc]
+GO
+
+
+
+CREATE TABLE [dbo].[OPRUA2](
+	[OID] [int] IDENTITY(1,1) NOT FOR REPLICATION NOT NULL,
+	[Approval] [int] NULL,
+	[AppStage] [int] NULL,
+	[CreateUser] [uniqueidentifier] NULL,
+	[CreateDate] [datetime] NULL,
+	[UpdateUser] [uniqueidentifier] NULL,
+	[UpdateDate] [datetime] NULL,
+	[ApprovalStatus] [int] NULL,
+	[ApprovalRemarks] [nvarchar](100) NULL,
+	[AppStageDoc] [int] NULL,
+	[OptimisticLockField] [int] NULL,
+	[GCRecord] [int] NULL,
+ CONSTRAINT [PK_OPRUA2] PRIMARY KEY CLUSTERED 
+(
+	[OID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+ALTER TABLE [dbo].[OPRUA2]  WITH NOCHECK ADD  CONSTRAINT [FK_OPRUA2_Approval] FOREIGN KEY([Approval])
+REFERENCES [dbo].[OAPP] ([OID])
+NOT FOR REPLICATION 
+GO
+
+ALTER TABLE [dbo].[OPRUA2] CHECK CONSTRAINT [FK_OPRUA2_Approval]
+GO
+
+ALTER TABLE [dbo].[OPRUA2]  WITH NOCHECK ADD  CONSTRAINT [FK_OPRUA2_AppStageDoc] FOREIGN KEY([AppStageDoc])
+REFERENCES [dbo].[OPRUA] ([OID])
+NOT FOR REPLICATION 
+GO
+
+ALTER TABLE [dbo].[OPRUA2] CHECK CONSTRAINT [FK_OPRUA2_AppStageDoc]
+GO
+
+ALTER TABLE [dbo].[OPRUA2]  WITH NOCHECK ADD  CONSTRAINT [FK_OPRUA2_CreateUser] FOREIGN KEY([CreateUser])
+REFERENCES [dbo].[OSUR] ([Oid])
+NOT FOR REPLICATION 
+GO
+
+ALTER TABLE [dbo].[OPRUA2] CHECK CONSTRAINT [FK_OPRUA2_CreateUser]
+GO
+
+ALTER TABLE [dbo].[OPRUA2]  WITH NOCHECK ADD  CONSTRAINT [FK_OPRUA2_UpdateUser] FOREIGN KEY([UpdateUser])
+REFERENCES [dbo].[OSUR] ([Oid])
+NOT FOR REPLICATION 
+GO
+
+ALTER TABLE [dbo].[OPRUA2] CHECK CONSTRAINT [FK_OPRUA2_UpdateUser]
+GO
+
+
+
+CREATE TABLE [dbo].[OPRU](
+	[OID] [int] IDENTITY(1,1) NOT FOR REPLICATION NOT NULL,
+	[Company] [int] NULL,
+	[DocType] [int] NULL,
+	[DocTypeSeries] [int] NULL,
+	[DocNum] [int] NULL,
+	[DocNo] [nvarchar](100) NULL,
+	[DocDate] [datetime] NULL,
+	[DocDueDate] [datetime] NULL,
+	[TaxDate] [datetime] NULL,
+	[ReqDate] [datetime] NULL,
+	[CardCode] [nvarchar](100) NULL,
+	[CardName] [nvarchar](100) NULL,
+	[CncttCode] [nvarchar](100) NULL,
+	[NumAtCard] [nvarchar](100) NULL,
+	[DocCur] [nvarchar](100) NULL,
+	[ShipToCode] [nvarchar](100) NULL,
+	[Address2] [nvarchar](254) NULL,
+	[BillToCode] [nvarchar](100) NULL,
+	[Address] [nvarchar](254) NULL,
+	[SlpCode] [nvarchar](100) NULL,
+	[JrnMemo] [nvarchar](50) NULL,
+	[Comments] [nvarchar](254) NULL,
+	[DocB4Total] [numeric](19, 6) NULL,
+	[DiscountPerc] [numeric](19, 6) NULL,
+	[DiscountAmt] [numeric](19, 6) NULL,
+	[DiscountAdj] [numeric](19, 6) NULL,
+	[Rounding] [numeric](19, 6) NULL,
+	[DocTotal] [numeric](19, 6) NULL,
+	[DocOwner] [int] NULL,
+	[CreateUser] [uniqueidentifier] NULL,
+	[CreateDate] [datetime] NULL,
+	[UpdateUser] [uniqueidentifier] NULL,
+	[UpdateDate] [datetime] NULL,
+	[VerNo] [int] NULL,
+	[PostVerNo] [int] NULL,
+	[DocStatus] [int] NULL,
+	[AppStatus] [int] NULL,
+	[UDFs] [int] NULL,
+	[OptimisticLockField] [int] NULL,
+	[GCRecord] [int] NULL,
+	[SAPDocEntry] [int] NULL,
+ CONSTRAINT [PK_OPRU] PRIMARY KEY CLUSTERED 
+(
+	[OID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+ALTER TABLE [dbo].[OPRU]  WITH NOCHECK ADD  CONSTRAINT [FK_OPRU_AppStatus] FOREIGN KEY([AppStatus])
+REFERENCES [dbo].[OPRUA] ([OID])
+NOT FOR REPLICATION 
+GO
+
+ALTER TABLE [dbo].[OPRU] CHECK CONSTRAINT [FK_OPRU_AppStatus]
+GO
+
+ALTER TABLE [dbo].[OPRU]  WITH NOCHECK ADD  CONSTRAINT [FK_OPRU_Company] FOREIGN KEY([Company])
+REFERENCES [dbo].[OCMP] ([OID])
+NOT FOR REPLICATION 
+GO
+
+ALTER TABLE [dbo].[OPRU] CHECK CONSTRAINT [FK_OPRU_Company]
+GO
+
+ALTER TABLE [dbo].[OPRU]  WITH NOCHECK ADD  CONSTRAINT [FK_OPRU_CreateUser] FOREIGN KEY([CreateUser])
+REFERENCES [dbo].[OSUR] ([Oid])
+NOT FOR REPLICATION 
+GO
+
+ALTER TABLE [dbo].[OPRU] CHECK CONSTRAINT [FK_OPRU_CreateUser]
+GO
+
+ALTER TABLE [dbo].[OPRU]  WITH NOCHECK ADD  CONSTRAINT [FK_OPRU_DocOwner] FOREIGN KEY([DocOwner])
+REFERENCES [dbo].[OEMP] ([OID])
+NOT FOR REPLICATION 
+GO
+
+ALTER TABLE [dbo].[OPRU] CHECK CONSTRAINT [FK_OPRU_DocOwner]
+GO
+
+ALTER TABLE [dbo].[OPRU]  WITH NOCHECK ADD  CONSTRAINT [FK_OPRU_DocStatus] FOREIGN KEY([DocStatus])
+REFERENCES [dbo].[OPRUD] ([OID])
+NOT FOR REPLICATION 
+GO
+
+ALTER TABLE [dbo].[OPRU] CHECK CONSTRAINT [FK_OPRU_DocStatus]
+GO
+
+ALTER TABLE [dbo].[OPRU]  WITH NOCHECK ADD  CONSTRAINT [FK_OPRU_DocType] FOREIGN KEY([DocType])
+REFERENCES [dbo].[ODOC] ([OID])
+NOT FOR REPLICATION 
+GO
+
+ALTER TABLE [dbo].[OPRU] CHECK CONSTRAINT [FK_OPRU_DocType]
+GO
+
+ALTER TABLE [dbo].[OPRU]  WITH NOCHECK ADD  CONSTRAINT [FK_OPRU_DocTypeSeries] FOREIGN KEY([DocTypeSeries])
+REFERENCES [dbo].[ODTS] ([OID])
+NOT FOR REPLICATION 
+GO
+
+ALTER TABLE [dbo].[OPRU] CHECK CONSTRAINT [FK_OPRU_DocTypeSeries]
+GO
+
+ALTER TABLE [dbo].[OPRU]  WITH NOCHECK ADD  CONSTRAINT [FK_OPRU_UDFs] FOREIGN KEY([UDFs])
+REFERENCES [dbo].[OPRUU] ([OID])
+NOT FOR REPLICATION 
+GO
+
+ALTER TABLE [dbo].[OPRU] CHECK CONSTRAINT [FK_OPRU_UDFs]
+GO
+
+ALTER TABLE [dbo].[OPRU]  WITH NOCHECK ADD  CONSTRAINT [FK_OPRU_UpdateUser] FOREIGN KEY([UpdateUser])
+REFERENCES [dbo].[OSUR] ([Oid])
+NOT FOR REPLICATION 
+GO
+
+ALTER TABLE [dbo].[OPRU] CHECK CONSTRAINT [FK_OPRU_UpdateUser]
+GO
+
+
+
+CREATE TABLE [dbo].[OPRU1](
+	[OID] [int] IDENTITY(1,1) NOT FOR REPLICATION NOT NULL,
+	[IsBeingDelete] [bit] NULL,
+	[ObjType] [int] NULL,
+	[Company] [int] NULL,
+	[VisOrder] [int] NULL,
+	[ItemCode] [nvarchar](100) NULL,
+	[Dscription] [nvarchar](100) NULL,
+	[ItemDetails] [nvarchar](max) NULL,
+	[LineVendor] [nvarchar](100) NULL,
+	[DocCur] [nvarchar](100) NULL,
+	[WhsCode] [nvarchar](100) NULL,
+	[OcrCode] [nvarchar](100) NULL,
+	[OcrCode2] [nvarchar](100) NULL,
+	[OcrCode3] [nvarchar](100) NULL,
+	[OcrCode4] [nvarchar](100) NULL,
+	[OcrCode5] [nvarchar](100) NULL,
+	[PrjCode] [nvarchar](100) NULL,
+	[Quantity] [numeric](19, 6) NULL,
+	[UnitMsr] [nvarchar](100) NULL,
+	[UnitPrice] [numeric](19, 6) NULL,
+	[TaxCode] [nvarchar](100) NULL,
+	[TaxPerc] [numeric](19, 6) NULL,
+	[TaxAmt] [numeric](19, 6) NULL,
+	[DiscountAmt] [numeric](19, 6) NULL,
+	[FreightCharge] [nvarchar](100) NULL,
+	[FreightAmt] [numeric](19, 6) NULL,
+	[LineTotal] [numeric](19, 6) NULL,
+	[AcctCode] [nvarchar](100) NULL,
+	[LineStatus] [int] NULL,
+	[CreateUser] [uniqueidentifier] NULL,
+	[CreateDate] [datetime] NULL,
+	[UpdateUser] [uniqueidentifier] NULL,
+	[UpdateDate] [datetime] NULL,
+	[CopyQty] [numeric](19, 6) NULL,
+	[CopyCreQty] [numeric](19, 6) NULL,
+	[OpenQty] [numeric](19, 6) NULL,
+	[OpenCreQty] [numeric](19, 6) NULL,
+	[BaseType] [int] NULL,
+	[Baseline] [int] NULL,
+	[BaseDocNo] [nvarchar](100) NULL,
+	[SAPObjType] [nvarchar](100) NULL,
+	[SAPDocEntry] [int] NULL,
+	[SAPLineNum] [int] NULL,
+	[SAPBaseType] [nvarchar](100) NULL,
+	[SAPBaseEntry] [int] NULL,
+	[SAPBaseLine] [int] NULL,
+	[MasterOid] [int] NULL,
+	[DeleteBy] [uniqueidentifier] NULL,
+	[DeleteDate] [datetime] NULL,
+	[VerNo] [int] NULL,
+	[PostVerNo] [int] NULL,
+	[BinCode] [nvarchar](100) NULL,
+	[BatchNumber] [nvarchar](100) NULL,
+	[UDFs] [int] NULL,
+	[PurchaseQuotation] [int] NULL,
+	[OptimisticLockField] [int] NULL,
+	[GCRecord] [int] NULL,
+ CONSTRAINT [PK_OPRU1] PRIMARY KEY CLUSTERED 
+(
+	[OID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+
+ALTER TABLE [dbo].[OPRU1]  WITH NOCHECK ADD  CONSTRAINT [FK_OPRU1_BaseType] FOREIGN KEY([BaseType])
+REFERENCES [dbo].[ODOC] ([OID])
+NOT FOR REPLICATION 
+GO
+
+ALTER TABLE [dbo].[OPRU1] CHECK CONSTRAINT [FK_OPRU1_BaseType]
+GO
+
+ALTER TABLE [dbo].[OPRU1]  WITH NOCHECK ADD  CONSTRAINT [FK_OPRU1_Company] FOREIGN KEY([Company])
+REFERENCES [dbo].[OCMP] ([OID])
+NOT FOR REPLICATION 
+GO
+
+ALTER TABLE [dbo].[OPRU1] CHECK CONSTRAINT [FK_OPRU1_Company]
+GO
+
+ALTER TABLE [dbo].[OPRU1]  WITH NOCHECK ADD  CONSTRAINT [FK_OPRU1_CreateUser] FOREIGN KEY([CreateUser])
+REFERENCES [dbo].[OSUR] ([Oid])
+NOT FOR REPLICATION 
+GO
+
+ALTER TABLE [dbo].[OPRU1] CHECK CONSTRAINT [FK_OPRU1_CreateUser]
+GO
+
+ALTER TABLE [dbo].[OPRU1]  WITH NOCHECK ADD  CONSTRAINT [FK_OPRU1_DeleteBy] FOREIGN KEY([DeleteBy])
+REFERENCES [dbo].[OSUR] ([Oid])
+NOT FOR REPLICATION 
+GO
+
+ALTER TABLE [dbo].[OPRU1] CHECK CONSTRAINT [FK_OPRU1_DeleteBy]
+GO
+
+ALTER TABLE [dbo].[OPRU1]  WITH NOCHECK ADD  CONSTRAINT [FK_OPRU1_ObjType] FOREIGN KEY([ObjType])
+REFERENCES [dbo].[ODOC] ([OID])
+NOT FOR REPLICATION 
+GO
+
+ALTER TABLE [dbo].[OPRU1] CHECK CONSTRAINT [FK_OPRU1_ObjType]
+GO
+
+ALTER TABLE [dbo].[OPRU1]  WITH NOCHECK ADD  CONSTRAINT [FK_OPRU1_PurchaseQuotation] FOREIGN KEY([PurchaseQuotation])
+REFERENCES [dbo].[OPRU] ([OID])
+NOT FOR REPLICATION 
+GO
+
+ALTER TABLE [dbo].[OPRU1] CHECK CONSTRAINT [FK_OPRU1_PurchaseQuotation]
+GO
+
+ALTER TABLE [dbo].[OPRU1]  WITH NOCHECK ADD  CONSTRAINT [FK_OPRU1_UDFs] FOREIGN KEY([UDFs])
+REFERENCES [dbo].[OPRU1U] ([OID])
+NOT FOR REPLICATION 
+GO
+
+ALTER TABLE [dbo].[OPRU1] CHECK CONSTRAINT [FK_OPRU1_UDFs]
+GO
+
+ALTER TABLE [dbo].[OPRU1]  WITH NOCHECK ADD  CONSTRAINT [FK_OPRU1_UpdateUser] FOREIGN KEY([UpdateUser])
+REFERENCES [dbo].[OSUR] ([Oid])
+NOT FOR REPLICATION 
+GO
+
+ALTER TABLE [dbo].[OPRU1] CHECK CONSTRAINT [FK_OPRU1_UpdateUser]
+GO
+
+
+
+CREATE TABLE [dbo].[PurchaseQuotationAttachment](
+	[Oid] [uniqueidentifier] ROWGUIDCOL  NOT NULL,
+	[File] [uniqueidentifier] NULL,
+	[CreateUser] [uniqueidentifier] NULL,
+	[CreateDate] [datetime] NULL,
+	[UpdateUser] [uniqueidentifier] NULL,
+	[UpdateDate] [datetime] NULL,
+	[Remarks] [nvarchar](100) NULL,
+	[PurchaseQuotation] [int] NULL,
+	[OptimisticLockField] [int] NULL,
+	[GCRecord] [int] NULL,
+ CONSTRAINT [PK_PurchaseQuotationAttachment] PRIMARY KEY CLUSTERED 
+(
+	[Oid] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+ALTER TABLE [dbo].[PurchaseQuotationAttachment]  WITH NOCHECK ADD  CONSTRAINT [FK_PurchaseQuotationAttachment_CreateUser] FOREIGN KEY([CreateUser])
+REFERENCES [dbo].[OSUR] ([Oid])
+NOT FOR REPLICATION 
+GO
+
+ALTER TABLE [dbo].[PurchaseQuotationAttachment] CHECK CONSTRAINT [FK_PurchaseQuotationAttachment_CreateUser]
+GO
+
+ALTER TABLE [dbo].[PurchaseQuotationAttachment]  WITH NOCHECK ADD  CONSTRAINT [FK_PurchaseQuotationAttachment_File] FOREIGN KEY([File])
+REFERENCES [dbo].[FileData] ([Oid])
+NOT FOR REPLICATION 
+GO
+
+ALTER TABLE [dbo].[PurchaseQuotationAttachment] CHECK CONSTRAINT [FK_PurchaseQuotationAttachment_File]
+GO
+
+ALTER TABLE [dbo].[PurchaseQuotationAttachment]  WITH NOCHECK ADD  CONSTRAINT [FK_PurchaseQuotationAttachment_PurchaseQuotation] FOREIGN KEY([PurchaseQuotation])
+REFERENCES [dbo].[OPRU] ([OID])
+NOT FOR REPLICATION 
+GO
+
+ALTER TABLE [dbo].[PurchaseQuotationAttachment] CHECK CONSTRAINT [FK_PurchaseQuotationAttachment_PurchaseQuotation]
+GO
+
+ALTER TABLE [dbo].[PurchaseQuotationAttachment]  WITH NOCHECK ADD  CONSTRAINT [FK_PurchaseQuotationAttachment_UpdateUser] FOREIGN KEY([UpdateUser])
+REFERENCES [dbo].[OSUR] ([Oid])
+NOT FOR REPLICATION 
+GO
+
+ALTER TABLE [dbo].[PurchaseQuotationAttachment] CHECK CONSTRAINT [FK_PurchaseQuotationAttachment_UpdateUser]
+GO
+
+
+
+
+

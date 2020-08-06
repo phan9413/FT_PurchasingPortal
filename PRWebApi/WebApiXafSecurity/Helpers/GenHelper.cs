@@ -11,6 +11,7 @@ namespace WebApiXafSecurity.Helpers
 {
     public static class GenHelper
     {
+        public static bool LiveWithPost;
         public const string xafAssembly = "FT_PurchasingPortal.Module.BusinessObjects";
         public static string FilePath = "";
         public static string GetUserNameFromRequest(HttpRequest request)

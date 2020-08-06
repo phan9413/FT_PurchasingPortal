@@ -1,0 +1,52 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             xmlns:markextensions="clr-namespace:XamarinGRN.MarkExtensions"
+             x:Class="XamarinGRN.Views.ChooseWhsBin" BackgroundColor="Bisque">
+    <ContentPage.Padding>
+        <OnPlatform x:TypeArguments="Thickness"
+                iOS="10,20,10,10"
+                Android="10,10,10,10">
+        </OnPlatform>
+    </ContentPage.Padding>
+    <StackLayout Padding="10,0" Spacing="10">
+        <SearchBar x:Name="whssearch" HorizontalOptions="FillAndExpand" Placeholder="Search Warehouse..." TextChanged="whssearch_TextChanged"
+                />
+        <ListView x:Name="whslist" HorizontalOptions="FillAndExpand" 
+                  ItemsSource="{Binding whslist}" 
+                  SelectedItem="{Binding SelectedWhs}" 
+                  >
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ViewCell Tapped="ViewCell_Tapped">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+                            <Label Grid.Row="0" Text="{Binding BinCode}" TextColor="Black" />
+                            <Label Grid.Row="1" Text="{Binding WhsName}" TextColor="Black" />
+                        </Grid>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+        <StackLayout Orientation="Horizontal" Spacing="20">
+            <Button Text="Back" 
+                TextColor="White"  
+                FontAttributes="Bold" FontSize="Large" HorizontalOptions="FillAndExpand" CornerRadius="20"
+                BackgroundColor="IndianRed" 
+                Command="{Binding back}"
+                />
+            <Button Text="Submit" 
+                TextColor="White"  
+                FontAttributes="Bold" FontSize="Large" HorizontalOptions="FillAndExpand" CornerRadius="20"
+                BackgroundColor="ForestGreen" 
+                Command="{Binding submit}"
+                />
+        </StackLayout>
+    </StackLayout>
+</ContentPage>

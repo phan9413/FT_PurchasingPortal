@@ -240,6 +240,15 @@
 	- IsActive (active)
 	- CompanyCode (sap databasename)
 
+[vwWarehouseBins] (select from vwWarehouseBins, use companycode to differenciate multi company)
+	- BoKey (concate CompanyCode + WhsCode)
+	- BinCode (bin code from sap)
+	- WhsCode (warehouse code from sap)
+	- WhsName (warehouse name from sap)
+	- BinAbsEntry (bin AbsEntry from sap)
+	- IsActive (active)
+	- CompanyCode (sap databasename)
+
 [vwItemMasters] (select from vwItemMasters, use companycode to differenciate multi company)
 	- BoKey (concate CompanyCode + ItemCode)
 	- ItemCode (item code from sap)

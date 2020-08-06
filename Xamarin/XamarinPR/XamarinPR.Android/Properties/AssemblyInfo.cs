@@ -17,7 +17,6 @@ using Xamarin.Forms;
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 [assembly: ComVisible(false)]
-[assembly: Application(UsesCleartextTraffic = true)]
 // Version information for an assembly consists of the following four values:
 //
 //      Major Version
@@ -34,4 +33,7 @@ using Xamarin.Forms;
 // Add some common permissions, these can be removed if not needed
 [assembly: UsesPermission(Android.Manifest.Permission.Internet)]
 [assembly: UsesPermission(Android.Manifest.Permission.WriteExternalStorage)]
+// UsesCleartextTraffic
+[assembly: Application(UsesCleartextTraffic = true)]
+// Badged
 [assembly: ExportRenderer(typeof(TabbedPage), typeof(BadgedTabbedPageRenderer))]

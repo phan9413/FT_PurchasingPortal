@@ -1,0 +1,6 @@
+android->Properties->AssemblyInfo.cs
+
+// UsesCleartextTraffic
+[assembly: Application(UsesCleartextTraffic = true)]
+// Badged
+[assembly: ExportRenderer(typeof(TabbedPage), typeof(BadgedTabbedPageRenderer))]
