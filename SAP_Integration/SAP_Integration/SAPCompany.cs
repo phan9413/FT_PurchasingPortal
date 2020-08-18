@@ -76,7 +76,6 @@ namespace SAP_Integration
             if (oCom.Connect() != 0)
             {
                 errMsg = oCom.GetLastErrorDescription();
-                oCom = null;
                 return false;
             }
             return true;
@@ -1022,6 +1021,21 @@ where isnull(T0.SAPPosted,0) = 0 and T0.Status = @status";
                         oDoc.Lines.Delete();
                 }
                 #endregion
+                #region remove expenses
+                found = false;
+                for (int x = oDoc.Lines.Count - 1; x >= 0; x--)
+                {
+                    oDoc.Lines.SetCurrentLine(x);
+                    if (oDoc.Lines.Expenses != null)
+                    {
+                        for (int i = oDoc.Lines.Expenses.Count - 1; i >= 0; i--)
+                        {
+                            oDoc.Lines.Expenses.SetCurrentLine(i);
+                            oDoc.Lines.Expenses.LineTotal = 0;
+                        }
+                    }
+                }
+                #endregion
                 #region Details
                 if (doc.Lines != null)
                 {
@@ -1100,68 +1114,14 @@ where isnull(T0.SAPPosted,0) = 0 and T0.Status = @status";
                             //}
                         }
 
-                        #region Serial Numbers
-                        if (doc.Lines[i].Serials != null)
-                        {
-                            for (int j = 0; j < doc.Lines[i].Serials.Count; j++)
-                            {
-                                if (j > 0) oDoc.Lines.SerialNumbers.Add();
-                                oDoc.Lines.SerialNumbers.SetCurrentLine(j);
-                                if (!String.IsNullOrEmpty(doc.Lines[i].Serials[j].InternalSerialNumber)) oDoc.Lines.SerialNumbers.InternalSerialNumber = doc.Lines[i].Serials[j].InternalSerialNumber;
-                                if (!String.IsNullOrEmpty(doc.Lines[i].Serials[j].ManufacturerSerialNumber)) oDoc.Lines.SerialNumbers.ManufacturerSerialNumber = doc.Lines[i].Serials[j].ManufacturerSerialNumber;
-                                if (doc.Lines[i].Serials[j].ExpiryDate != DateTime.MinValue) oDoc.Lines.SerialNumbers.ExpiryDate = doc.Lines[i].Serials[j].ExpiryDate;
-                                if (!String.IsNullOrEmpty(doc.Lines[i].Serials[j].Location)) oDoc.Lines.SerialNumbers.Location = doc.Lines[i].Serials[j].Location;
-                                if (doc.Lines[i].Serials[j].ManufactureDate != DateTime.MinValue) oDoc.Lines.SerialNumbers.ManufactureDate = doc.Lines[i].Serials[j].ManufactureDate;
-                                if (!String.IsNullOrEmpty(doc.Lines[i].Serials[j].Notes)) oDoc.Lines.SerialNumbers.Notes = doc.Lines[i].Serials[j].Notes;
-                                if (doc.Lines[i].Serials[j].WarrantyStart != DateTime.MinValue) oDoc.Lines.SerialNumbers.WarrantyStart = doc.Lines[i].Serials[j].WarrantyStart;
-                                if (doc.Lines[i].Serials[j].WarrantyEnd != DateTime.MinValue) oDoc.Lines.SerialNumbers.WarrantyEnd = doc.Lines[i].Serials[j].WarrantyEnd;
 
-                                foreach (PropertyInfo info in doc.Lines[i].Serials[j].UserFields.GetType().GetProperties())
-                                {
-                                    if (doc.Lines[i].Serials[j].UserFields.GetType().GetProperty(info.Name).GetValue(doc.Lines[i].Serials[j].UserFields) != null)
-                                    {
-                                        oDoc.Lines.SerialNumbers.UserFields.Fields.Item(info.Name).Value = doc.Lines[i].Serials[j].UserFields.GetType().GetProperty(info.Name).GetValue(doc.Lines[i].Serials[j].UserFields);
-                                    }
-                                }
-                            }
-                        }
-                        #endregion
-
-                        #region Batch Numbers
-                        if (doc.Lines[i].Batches != null)
-                        {
-                            for (int j = 0; j < doc.Lines[i].Batches.Count; j++)
-                            {
-                                if (j > 0) oDoc.Lines.BatchNumbers.Add();
-                                oDoc.Lines.BatchNumbers.SetCurrentLine(j);
-                                if (!String.IsNullOrEmpty(doc.Lines[i].Batches[j].InternalSerialNumber)) oDoc.Lines.BatchNumbers.InternalSerialNumber = doc.Lines[i].Batches[j].InternalSerialNumber;
-                                if (!String.IsNullOrEmpty(doc.Lines[i].Batches[j].BatchNumber)) oDoc.Lines.BatchNumbers.BatchNumber = doc.Lines[i].Batches[j].BatchNumber;
-                                if (doc.Lines[i].Batches[j].Quantity > 0) oDoc.Lines.BatchNumbers.Quantity = doc.Lines[i].Batches[j].Quantity;
-                                if (doc.Lines[i].Batches[j].AddmisionDate != DateTime.MinValue) oDoc.Lines.BatchNumbers.AddmisionDate = doc.Lines[i].Batches[j].AddmisionDate;
-                                if (doc.Lines[i].Batches[j].ExpiryDate != DateTime.MinValue) oDoc.Lines.BatchNumbers.ExpiryDate = doc.Lines[i].Batches[j].ExpiryDate;
-                                if (!String.IsNullOrEmpty(doc.Lines[i].Batches[j].Location)) oDoc.Lines.BatchNumbers.Location = doc.Lines[i].Batches[j].Location;
-                                if (doc.Lines[i].Batches[j].ManufacturingDate != DateTime.MinValue) oDoc.Lines.BatchNumbers.ManufacturingDate = doc.Lines[i].Batches[j].ManufacturingDate;
-                                if (!String.IsNullOrEmpty(doc.Lines[i].Batches[j].ManufacturerSerialNumber)) oDoc.Lines.BatchNumbers.ManufacturerSerialNumber = doc.Lines[i].Batches[j].ManufacturerSerialNumber;
-                                if (!String.IsNullOrEmpty(doc.Lines[i].Batches[j].Notes)) oDoc.Lines.BatchNumbers.Notes = doc.Lines[i].Batches[j].Notes;
-
-                                foreach (PropertyInfo info in doc.Lines[i].Batches[j].UserFields.GetType().GetProperties())
-                                {
-                                    if (doc.Lines[i].Batches[j].UserFields.GetType().GetProperty(info.Name).GetValue(doc.Lines[i].Batches[j].UserFields) != null)
-                                    {
-                                        oDoc.Lines.BatchNumbers.UserFields.Fields.Item(info.Name).Value = doc.Lines[i].Batches[j].UserFields.GetType().GetProperty(info.Name).GetValue(doc.Lines[i].Batches[j].UserFields);
-                                    }
-                                }
-                            }
-                        }
-
-                        #endregion
 
                         #region Expenses
                         if (doc.Lines[i].Expenses != null)
                         {
                             for (int j = 0; j < doc.Lines[i].Expenses.Count; j++)
                             {
-                                if (j > 0) oDoc.Lines.Expenses.Add();
+                                if (oDoc.Lines.Expenses.Count < j + 1) oDoc.Lines.Expenses.Add();
                                 oDoc.Lines.Expenses.SetCurrentLine(j);
                                 if (doc.Lines[i].Expenses[j].ExpenseCode > 0) oDoc.Lines.Expenses.ExpenseCode = doc.Lines[i].Expenses[j].ExpenseCode;
                                 if (doc.Lines[i].Expenses[j].LineTotal != 0) oDoc.Lines.Expenses.LineTotal = doc.Lines[i].Expenses[j].LineTotal;
@@ -1456,6 +1416,7 @@ where isnull(T0.SAPPosted,0) = 0 and T0.Status = @status";
                             {
                                 if (j > 0) oDoc.Lines.SerialNumbers.Add();
                                 oDoc.Lines.SerialNumbers.SetCurrentLine(j);
+                                if (doc.Lines[i].Serials[j].SystemSerialNumber > 0) oDoc.Lines.SerialNumbers.SystemSerialNumber = doc.Lines[i].Serials[j].SystemSerialNumber;
                                 if (!String.IsNullOrEmpty(doc.Lines[i].Serials[j].InternalSerialNumber)) oDoc.Lines.SerialNumbers.InternalSerialNumber = doc.Lines[i].Serials[j].InternalSerialNumber;
                                 if (!String.IsNullOrEmpty(doc.Lines[i].Serials[j].ManufacturerSerialNumber)) oDoc.Lines.SerialNumbers.ManufacturerSerialNumber = doc.Lines[i].Serials[j].ManufacturerSerialNumber;
                                 if (doc.Lines[i].Serials[j].ExpiryDate != DateTime.MinValue) oDoc.Lines.SerialNumbers.ExpiryDate = doc.Lines[i].Serials[j].ExpiryDate;
@@ -1503,6 +1464,20 @@ where isnull(T0.SAPPosted,0) = 0 and T0.Status = @status";
                             }
                         }
 
+                        #endregion
+
+                        #region BinAllocations
+                        if (doc.Lines[i].BinAllocations != null)
+                        {
+                            for (int j = 0; j < doc.Lines[i].BinAllocations.Count; j++)
+                            {
+                                if (j > 0) oDoc.Lines.BinAllocations.Add();
+                                oDoc.Lines.BinAllocations.SetCurrentLine(j);
+                                if (doc.Lines[i].BinAllocations[j].BinAbsEntry > 0) oDoc.Lines.BinAllocations.BinAbsEntry = doc.Lines[i].BinAllocations[j].BinAbsEntry;
+                                if (doc.Lines[i].BinAllocations[j].Quantity != 0) oDoc.Lines.BinAllocations.Quantity = doc.Lines[i].BinAllocations[j].Quantity;
+                                if (doc.Lines[i].BinAllocations[j].SerialAndBatchNumbersBaseLine >= 0) oDoc.Lines.BinAllocations.SerialAndBatchNumbersBaseLine = doc.Lines[i].BinAllocations[j].SerialAndBatchNumbersBaseLine;
+                            }
+                        }
                         #endregion
 
                         #region Expenses
@@ -3561,6 +3536,63 @@ where isnull(T0.SAPPosted,0) = 0 and T0.Status = @status";
                 return false;
             }
             return true;
+        }
+
+        public int GetSysSerialNumberFromDocLine(FT_PurchasingPortal.Module.BusinessObjects.ClassDocumentDetail dtl)
+        {
+            int rtn = 0;
+
+            string sql = "";
+
+            if (dtl.SAPBaseType == "20") // from Purchase Delivery
+            {
+                sql = string.Format(@"SELECT T3.SysNumber, T5.DOCNUM 'ISSUEDOCNUM', T3.ITEMCODE, T4.ONHAND 'INSTOCK',SUM(T2.QUANTITY) AS 'ISSUEQTY',T3.DISTNUMBER,T3.ExpDate
+FROM OPDN T5 INNER JOIN PDN1 T0 ON T5.DOCENTRY = T0.DOCENTRY
+INNER JOIN
+OILM T1 ON T1.DOCENTRY = T0.DOCENTRY AND T0.OBJTYPE = T1.TRANSTYPE AND T0.LINENUM = T1.DOCLINENUM
+INNER JOIN
+ILM1 T2 ON T1.MESSAGEID = T2.MESSAGEID
+INNER JOIN
+OSRN T3 ON T2.ITEMCODE = T3.ITEMCODE AND T2.SYSNUMBER = T3.SYSNUMBER
+INNER JOIN
+OITM T4 ON T2.ITEMCODE = T4.ITEMCODE
+where T0.DocEntry = {0}
+and T0.LineNum = {1}
+GROUP BY T3.SysNumber, T3.ITEMCODE, T4.ONHAND ,T3.DISTNUMBER,T5.DOCNUM,T3.ExpDate", dtl.SAPBaseEntry, dtl.SAPBaseLine);
+            }
+            else
+            {
+                if (dtl.BinCode.BinAbsEntry > 0)
+                {
+                    sql = string.Format(@"select T0.SysNumber, T0.ItemCode, T0.MnfSerial, T0.BinAbs, T0.OnHand
+from
+(
+select T2.AbsEntry as SysNumber, T0.ItemCode, T2.MnfSerial, T3.BinAbs, sum(T1.Quantity) as OnHand 
+from OITL T0 inner join ITL1 T1 on T0.LogEntry = T1.LogEntry and T0.ManagedBy = '10000045'
+inner join OSRN T2 on T1.MdAbsEntry = T2.AbsEntry
+inner join OBTL T3 on T3.ITLEntry = T0.LogEntry
+group by T2.AbsEntry, T0.ItemCode, T2.MnfSerial, T3.BinAbs
+) T0
+where T0.Onhand >= {3}
+and T0.ItemCode='{0}' and T0.MnfSerial='{1}' and T0.BinAbs={2}", dtl.ItemCode.ItemCode, dtl.BatchNumber, dtl.BinCode.BinAbsEntry, dtl.Quantity);
+                }
+                else
+                {
+                    sql = string.Format(@"SELECT T0.ItemCode, T1.MnfSerial, T1.DistNumber,T1.SysNumber, T1.AbsEntry, ISNULL(T1.ExpDate, '19000101') AS[ExpDate], T0.WhsCode, (ISNULL(T0.Quantity, 0) - ISNULL(T0.CommitQty, 0)) AS[Available]
+FROM OSRQ T0 INNER JOIN OSRN T1 ON T0.MdAbsEntry = T1.AbsEntry
+WHERE(ISNULL(T0.Quantity, 0) - ISNULL(T0.CommitQty, 0)) >= {3}
+and T0.ItemCode='{0}' and T1.MnfSerial='{1}' and T0.WhsCode='{2}'", dtl.ItemCode.ItemCode, dtl.BatchNumber, dtl.WhsCode.WhsCode, dtl.Quantity);
+                }
+
+            }
+            SAPbobsCOM.Recordset rs = (SAPbobsCOM.Recordset)oCom.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset);
+            rs.DoQuery(sql);
+            if (rs.RecordCount > 0)
+            {
+                int.TryParse(rs.Fields.Item("SysNumber").Value.ToString(), out rtn);
+            }
+
+            return rtn;
         }
     }
 }

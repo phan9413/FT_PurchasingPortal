@@ -60,7 +60,9 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
 
         [Key]
         public string BoKey { get; set; }
+        [VisibleInLookupListView(true)]
         public string CurrCode { get; set; }
+        [VisibleInLookupListView(true)]
         public string CurrName { get; set; }
         public bool IsActive { get; set; }
         public string CompanyCode { get; set; }

@@ -35,6 +35,8 @@ namespace FT_PurchasingPortal.Module.Controllers
         {
             base.OnActivated();
             // Perform various tasks depending on the target View.
+            genCon = Frame.GetController<GenController>();
+            copyCon = Frame.GetController<CopyController>();
             if (View is DetailView)
             {
                 ((DetailView)View).ViewEditModeChanged += GenController_ViewEditModeChanged;
@@ -78,44 +80,36 @@ namespace FT_PurchasingPortal.Module.Controllers
             PurchaseOrder selectobject = (PurchaseOrder)View.CurrentObject;
             SystemUsers user = ObjectSpace.GetObjectByKey<SystemUsers>(SecuritySystem.CurrentUserId);
 
-            if (selectobject.DocStatus.CurrDocStatus == DocStatus.Draft)
+            switch (selectobject.DocStatus.CurrDocStatus)
             {
-                this.CopyFromPR.Active.SetItemValue("Enabled", true);
+                case DocStatus.Cancelled:
+                case DocStatus.Closed:
+                case DocStatus.Posted:
+                case DocStatus.Accepted:
+                case DocStatus.Submited:
+                    break;
+                default:
+                    this.CopyFromPR.Active.SetItemValue("Enabled", true);
+                    break;
             }
-            else
+            switch (selectobject.DocStatus.CurrDocStatus)
             {
-                switch (selectobject.DocStatus.CurrDocStatus)
-                {
-                    case DocStatus.Cancelled:
-                    case DocStatus.Closed:
-                    case DocStatus.Posted:
-                    case DocStatus.PostedCancel:
-                        break;
-                    default:
-                        this.CopyFromPR.Active.SetItemValue("Enabled", true);
-                        break;
-                }
-                switch (selectobject.DocStatus.CurrDocStatus)
-                {
-                    case DocStatus.Accepted:
-                    case DocStatus.Closed:
-                    case DocStatus.Posted:
-                        if (user.Roles.Where(pp => pp.Name == DocTypeCodes.PurchaseDelivery).Count() > 0)
+                case DocStatus.Accepted:
+                    if (user.Roles.Where(pp => pp.Name == DocTypeCodes.PurchaseDelivery).Count() > 0)
+                    {
+                        if (GeneralValues.LiveWithPost)
                         {
-                            if (GeneralValues.LiveWithPost)
-                            {
-                                if (selectobject.VerNo == selectobject.PostVerNo)
-                                    this.CopyToDO.Active.SetItemValue("Enabled", true);
-                            }
-                            else
-                            {
+                            if (selectobject.VerNo == selectobject.PostVerNo)
                                 this.CopyToDO.Active.SetItemValue("Enabled", true);
-                            }
                         }
-                        break;
-                    default:
-                        break;
-                }
+                        else
+                        {
+                            this.CopyToDO.Active.SetItemValue("Enabled", true);
+                        }
+                    }
+                    break;
+                default:
+                    break;
             }
 
         }
@@ -128,8 +122,6 @@ namespace FT_PurchasingPortal.Module.Controllers
         {
             base.OnViewControlsCreated();
             // Access and customize the target View control.
-            genCon = Frame.GetController<GenController>();
-            copyCon = Frame.GetController<CopyController>();
         }
         protected override void OnDeactivated()
         {
@@ -160,7 +152,7 @@ namespace FT_PurchasingPortal.Module.Controllers
             if (BusinessPartner == "")
                 collectionSource.Criteria["filter01"] = CriteriaOperator.Parse("1=0");
             else
-                collectionSource.Criteria["Filter01"] = CriteriaOperator.Parse("OpenQty > CopyQty and PurchaseRequest is not null and PurchaseRequest.DocStatus.CurrDocStatus in (?, ?, ?) and LineStatus in (?) and DocCur.BoKey=? and (LineVendor=? or LineVendor is null)", DocStatus.Accepted, DocStatus.Closed, DocStatus.Posted, LineStatusEnum.Open, doccur, BusinessPartner);
+                collectionSource.Criteria["Filter01"] = CriteriaOperator.Parse("OpenQty > CopyQty and PurchaseRequest is not null and PurchaseRequest.DocStatus.CurrDocStatus in (?) and LineStatus in (?) and DocCur.BoKey=? and (LineVendor=? or LineVendor is null)", DocStatus.Accepted, LineStatusEnum.Open, doccur, BusinessPartner);
 
             e.View = Application.CreateListView(listViewId, collectionSource, true);
             //e.View = Application.CreateListView(typeof(PurchaseRequestDetail), true);

@@ -35,6 +35,8 @@ namespace FT_PurchasingPortal.Module.Controllers
         {
             base.OnActivated();
             // Perform various tasks depending on the target View.
+            genCon = Frame.GetController<GenController>();
+            copyCon = Frame.GetController<CopyController>();
             if (View is DetailView)
             {
                 ((DetailView)View).ViewEditModeChanged += GenController_ViewEditModeChanged;
@@ -73,23 +75,24 @@ namespace FT_PurchasingPortal.Module.Controllers
         }
         public void resetButton()
         {
-            this.CopyToPO.Active.SetItemValue("Enabled", false);
+            this.CopyToPO.Active.SetItemValue("Enabled", false); // PR cannot copy to
             PurchaseRequest selectobject = (PurchaseRequest)View.CurrentObject;
             SystemUsers user = ObjectSpace.GetObjectByKey<SystemUsers>(SecuritySystem.CurrentUserId);
 
-            switch (selectobject.DocStatus.CurrDocStatus)
-            {
-                case DocStatus.Draft:
-                case DocStatus.Submited:
-                case DocStatus.Cancelled:
-                    break;
-                default:
-                    if (user.Roles.Where(pp => pp.Name == DocTypeCodes.PurchaseOrder).Count() > 0)
-                    {
-                        //this.CopyToPO.Active.SetItemValue("Enabled", true);
-                    }
-                    break;
-            }
+            // PR cannot copy to
+            //switch (selectobject.DocStatus.CurrDocStatus)
+            //{
+            //    case DocStatus.Draft:
+            //    case DocStatus.Submited:
+            //    case DocStatus.Cancelled:
+            //        break;
+            //    default:
+            //        if (user.Roles.Where(pp => pp.Name == DocTypeCodes.PurchaseOrder).Count() > 0)
+            //        {
+            //            //this.CopyToPO.Active.SetItemValue("Enabled", true);
+            //        }
+            //        break;
+            //}
         }
         private void enableButton()
         {
@@ -99,8 +102,6 @@ namespace FT_PurchasingPortal.Module.Controllers
         {
             base.OnViewControlsCreated();
             // Access and customize the target View control.
-            genCon = Frame.GetController<GenController>();
-            copyCon = Frame.GetController<CopyController>();
         }
         protected override void OnDeactivated()
         {

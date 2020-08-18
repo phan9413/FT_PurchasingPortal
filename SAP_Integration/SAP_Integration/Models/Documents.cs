@@ -27,14 +27,16 @@ namespace SAP_Integration.Models
         public int SAPLineNum { get; set; }
         public List<DocumentSerials> Serials { get; set; }
         public List<DocumentBatchs> Batches { get; set; }
-        public List<DocumentLinesExpenses> Expenses { get; set; }
+        public List<DocumentExpenses> Expenses { get; set; }
+        public List<DocumentBinAllocations> BinAllocations { get; set; }
 
         public IUserFields UserFields { get; set; }
 
         public DocumentLines()
         {
             UserFields = new DocumentLinesUDF();
-            Expenses = new List<DocumentLinesExpenses>();
+            //Expenses = new List<DocumentLinesExpenses>();
+            //Bins = new List<DocumentLinesBins>();
         }
     }
 
@@ -65,7 +67,11 @@ namespace SAP_Integration.Models
         
 
     }
-    public class DocumentLinesExpenses : MarketingDocumentLinesExpenses
+    public class DocumentExpenses : MarketingDocumentLinesExpenses
+    {
+
+    }
+    public class DocumentBinAllocations : MarketingDocumentLinesBinAllocations
     {
 
     }

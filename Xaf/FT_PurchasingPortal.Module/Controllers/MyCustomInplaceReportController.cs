@@ -106,6 +106,18 @@ namespace FT_PurchasingPortal.Module.Controllers
         {
             base.OnActivated();
             // Perform various tasks depending on the target View.
+            PrintSelectionBaseController PrintSelectionController = Frame.GetController<PrintSelectionBaseController>();
+            if (PrintSelectionController != null && PrintSelectionController.Actions.Count > 0)
+            {
+
+                if (PrintSelectionController.Actions["ShowInReportV2"] != null)
+                {
+                    if (checkObjectType())
+                        PrintSelectionController.Actions["ShowInReportV2"].Active.SetItemValue("EnableAction", false);
+                    //PrintSelectionController.Actions["ShowInReportV2"].Executing += FilterCopyFromController_Executing;
+                }
+            }
+
             ShowInPlaceReportAction.Items.Clear();
             if (checkObjectType())
             {
@@ -207,17 +219,6 @@ namespace FT_PurchasingPortal.Module.Controllers
         {
             base.OnViewControlsCreated();
             // Access and customize the target View control.
-            PrintSelectionBaseController PrintSelectionController = Frame.GetController<PrintSelectionBaseController>();
-            if (PrintSelectionController != null && PrintSelectionController.Actions.Count > 0)
-            {
-
-                if (PrintSelectionController.Actions["ShowInReportV2"] != null)
-                {
-                    if (checkObjectType())
-                        PrintSelectionController.Actions["ShowInReportV2"].Active.SetItemValue("EnableAction", false);
-                    //PrintSelectionController.Actions["ShowInReportV2"].Executing += FilterCopyFromController_Executing;
-                }
-            }
         }
         protected override void OnDeactivated()
         {

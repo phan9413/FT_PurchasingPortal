@@ -71,6 +71,7 @@ namespace WebApiXafSecurity.Controllers
                             PurchaseDeliveryDetail dtl = objectSpace.GetObjectByKey<PurchaseDeliveryDetail>(intkeyvalue);
                             cnt++;
                             dtl.VisOrder = cnt;
+                            dtl.VerNo = 1;
                             employee.PurchaseDeliveryDetail.Add(dtl);
                         }
                         else
@@ -92,6 +93,7 @@ namespace WebApiXafSecurity.Controllers
                 }
                 employee.DocStatus.AddDocStatus(DocStatus.Accepted, "WebApi Generated");
                 employee.DocStatus.CurrDocStatus = DocStatus.Accepted;
+                employee.VerNo = 1;
                 employee.AssignDocNumber();
                 objectSpace.CommitChanges();
                 return Ok(employee.DocNum);
@@ -214,6 +216,7 @@ namespace WebApiXafSecurity.Controllers
                             PurchaseReturnDetail dtl = objectSpace.GetObjectByKey<PurchaseReturnDetail>(intkeyvalue);
                             cnt++;
                             dtl.VisOrder = cnt;
+                            dtl.VerNo = 1;
                             employee.PurchaseReturnDetail.Add(dtl);
                         }
                         else
@@ -235,6 +238,7 @@ namespace WebApiXafSecurity.Controllers
                 }
                 employee.DocStatus.AddDocStatus(DocStatus.Accepted, "WebApi Generated");
                 employee.DocStatus.CurrDocStatus = DocStatus.Accepted;
+                employee.VerNo = 1;
                 employee.AssignDocNumber();
                 objectSpace.CommitChanges();
                 return Ok(employee.DocNum);

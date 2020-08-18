@@ -59,7 +59,9 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
         //}
         [Key]
         public string BoKey { get; set; }
+        [VisibleInLookupListView(true)]
         public string ItemCode { get; set; }
+        [VisibleInLookupListView(true)]
         public string ItemName { get; set; }
         public bool IsActive { get; set; }
         public string InvntItem { get; set; }
@@ -72,6 +74,8 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
         public string InvntryUOM { get; set; }
         public double LastPurPrc { get; set; }
         public string LastPurCur { get; set; }
+        public bool ManBtchNum { get; set; }
+        public bool ManSerNum { get; set; }
         public string CompanyCode { get; set; }
     }
 }

@@ -30,8 +30,20 @@
 	- CopyFromDocument (function handle copy from)
 	- CopyToDocument (function handle copy to)
 
-[PurchaseOrderController]
-	- CopyFromPR (button copy items from PR)
-
 [PurchaseRequestController]
-	-CopyToPO (button copy items from PO)
+	- CopyToPO (always inactive)
+
+[PurchaseOrderController]
+	- CopyFromPR (button copy items from PR, only when PR status in (Accepted))
+	- CopyToGRN (button copy items to GRN, only when PO status in (Accepted) and VerNo = SAPVerNo) if LiveWithPost = 1
+	- CopyToGRN (button copy items to GRN, only when PO status in (Accepted)) if LiveWithPost = 0
+
+[PurchaseDeliveryController]
+	- CopyFromPO (button copy items from PO, only when PO status in (Accepted) and VerNo = SAPVerNo) if LiveWithPost = 1
+	- CopyFromPO (button copy items from PO, only when PO status in (Accepted)) if livewithpost = 0
+	- CopyToPUR (button copy items to PUR, only when GRN status in (Posted) and VerNo = SAPVerNo) if LiveWithPost = 1
+	- CopyToPUR (button copy items to PUR, only when GRN status in (Accepted, Posted)) if LiveWithPost = 0
+
+[PurchaseReturnController]
+	- CopyFromGRN (button copy items from GRN, only when GRN status in (Posted) and VerNo = SAPVerNo) if LiveWithPost = 1
+	- CopyFromGRN (button copy items from GRN, only when GRN status in (Accepted, Posted) if LiveWithPost = 0

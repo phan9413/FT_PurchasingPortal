@@ -58,26 +58,34 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
                 SetPropertyValue("CurrDocStatus", ref _CurrDocStatus, value);
             }
         }
-        private string _SAPPostCancelRemarks;
-        [Index(20), VisibleInListView(false), VisibleInDetailView(false), VisibleInLookupListView(false)]
-        [Appearance("SAPPostCancelRemarks", Enabled = false)]
-        public string SAPPostCancelRemarks
-        {
-            get { return _SAPPostCancelRemarks; }
-            set
-            {
-                SetPropertyValue("SAPPostCancelRemarks", ref _SAPPostCancelRemarks, value);
-            }
-        }
         private bool _IsSAPPosted;
-        [Index(30), VisibleInListView(false), VisibleInDetailView(false), VisibleInLookupListView(false)]
+        [Index(30), VisibleInListView(true), VisibleInDetailView(true), VisibleInLookupListView(false)]
         [Appearance("IsSAPPosted", Enabled = false)]
+        [XafDisplayName("Posted")]
         public bool IsSAPPosted
         {
             get { return _IsSAPPosted; }
             set
             {
                 SetPropertyValue("IsSAPPosted", ref _IsSAPPosted, value);
+            }
+        }
+        private string _SAPPostCancelRemarks;
+        [Index(31), VisibleInListView(true), VisibleInDetailView(true), VisibleInLookupListView(false)]
+        [Appearance("SAPPostCancelRemarks", Enabled = false)]
+        [XafDisplayName("Post Error Remarks")]
+        public string SAPPostCancelRemarks
+        {
+            get { return _SAPPostCancelRemarks; }
+            set
+            {
+                if (!IsLoading)
+                {
+                    if (value != null)
+                        if (value.Length > 100)
+                            value = value.Substring(0, 100);
+                }
+                SetPropertyValue("SAPPostCancelRemarks", ref _SAPPostCancelRemarks, value);
             }
         }
 

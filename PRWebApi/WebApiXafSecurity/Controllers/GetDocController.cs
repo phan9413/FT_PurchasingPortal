@@ -45,9 +45,9 @@ namespace WebApiXafSecurity.Controllers
                 GenHelper.WriteLog("[Log]", "[" + securityProvider.GetUserName() + "]" + controllername + "-GetOpenPO(" + cardcodekey + "):[" + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "]");
                 List<PurchaseOrder> obj;
                 if (GenHelper.LiveWithPost)
-                    obj = objectSpace.GetObjects<PurchaseOrder>(CriteriaOperator.Parse("[CardCode.BoKey]=? and [DocStatus.CurrDocStatus] in (?,?) and [PurchaseOrderDetail][[Quantity] > [CopyQty] and [VerNo] = [PostVerNo]]", cardcodekey, DocStatus.Accepted)).ToList();
+                    obj = objectSpace.GetObjects<PurchaseOrder>(CriteriaOperator.Parse("[CardCode.BoKey]=? and [DocStatus.CurrDocStatus] in (?) and [PurchaseOrderDetail][[Quantity] > [CopyQty] and [VerNo] = [PostVerNo]]", cardcodekey, DocStatus.Accepted)).ToList();
                 else
-                    obj = objectSpace.GetObjects<PurchaseOrder>(CriteriaOperator.Parse("[CardCode.BoKey]=? and [DocStatus.CurrDocStatus] in (?,?) and [PurchaseOrderDetail][[Quantity] > [CopyQty]]", cardcodekey, DocStatus.Accepted)).ToList();
+                    obj = objectSpace.GetObjects<PurchaseOrder>(CriteriaOperator.Parse("[CardCode.BoKey]=? and [DocStatus.CurrDocStatus] in (?) and [PurchaseOrderDetail][[Quantity] > [CopyQty]]", cardcodekey, DocStatus.Accepted)).ToList();
 
                 return Ok(obj);
             }
@@ -208,7 +208,7 @@ namespace WebApiXafSecurity.Controllers
                 if(GenHelper.LiveWithPost)
                     obj = objectSpace.GetObjects<PurchaseDelivery>(CriteriaOperator.Parse("[CardCode.BoKey]=? and [DocStatus.CurrDocStatus]=? and [DocStatus.IsSAPPosted]=1 and [PurchaseOrderDetail][[Quantity] > [CopyQty] and [VerNo] = [PostVerNo]]", cardcodekey, DocStatus.Posted)).ToList();
                 else
-                    obj = objectSpace.GetObjects<PurchaseDelivery>(CriteriaOperator.Parse("[CardCode.BoKey]=? and [DocStatus.CurrDocStatus] in (?,?,?) and [PurchaseOrderDetail][[Quantity] > [CopyQty]]", cardcodekey, DocStatus.Accepted, DocStatus.Closed, DocStatus.Posted)).ToList();
+                    obj = objectSpace.GetObjects<PurchaseDelivery>(CriteriaOperator.Parse("[CardCode.BoKey]=? and [DocStatus.CurrDocStatus] in (?,?) and [PurchaseOrderDetail][[Quantity] > [CopyQty]]", cardcodekey, DocStatus.Accepted, DocStatus.Posted)).ToList();
 
                 return Ok(obj);
             }
@@ -238,7 +238,7 @@ namespace WebApiXafSecurity.Controllers
                 if (GenHelper.LiveWithPost)
                     obj = objectSpace.GetObjects<PurchaseDeliveryDetail>(CriteriaOperator.Parse("!isnull([PurchaseDelivery]) and [PurchaseDelivery.CardCode.BoKey]=? and [PurchaseDelivery.DocStatus.CurrDocStatus]=? and [PurchaseDelivery.DocStatus.IsSAPPosted]=1 and [Quantity] > [CopyQty] and [VerNo] = [PostVerNo]", cardcodekey, DocStatus.Posted)).OrderBy(pp => pp.PurchaseDelivery.DocNo).ToList();
                 else
-                    obj = objectSpace.GetObjects<PurchaseDeliveryDetail>(CriteriaOperator.Parse("!isnull([PurchaseDelivery]) and [PurchaseDelivery.CardCode.BoKey]=? and [PurchaseDelivery.DocStatus.CurrDocStatus] in (?,?,?) and [Quantity] > [CopyQty]", cardcodekey, DocStatus.Accepted, DocStatus.Closed, DocStatus.Posted)).OrderBy(pp => pp.PurchaseDelivery.DocNo).ToList();
+                    obj = objectSpace.GetObjects<PurchaseDeliveryDetail>(CriteriaOperator.Parse("!isnull([PurchaseDelivery]) and [PurchaseDelivery.CardCode.BoKey]=? and [PurchaseDelivery.DocStatus.CurrDocStatus] in (?,?) and [Quantity] > [CopyQty]", cardcodekey, DocStatus.Accepted, DocStatus.Posted)).OrderBy(pp => pp.PurchaseDelivery.DocNo).ToList();
 
                 return Ok(obj);
             }
@@ -269,7 +269,7 @@ namespace WebApiXafSecurity.Controllers
                 if (GenHelper.LiveWithPost)
                     obj = objectSpace.GetObjects<PurchaseDeliveryDetail>(CriteriaOperator.Parse("!isnull([PurchaseDelivery]) and [PurchaseDelivery.DocNo]=? and [PurchaseDelivery.DocStatus.CurrDocStatus]=? and [PurchaseDelivery.DocStatus.IsSAPPosted]=1 and [Quantity] > [CopyQty] and [VerNo] = [PostVerNo]", docno, DocStatus.Posted)).OrderBy(pp => pp.PurchaseDelivery.DocNo).ToList();
                 else
-                    obj = objectSpace.GetObjects<PurchaseDeliveryDetail>(CriteriaOperator.Parse("!isnull([PurchaseDelivery]) and [PurchaseDelivery.DocNo]=? and [PurchaseDelivery.DocStatus.CurrDocStatus] in (?,?,?) and [Quantity] > [CopyQty]", docno, DocStatus.Accepted, DocStatus.Closed, DocStatus.Posted)).OrderBy(pp => pp.PurchaseDelivery.DocNo).ToList();
+                    obj = objectSpace.GetObjects<PurchaseDeliveryDetail>(CriteriaOperator.Parse("!isnull([PurchaseDelivery]) and [PurchaseDelivery.DocNo]=? and [PurchaseDelivery.DocStatus.CurrDocStatus] in (?,?) and [Quantity] > [CopyQty]", docno, DocStatus.Accepted, DocStatus.Posted)).OrderBy(pp => pp.PurchaseDelivery.DocNo).ToList();
 
                 return Ok(obj);
             }

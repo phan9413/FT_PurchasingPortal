@@ -847,6 +847,8 @@ namespace FT_PurchasingPortal.Module.Controllers
         {
             base.OnActivated();
             // Perform various tasks depending on the target View.
+            genCon = Frame.GetController<GenController>();
+            user = (SystemUsers)SecuritySystem.CurrentUser;
             if (View is DetailView)
             {
                 ((DetailView)View).ViewEditModeChanged += GenController_ViewEditModeChanged;
@@ -883,10 +885,18 @@ namespace FT_PurchasingPortal.Module.Controllers
             if (typeof(ClassDocument).IsAssignableFrom(View.ObjectTypeInfo.Type))
             {
                 this.SubmitDoc.Active.SetItemValue("Enabled", true);
-                this.CancelDoc.Active.SetItemValue("Enabled", true);
+                if (View.ObjectTypeInfo.Type == typeof(PurchaseDelivery) || View.ObjectTypeInfo.Type == typeof(PurchaseReturn))
+                { }
+                else
+                {
+                    this.CancelDoc.Active.SetItemValue("Enabled", true);
+                    if (user.Roles.Where(pp => pp.Name == GeneralValues.CloseRole).Count() > 0)
+                    {
+                        this.CloseDoc.Active.SetItemValue("Enabled", true);
+                    }
+                }
                 if (user.Roles.Where(pp => pp.Name == GeneralValues.CloseRole).Count() > 0)
                 {
-                    this.CloseDoc.Active.SetItemValue("Enabled", true);
                     this.ReOpenDoc.Active.SetItemValue("Enabled", true);
                 }
                 if (user.Roles.Where(pp => pp.Name == GeneralValues.PostRole).Count() > 0)
@@ -958,8 +968,6 @@ namespace FT_PurchasingPortal.Module.Controllers
         {
             base.OnViewControlsCreated();
             // Access and customize the target View control.
-            genCon = Frame.GetController<GenController>();
-            user = (SystemUsers)SecuritySystem.CurrentUser;
         }
         protected override void OnDeactivated()
         {
@@ -1179,17 +1187,20 @@ namespace FT_PurchasingPortal.Module.Controllers
             {
                 PurchaseOrder selectedObject = (PurchaseOrder)View.CurrentObject;
                 docstatus = selectedObject.DocStatus.CurrDocStatus;
-                if (selectedObject.PurchaseOrderDetail.Count > 0 && selectedObject.PurchaseOrderDetail.Where(pp => pp.VerNo != pp.PostVerNo).Count() > 0)
+                if (GeneralValues.LiveWithPost)
                 {
-                    err = true;
-                    actionMessage = "Document details has not yet sync. Please wait.";
-                }
-                if (!err)
-                {
-                    if (selectedObject.VerNo != selectedObject.PostVerNo)
+                    if (selectedObject.PurchaseOrderDetail.Count > 0 && selectedObject.PurchaseOrderDetail.Where(pp => pp.VerNo != pp.PostVerNo).Count() > 0)
                     {
                         err = true;
-                        actionMessage = "Document has not yet sync. Please wait.";
+                        actionMessage = "Document details has not yet sync. Please wait.";
+                    }
+                    if (!err)
+                    {
+                        if (selectedObject.VerNo != selectedObject.PostVerNo)
+                        {
+                            err = true;
+                            actionMessage = "Document has not yet sync. Please wait.";
+                        }
                     }
                 }
             }
@@ -1259,17 +1270,20 @@ namespace FT_PurchasingPortal.Module.Controllers
             {
                 PurchaseOrder selectedObject = (PurchaseOrder)View.CurrentObject;
                 docstatus = selectedObject.DocStatus.CurrDocStatus;
-                if (selectedObject.PurchaseOrderDetail.Count > 0 && selectedObject.PurchaseOrderDetail.Where(pp => pp.VerNo != pp.PostVerNo).Count() > 0)
+                if (GeneralValues.LiveWithPost)
                 {
-                    err = true;
-                    actionMessage = "Document details has not yet sync. Please wait.";
-                }
-                if (!err)
-                {
-                    if (selectedObject.VerNo != selectedObject.PostVerNo)
+                    if (selectedObject.PurchaseOrderDetail.Count > 0 && selectedObject.PurchaseOrderDetail.Where(pp => pp.VerNo != pp.PostVerNo).Count() > 0)
                     {
                         err = true;
-                        actionMessage = "Document has not yet sync. Please wait.";
+                        actionMessage = "Document details has not yet sync. Please wait.";
+                    }
+                    if (!err)
+                    {
+                        if (selectedObject.VerNo != selectedObject.PostVerNo)
+                        {
+                            err = true;
+                            actionMessage = "Document has not yet sync. Please wait.";
+                        }
                     }
                 }
             }

@@ -88,6 +88,8 @@ as
 	, InvntryUOM
 	, LastPurPrc
 	, LastPurCur
+	, case when ManBtchNum = 'Y' then 1 else 0 end as ManBtchNum
+	, case when ManSerNum = 'Y' then 1 else 0 end as ManSerNum
 	,'HQ' as CompanyCode 
 	from [PUSRAWI_LIVE]..OITM
 )
@@ -230,5 +232,11 @@ as
 	, case when Inactive = 'Y' then 0 else 1 end as IsActive
 	,'HQ' as CompanyCode 
 	from [PUSRAWI_LIVE]..OWHS
+	union all
+	select '' + T0.BinCode as BoKey, T0.BinCode as BinCode, T1.WhsCode, T1.WhsName, T0.AbsEntry as BinAbsEntry
+	, case when T1.Inactive = 'Y' then 0 else 1 end as IsActive
+	,'HQ' as CompanyCode
+	from [PUSRAWI_LIVE]..OBIN T0 inner join [PUSRAWI_LIVE]..OWHS T1 on T0.WhsCode = T1.WhsCode
+
 )
 go

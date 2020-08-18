@@ -13,8 +13,8 @@
       <Item Id="Approval" Index="3" />
       <Item Id="Purchasing" Index="4">
         <Items>
-          <Item Id="PurchaseQuotation_ListView" Index="-1" />
           <Item Id="PurchaseRequest_ListView" Index="0" />
+          <Item Id="PurchaseQuotation_ListView" Index="1" Visible="True" />
           <Item Id="PurchaseOrder_ListView" Index="2" />
         </Items>
       </Item>

@@ -32,12 +32,12 @@ namespace FT_PurchasingPortal.Module.Controllers
         {
             base.OnActivated();
             // Perform various tasks depending on the target View.
+            gen = Frame.GetController<GenController>();
         }
         protected override void OnViewControlsCreated()
         {
             base.OnViewControlsCreated();
             // Access and customize the target View control.
-            gen = Frame.GetController<GenController>();
         }
         protected override void OnDeactivated()
         {

@@ -131,7 +131,7 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
         [Association("PurchaseQuotation-Detail")]
         [XafDisplayName("Details")]
         [DevExpress.Xpo.Aggregated]
-        [Appearance("PurchaseQuotationDetail", Enabled = false, Criteria = "not (DocStatus.CurrDocStatus in (0, 2, 4))")]
+        [Appearance("PurchaseQuotationDetail", Enabled = false, Criteria = "not (DocStatus.CurrDocStatus in (0, 2, 4, 7))")]
         [Appearance("PurchaseQuotationDetail2", Enabled = false, Criteria = "not IsCardCodeSelected")]
         public XPCollection<PurchaseQuotationDetail> PurchaseQuotationDetail
         {

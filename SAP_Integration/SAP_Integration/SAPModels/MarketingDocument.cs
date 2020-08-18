@@ -442,4 +442,11 @@ namespace SAP_Integration.SAPModels
         public string VatGroup { get; set; }
     }
 
+    public class MarketingDocumentLinesBinAllocations
+    {
+        public int BinAbsEntry { get; set; }
+        public Double Quantity { get; set; }
+        public int SerialAndBatchNumbersBaseLine { get; set; }
+    }
+
 }

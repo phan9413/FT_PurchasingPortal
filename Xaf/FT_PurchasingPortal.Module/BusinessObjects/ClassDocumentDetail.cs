@@ -111,6 +111,42 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
         public bool IsBeingDelete { get; set; }
 
         [Browsable(false)]
+        public bool IsBatchNumberValid
+        {
+            get
+            {
+                if (ItemCode != null)
+                {
+                    if (ItemCode.ManBtchNum || ItemCode.ManSerNum)
+                    {
+                        if (!string.IsNullOrWhiteSpace(BatchNumber))
+                            return true;
+                        else
+                            return false;
+                    }
+                }
+                return true;
+            }
+        }
+        [Browsable(false)]
+        public bool IsSerialValid
+        {
+            get
+            {
+                if (ItemCode != null)
+                {
+                    if (ItemCode.ManSerNum)
+                    {
+                        if (Quantity == 1)
+                            return true;
+                        else
+                            return false;
+                    }
+                }
+                return true;
+            }
+        }
+        [Browsable(false)]
         [Appearance("IsViewItemPriceRole", Enabled = false)]
         [NonPersistent]
         public bool IsViewItemPriceRole { get; set; }
@@ -151,6 +187,7 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
         [XafDisplayName("Item Code")]
         [DataSourceCriteria("CompanyCode = '@This.Company.BoCode' and IsActive and (InvntItem = '@This.ObjType.InvntItem' or SellItem = '@This.ObjType.SellItem' or PrchseItem = '@This.ObjType.PrchseItem')")]
         [NoForeignKey]
+        [Appearance("ItemCode", Enabled = false, Criteria = "not IsNew or Baseline > 0")]
         [RuleRequiredField(DefaultContexts.Save)]
         public vwItemMasters ItemCode
         {
@@ -167,11 +204,12 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
                         else if (ObjType.PrchseItem == "Y")
                         {
                             UnitMsr = value.BuyUnitMsr;
-                            if (DocCur.CurrCode == value.LastPurCur)
+                            if (value.LastPurCur != null && DocCur.CurrCode == value.LastPurCur)
                                 UnitPrice = value.LastPurPrc;
                             else
                                 UnitPrice = 0;
                         }
+                        BatchNumber = "";
                     }
                 }
             }
@@ -299,7 +337,8 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
         }
         private string _BatchNumber;
         [Index(23), VisibleInListView(true), VisibleInDetailView(true), VisibleInLookupListView(true)]
-        [XafDisplayName("Batch Code")]
+        [XafDisplayName("Batch/Serial Code")]
+        [Appearance("BatchNumber", Enabled = false, Criteria = "not(ItemCode.ManBtchNum or ItemCode.ManSerNum)")]
         [DbType("nvarchar(100)")]
         public string BatchNumber
         {
@@ -910,6 +949,14 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
 
         protected override void OnSaving()
         {
+            if (ItemCode != null)
+            {
+                if (ItemCode.ManSerNum)
+                    if (Quantity != 1)
+                    {
+                        throw new Exception(string.Format("Quantity must equal 1, because [{0}] is managed by serial", ItemCode.ItemCode));
+                    }
+            }
             base.OnSaving();
             if (!(Session is NestedUnitOfWork)
                 && (Session.DataLayer != null)

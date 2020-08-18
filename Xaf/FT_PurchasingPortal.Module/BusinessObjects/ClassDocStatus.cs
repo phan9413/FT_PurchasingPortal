@@ -79,6 +79,12 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
             get { return _DocStatusRemarks; }
             set
             {
+                if (!IsLoading)
+                {
+                    if (value != null)
+                        if (value.Length > 100)
+                            value = value.Substring(0, 100);
+                }
                 SetPropertyValue("DocStatusRemarks", ref _DocStatusRemarks, value);
             }
         }

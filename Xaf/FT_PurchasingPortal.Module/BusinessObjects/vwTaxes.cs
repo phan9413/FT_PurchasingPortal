@@ -61,7 +61,9 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
 
         [Key]
         public string BoKey { get; set; }
+        [VisibleInLookupListView(true)]
         public string Code { get; set; }
+        [VisibleInLookupListView(true)]
         public string Name { get; set; }
         public bool IsActive { get; set; }
         public string Category { get; set; }

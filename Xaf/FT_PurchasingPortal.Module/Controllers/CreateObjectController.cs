@@ -33,6 +33,9 @@ namespace FT_PurchasingPortal.Module.Controllers
         {
             base.OnActivated();
             // Perform various tasks depending on the target View.
+            genCon = Frame.GetController<GenController>();
+            copyCon = Frame.GetController<CopyController>();
+
             this.DuplicateDetail.Active.SetItemValue("Enabled", false);
             
             if (View is ListView && !View.IsRoot)
@@ -55,8 +58,6 @@ namespace FT_PurchasingPortal.Module.Controllers
         {
             base.OnViewControlsCreated();
             // Access and customize the target View control.
-            genCon = Frame.GetController<GenController>();
-            copyCon = Frame.GetController<CopyController>();
         }
         protected override void OnDeactivated()
         {
@@ -209,6 +210,14 @@ namespace FT_PurchasingPortal.Module.Controllers
                     if (View.ObjectTypeInfo.Type == typeof(PurchaseDeliveryDetail))
                     {
                         tDtl = os.CreateObject<PurchaseDeliveryDetail>();
+                    }
+                    if (View.ObjectTypeInfo.Type == typeof(PurchaseReturnDetail))
+                    {
+                        tDtl = os.CreateObject<PurchaseReturnDetail>();
+                    }
+                    if (View.ObjectTypeInfo.Type == typeof(PurchaseQuotationDetail))
+                    {
+                        tDtl = os.CreateObject<PurchaseQuotationDetail>();
                     }
                     copyCon.copyClassDocumentDetail(dtl, tDtl, os);
                 }

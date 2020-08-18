@@ -59,7 +59,9 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
         //}
         [Key]
         public string BoKey { get; set; }
+        [VisibleInLookupListView(true)]
         public string CardCode { get; set; }
+        [VisibleInLookupListView(true)]
         public string CardName { get; set; }
         public string Currency { get; set; }
         public string CardType { get; set; }

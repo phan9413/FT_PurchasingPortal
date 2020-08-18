@@ -35,7 +35,7 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
             IsSAPPosted = false;
         }
 
-        [Association("PODocStatus-DocStatus")]
+        [Association("PRRDocStatus-DocStatus")]
         [XafDisplayName("Document Status")]
         [DevExpress.Xpo.Aggregated]
         public XPCollection<PurchaseReturnDocStatus> DocumentStatus
@@ -103,7 +103,7 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
 
         private PurchaseReturnDoc _DocStatusDoc;
         [Browsable(false)]
-        [Association("PODocStatus-DocStatus")]
+        [Association("PRRDocStatus-DocStatus")]
         public PurchaseReturnDoc DocStatusDoc
         {
             get { return _DocStatusDoc; }

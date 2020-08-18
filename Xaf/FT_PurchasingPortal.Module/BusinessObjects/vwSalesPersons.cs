@@ -59,7 +59,9 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
 
         [Key]
         public string BoKey { get; set; }
+        [VisibleInLookupListView(true)]
         public string SlpCode { get; set; }
+        [VisibleInLookupListView(true)]
         public string SlpName { get; set; }
         public bool IsActive { get; set; }
         public string CompanyCode { get; set; }

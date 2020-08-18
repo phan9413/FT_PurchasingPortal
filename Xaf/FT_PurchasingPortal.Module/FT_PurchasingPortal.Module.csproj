@@ -37,6 +37,16 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release x64|AnyCPU'">
+    <OutputPath>bin\Release x64\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="DevExpress.Sparkline.v19.2.Core">
       <SpecificVersion>False</SpecificVersion>
@@ -316,6 +326,12 @@
     <Compile Include="Controllers\PurchaseOrderController.Designer.cs">
       <DependentUpon>PurchaseOrderController.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controllers\PurchaseQuotationController.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controllers\PurchaseQuotationController.Designer.cs">
+      <DependentUpon>PurchaseQuotationController.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controllers\PurchaseRequestController.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -359,6 +375,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Controllers\PurchaseOrderController.resx">
       <DependentUpon>PurchaseOrderController.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controllers\PurchaseQuotationController.resx">
+      <DependentUpon>PurchaseQuotationController.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controllers\PurchaseRequestController.resx">
       <DependentUpon>PurchaseRequestController.cs</DependentUpon>

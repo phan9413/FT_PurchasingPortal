@@ -264,6 +264,8 @@
 	- InvntryUOM (item inventory uom)
 	- LastPurPrc (item last purchase price)
 	- LastPurCur (item last purchase currency)
+	- ManBtchNum (item manage by batch)
+	- ManSerNum (item manage by serial)
 	- CompanyCode (sap databasename)
 
 [vwPriceList] (select from vwPriceList, use companycode to differenciate multi company)
