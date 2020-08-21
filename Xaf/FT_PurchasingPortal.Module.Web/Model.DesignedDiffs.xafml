@@ -1,6 +1,15 @@
-﻿<?xml version="1.0"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Application>
-  <Options CollectionsEditMode="Edit" />
+  <Options CollectionsEditMode="Edit">
+    <LayoutManagerOptions RequiredFieldMark="&lt;b&gt;&lt;font color=&quot;red&quot;&gt;*&lt;/font&gt;&lt;/b&gt;" />
+  </Options>
+  <SchemaModules>
+    <SchemaModule Name="CloneObjectModule" Version="19.2.6.0" IsNewNode="True" />
+    <SchemaModule Name="SchedulerAspNetModule" Version="19.2.6.0" IsNewNode="True" />
+    <SchemaModule Name="SchedulerModuleBase" Version="19.2.6.0" IsNewNode="True" />
+    <SchemaModule Name="SystemAspNetModule" Version="19.2.6.0" IsNewNode="True" />
+    <SchemaModule Name="SystemModule" Version="19.2.6.0" IsNewNode="True" />
+  </SchemaModules>
   <ViewItems>
     <PropertyEditor Name="PropertyEditors">
       <RegisteredPropertyEditor PropertyType="System.Drawing.Color" EditorType="DevExpress.ExpressApp.Web.Editors.ASPx.ASPxColorPickerPropertyEditor" />

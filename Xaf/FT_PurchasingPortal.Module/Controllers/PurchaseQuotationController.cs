@@ -20,12 +20,15 @@ namespace FT_PurchasingPortal.Module.Controllers
     // For more typical usage scenarios, be sure to check out https://documentation.devexpress.com/eXpressAppFramework/clsDevExpressExpressAppViewControllertopic.aspx.
     public partial class PurchaseQuotationController : ViewController
     {
+        RecordsNavigationController recordnaviator;
         GenController genCon;
         CopyController copyCon;
         public PurchaseQuotationController()
         {
             InitializeComponent();
             // Target required Views (via the TargetXXX properties) and create their Actions.
+            TargetObjectType = typeof(PurchaseQuotation);
+            TargetViewType = ViewType.DetailView;
         }
         protected override void OnActivated()
         {
@@ -33,6 +36,78 @@ namespace FT_PurchasingPortal.Module.Controllers
             // Perform various tasks depending on the target View.
             genCon = Frame.GetController<GenController>();
             copyCon = Frame.GetController<CopyController>();
+            if (View is DetailView)
+            {
+                ((DetailView)View).ViewEditModeChanged += GenController_ViewEditModeChanged;
+
+                recordnaviator = Frame.GetController<RecordsNavigationController>();
+                if (recordnaviator != null)
+                {
+                    recordnaviator.PreviousObjectAction.Executed += PreviousObjectAction_Executed;
+                    recordnaviator.NextObjectAction.Executed += NextObjectAction_Executed;
+                }
+                resetButton();
+                enableButton();
+            }
+        }
+        private void GenController_ViewEditModeChanged(object sender, EventArgs e)
+        {
+            if (View.GetType() == typeof(DetailView))
+            {
+                resetButton();
+                enableButton();
+            }
+        }
+        private void PreviousObjectAction_Executed(object sender, ActionBaseEventArgs e)
+        {
+            if (View.GetType() == typeof(DetailView))
+            {
+                resetButton();
+            }
+        }
+        private void NextObjectAction_Executed(object sender, ActionBaseEventArgs e)
+        {
+            if (View.GetType() == typeof(DetailView))
+            {
+                resetButton();
+            }
+        }
+        public void resetButton()
+        {
+            this.PQCopyFromPR.Active.SetItemValue("Enabled", false);
+            this.PQCopyToPO.Active.SetItemValue("Enabled", false);
+            PurchaseQuotation selectobject = (PurchaseQuotation)View.CurrentObject;
+            SystemUsers user = ObjectSpace.GetObjectByKey<SystemUsers>(SecuritySystem.CurrentUserId);
+
+            switch (selectobject.DocStatus.CurrDocStatus)
+            {
+                case DocStatus.Cancelled:
+                case DocStatus.Closed:
+                case DocStatus.Posted:
+                case DocStatus.Accepted:
+                case DocStatus.Submited:
+                    break;
+                default:
+                    this.PQCopyFromPR.Active.SetItemValue("Enabled", true);
+                    break;
+            }
+            switch (selectobject.DocStatus.CurrDocStatus)
+            {
+                case DocStatus.Accepted:
+                    if (user.Roles.Where(pp => pp.Name == DocTypeCodes.PurchaseOrder).Count() > 0)
+                    {
+                        this.PQCopyToPO.Active.SetItemValue("Enabled", true);
+                    }
+                    break;
+                default:
+                    break;
+            }
+
+        }
+        private void enableButton()
+        {
+            this.PQCopyFromPR.Enabled.SetItemValue("EditMode", ((DetailView)View).ViewEditMode == ViewEditMode.Edit);
+            this.PQCopyToPO.Enabled.SetItemValue("EditMode", ((DetailView)View).ViewEditMode == ViewEditMode.View);
         }
         protected override void OnViewControlsCreated()
         {
@@ -41,12 +116,21 @@ namespace FT_PurchasingPortal.Module.Controllers
         }
         protected override void OnDeactivated()
         {
+            if (View.GetType() == typeof(DetailView))
+            {
+                ((DetailView)View).ViewEditModeChanged -= GenController_ViewEditModeChanged;
+                if (recordnaviator != null)
+                {
+                    recordnaviator.PreviousObjectAction.Executed -= PreviousObjectAction_Executed;
+                    recordnaviator.NextObjectAction.Executed -= NextObjectAction_Executed;
+                }
+            }
             // Unsubscribe from previously subscribed events and release other references and resources.
             base.OnDeactivated();
         }
         private void PQCopyFromPR_CustomizePopupWindowParams(object sender, CustomizePopupWindowParamsEventArgs e)
         {
-            PurchaseRequest masterobject = (PurchaseRequest)View.CurrentObject;
+            PurchaseQuotation masterobject = (PurchaseQuotation)View.CurrentObject;
 
             string ObjType = masterobject.DocType.BoCode;
             string BusinessPartner = masterobject.CardCode == null ? "" : masterobject.CardCode.BoKey;
@@ -75,6 +159,27 @@ namespace FT_PurchasingPortal.Module.Controllers
                 genCon.showMsg("Operation Done", "Item Copied.", InformationType.Success);
                 return;
             }
+
+        }
+
+        private void PQCopyToPO_Execute(object sender, SimpleActionExecuteEventArgs e)
+        {
+            PurchaseQuotation sObject = (PurchaseQuotation)View.CurrentObject;
+
+            IObjectSpace ios = Application.CreateObjectSpace();
+            PurchaseOrder tObject = ios.CreateObject<PurchaseOrder>();
+
+            if (copyCon.CopyToDocument(sObject, tObject, ios, (DetailView)View))
+            {
+                if (tObject.CardCode != null)
+                    tObject.IsCopy = true;
+
+                genCon.showMsg("Operation Done", "New Purchase Delivery copied. Please save it.", InformationType.Success);
+                genCon.openNewView(ios, tObject, ViewEditMode.Edit);
+                return;
+            }
+
+            genCon.showMsg("Operation Done", "No Open Item for copied.", InformationType.Info);
 
         }
     }

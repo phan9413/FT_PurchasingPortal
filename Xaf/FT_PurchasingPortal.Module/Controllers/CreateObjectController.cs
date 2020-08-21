@@ -20,8 +20,8 @@ namespace FT_PurchasingPortal.Module.Controllers
     // For more typical usage scenarios, be sure to check out https://documentation.devexpress.com/eXpressAppFramework/clsDevExpressExpressAppViewControllertopic.aspx.
     public partial class CreateObjectController : ViewController
     {
-        ClassDocumentDetail tDtl;
-        ClassStockTransferDocumentDetail tDtlS;
+        ClassDocumentDetail sDtl;
+        ClassStockTransferDocumentDetail sDtlS;
         GenController genCon;
         CopyController copyCon;
         public CreateObjectController()
@@ -81,51 +81,38 @@ namespace FT_PurchasingPortal.Module.Controllers
                 PropertyCollectionSource collectionSource = (PropertyCollectionSource)lv.CollectionSource;
                 if (collectionSource.MasterObject != null)
                 {
-                    int minvalue = -1;
-                    int comparevalue = 0;
-                    int maxvisorder = 1;
-                    int comparevisorder = 0;
+                    int minvalue = 0;
+                    int maxvisorder = 0;
+
                     if (collectionSource.MasterObjectType == typeof(StockTransferRequest) && e.CreatedObject.GetType() == typeof(StockTransferRequestDetail))
                     {
                         StockTransferRequest masterobject = (StockTransferRequest)collectionSource.MasterObject;
                         StockTransferRequestDetail currentobject = (StockTransferRequestDetail)e.CreatedObject;
 
-                        if (masterobject.StockTransferRequestDetail.Count > 0)
-                        {
-                            comparevalue = masterobject.StockTransferRequestDetail.Min(pp => pp.Oid);
-                            comparevisorder = masterobject.StockTransferRequestDetail.Max(pp => pp.VisOrder);
-                        }
-                        if (comparevalue <= minvalue) minvalue = comparevalue - 1;
-                        currentobject.Oid = minvalue;
+                        copyCon.GetStockDetailClassVisOrder(masterobject, ref minvalue, ref maxvisorder);
 
-                        if (comparevisorder >= maxvisorder) maxvisorder = comparevisorder + 1;
+                        currentobject.Oid = minvalue;
                         currentobject.VisOrder = maxvisorder;
 
-                        if (tDtlS != null)
+                        if (sDtlS != null)
                         {
-                            copyCon.copyClassStockTransferDocumentDetail(tDtlS, currentobject, e.ObjectSpace);
+                            copyCon.copyClassStockTransferDocumentDetail(sDtlS, currentobject, e.ObjectSpace);
                         }
                     }
                     else if (collectionSource.MasterObjectType == typeof(PurchaseOrder))
                     {
                         PurchaseOrder masterobject = (PurchaseOrder)collectionSource.MasterObject;
                         PurchaseOrderDetail currentobject = (PurchaseOrderDetail)e.CreatedObject;
-                        
-                        if (masterobject.PurchaseOrderDetail.Count > 0)
-                        {
-                            comparevalue = masterobject.PurchaseOrderDetail.Min(pp => pp.Oid);
-                            comparevisorder = masterobject.PurchaseOrderDetail.Max(pp => pp.VisOrder);
-                        }
-                        if (comparevalue <= minvalue) minvalue = comparevalue - 1;
-                        currentobject.Oid = minvalue;
 
-                        if (comparevisorder >= maxvisorder) maxvisorder = comparevisorder + 1;
+                        copyCon.GetDetailClassVisOrder(masterobject, ref minvalue, ref maxvisorder);
+
+                        currentobject.Oid = minvalue;
                         currentobject.VisOrder = maxvisorder;
                         currentobject.DocCur = currentobject.Session.GetObjectByKey<vwCurrency>(masterobject.DocCur.BoKey);
 
-                        if (tDtl != null)
+                        if (sDtl != null)
                         {
-                            copyCon.copyClassDocumentDetail(tDtl, currentobject, e.ObjectSpace);
+                            copyCon.copyClassDocumentDetail(sDtl, currentobject, e.ObjectSpace);
                         }
                     }
                     else if (collectionSource.MasterObjectType == typeof(PurchaseRequest))
@@ -133,22 +120,17 @@ namespace FT_PurchasingPortal.Module.Controllers
                         PurchaseRequest masterobject = (PurchaseRequest)collectionSource.MasterObject;
                         PurchaseRequestDetail currentobject = (PurchaseRequestDetail)e.CreatedObject;
 
-                        if (masterobject.PurchaseRequestDetail.Count > 0)
-                        {
-                            comparevalue = masterobject.PurchaseRequestDetail.Min(pp => pp.Oid);
-                            comparevisorder = masterobject.PurchaseRequestDetail.Max(pp => pp.VisOrder);
-                        }
-                        if (comparevalue <= minvalue) minvalue = comparevalue - 1;
-                        currentobject.Oid = minvalue;
+                        copyCon.GetDetailClassVisOrder(masterobject, ref minvalue, ref maxvisorder);
 
-                        if (comparevisorder >= maxvisorder) maxvisorder = comparevisorder + 1;
+                        currentobject.Oid = minvalue;
                         currentobject.VisOrder = maxvisorder;
+
                         if (masterobject.DocCur != null)
                             currentobject.DocCur = currentobject.Session.GetObjectByKey<vwCurrency>(masterobject.DocCur.BoKey);
                         
-                        if (tDtl != null)
+                        if (sDtl != null)
                         {
-                            copyCon.copyClassDocumentDetail(tDtl, currentobject, e.ObjectSpace);
+                            copyCon.copyClassDocumentDetail(sDtl, currentobject, e.ObjectSpace);
                         }
                     }
                     else if (collectionSource.MasterObjectType == typeof(PurchaseDelivery))
@@ -156,29 +138,60 @@ namespace FT_PurchasingPortal.Module.Controllers
                         PurchaseDelivery masterobject = (PurchaseDelivery)collectionSource.MasterObject;
                         PurchaseDeliveryDetail currentobject = (PurchaseDeliveryDetail)e.CreatedObject;
 
-                        if (masterobject.PurchaseDeliveryDetail.Count > 0)
-                        {
-                            comparevalue = masterobject.PurchaseDeliveryDetail.Min(pp => pp.Oid);
-                            comparevisorder = masterobject.PurchaseDeliveryDetail.Max(pp => pp.VisOrder);
-                        }
-                        if (comparevalue <= minvalue) minvalue = comparevalue - 1;
-                        currentobject.Oid = minvalue;
+                        copyCon.GetDetailClassVisOrder(masterobject, ref minvalue, ref maxvisorder);
 
-                        if (comparevisorder >= maxvisorder) maxvisorder = comparevisorder + 1;
+                        currentobject.Oid = minvalue;
                         currentobject.VisOrder = maxvisorder;
+
                         if (masterobject.DocCur != null)
                             currentobject.DocCur = currentobject.Session.GetObjectByKey<vwCurrency>(masterobject.DocCur.BoKey);
                         
-                        if (tDtl != null)
+                        if (sDtl != null)
                         {
-                            copyCon.copyClassDocumentDetail(tDtl, currentobject, e.ObjectSpace);
+                            copyCon.copyClassDocumentDetail(sDtl, currentobject, e.ObjectSpace);
+                        }
+                    }
+                    else if (collectionSource.MasterObjectType == typeof(PurchaseReturn))
+                    {
+                        PurchaseReturn masterobject = (PurchaseReturn)collectionSource.MasterObject;
+                        PurchaseReturnDetail currentobject = (PurchaseReturnDetail)e.CreatedObject;
+
+                        copyCon.GetDetailClassVisOrder(masterobject, ref minvalue, ref maxvisorder);
+
+                        currentobject.Oid = minvalue;
+                        currentobject.VisOrder = maxvisorder;
+
+                        if (masterobject.DocCur != null)
+                            currentobject.DocCur = currentobject.Session.GetObjectByKey<vwCurrency>(masterobject.DocCur.BoKey);
+
+                        if (sDtl != null)
+                        {
+                            copyCon.copyClassDocumentDetail(sDtl, currentobject, e.ObjectSpace);
+                        }
+                    }
+                    else if (collectionSource.MasterObjectType == typeof(PurchaseQuotation))
+                    {
+                        PurchaseQuotation masterobject = (PurchaseQuotation)collectionSource.MasterObject;
+                        PurchaseQuotationDetail currentobject = (PurchaseQuotationDetail)e.CreatedObject;
+
+                        copyCon.GetDetailClassVisOrder(masterobject, ref minvalue, ref maxvisorder);
+
+                        currentobject.Oid = minvalue;
+                        currentobject.VisOrder = maxvisorder;
+
+                        if (masterobject.DocCur != null)
+                            currentobject.DocCur = currentobject.Session.GetObjectByKey<vwCurrency>(masterobject.DocCur.BoKey);
+
+                        if (sDtl != null)
+                        {
+                            copyCon.copyClassDocumentDetail(sDtl, currentobject, e.ObjectSpace);
                         }
                     }
                 }
             }
 
-            tDtl = null;
-            tDtlS = null;
+            sDtl = null;
+            sDtlS = null;
         }
 
         private void DuplicateDetail_Execute(object sender, SimpleActionExecuteEventArgs e)
@@ -201,25 +214,25 @@ namespace FT_PurchasingPortal.Module.Controllers
                 {
                     if (View.ObjectTypeInfo.Type == typeof(PurchaseRequestDetail))
                     {
-                        tDtl = os.CreateObject<PurchaseRequestDetail>();
+                        sDtl = dtl;
                     }
                     if (View.ObjectTypeInfo.Type == typeof(PurchaseOrderDetail))
                     {
-                        tDtl = os.CreateObject<PurchaseOrderDetail>();
+                        sDtl = dtl;
                     }
                     if (View.ObjectTypeInfo.Type == typeof(PurchaseDeliveryDetail))
                     {
-                        tDtl = os.CreateObject<PurchaseDeliveryDetail>();
+                        sDtl = dtl;
                     }
                     if (View.ObjectTypeInfo.Type == typeof(PurchaseReturnDetail))
                     {
-                        tDtl = os.CreateObject<PurchaseReturnDetail>();
+                        sDtl = dtl;
                     }
                     if (View.ObjectTypeInfo.Type == typeof(PurchaseQuotationDetail))
                     {
-                        tDtl = os.CreateObject<PurchaseQuotationDetail>();
+                        sDtl = dtl;
                     }
-                    copyCon.copyClassDocumentDetail(dtl, tDtl, os);
+                    //copyCon.copyClassDocumentDetail(dtl, sDtl, os);
                 }
             }
             if (typeof(ClassStockTransferDocumentDetail).IsAssignableFrom(View.ObjectTypeInfo.Type))
@@ -228,9 +241,9 @@ namespace FT_PurchasingPortal.Module.Controllers
                 {
                     if (View.ObjectTypeInfo.Type == typeof(StockTransferRequestDetail))
                     {
-                        tDtlS = os.CreateObject<StockTransferRequestDetail>();
+                        sDtlS = dtl;
                     }
-                    copyCon.copyClassStockTransferDocumentDetail(dtl, tDtlS, os);
+                    //copyCon.copyClassStockTransferDocumentDetail(dtl, sDtlS, os);
                 }
             }
             NewObjectViewController newobjectcon = Frame.GetController<NewObjectViewController>();

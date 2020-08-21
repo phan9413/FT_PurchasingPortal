@@ -218,6 +218,7 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
                     case DocTypeCodes.PurchaseOrder:
                     case DocTypeCodes.PurchaseDelivery:
                     case DocTypeCodes.PurchaseReturn:
+                    case DocTypeCodes.PurchaseQuotation:
                         return "Y";
                 }
                 return "";
@@ -236,6 +237,7 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
                     case DocTypeCodes.PurchaseOrder:
                     case DocTypeCodes.PurchaseDelivery:
                     case DocTypeCodes.PurchaseReturn:
+                    case DocTypeCodes.PurchaseQuotation:
                         rtn = "I";
                         break;
                     case DocTypeCodes.SalesAgreement:
@@ -259,6 +261,7 @@ namespace FT_PurchasingPortal.Module.BusinessObjects
                     case DocTypeCodes.PurchaseOrder:
                     case DocTypeCodes.PurchaseDelivery:
                     case DocTypeCodes.PurchaseReturn:
+                    case DocTypeCodes.PurchaseQuotation:
                         rtn = "S";
                         break;
                     case DocTypeCodes.SalesAgreement:

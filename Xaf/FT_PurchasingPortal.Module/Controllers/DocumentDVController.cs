@@ -86,6 +86,16 @@ namespace FT_PurchasingPortal.Module.Controllers
                 selectedObject.AppStatus.CurrApproval = null;
                 selectedObject.AppStatus.CurrAppStage = 0;
             }
+            else if (e.GetType() == typeof(PurchaseQuotation))
+            {
+                PurchaseQuotation selectedObject = (PurchaseQuotation)e;
+
+                selectedObject.DocStatus.AddDocStatus(DocStatus.Rejected, paramString);
+                selectedObject.DocStatus.CurrDocStatus = DocStatus.Rejected;
+                selectedObject.AppStatus.ApprovalStatus = ApprovalStatus.Not_Applicable;
+                selectedObject.AppStatus.CurrApproval = null;
+                selectedObject.AppStatus.CurrAppStage = 0;
+            }
 
             return true;
         }
@@ -125,6 +135,14 @@ namespace FT_PurchasingPortal.Module.Controllers
             else if (e.GetType() == typeof(PurchaseReturn))
             {
                 PurchaseReturn selectedObject = (PurchaseReturn)e;
+
+                selectedObject.DocStatus.AddDocStatus(DocStatus.Closed, paramString);
+                selectedObject.DocStatus.CurrDocStatus = DocStatus.Closed;
+                selectedObject.VerNo++;
+            }
+            else if (e.GetType() == typeof(PurchaseQuotation))
+            {
+                PurchaseQuotation selectedObject = (PurchaseQuotation)e;
 
                 selectedObject.DocStatus.AddDocStatus(DocStatus.Closed, paramString);
                 selectedObject.DocStatus.CurrDocStatus = DocStatus.Closed;
@@ -174,6 +192,14 @@ namespace FT_PurchasingPortal.Module.Controllers
                 selectedObject.DocStatus.CurrDocStatus = DocStatus.Cancelled;
                 selectedObject.VerNo++;
             }
+            else if (e.GetType() == typeof(PurchaseQuotation))
+            {
+                PurchaseQuotation selectedObject = (PurchaseQuotation)e;
+
+                selectedObject.DocStatus.AddDocStatus(DocStatus.Cancelled, paramString);
+                selectedObject.DocStatus.CurrDocStatus = DocStatus.Cancelled;
+                selectedObject.VerNo++;
+            }
 
             return true;
         }
@@ -210,6 +236,13 @@ namespace FT_PurchasingPortal.Module.Controllers
             else if (e.GetType() == typeof(PurchaseReturn))
             {
                 PurchaseReturn selectedObject = (PurchaseReturn)e;
+
+                selectedObject.DocStatus.AddDocStatus(DocStatus.Posted, "");
+                selectedObject.DocStatus.CurrDocStatus = DocStatus.Posted;
+            }
+            else if (e.GetType() == typeof(PurchaseQuotation))
+            {
+                PurchaseQuotation selectedObject = (PurchaseQuotation)e;
 
                 selectedObject.DocStatus.AddDocStatus(DocStatus.Posted, "");
                 selectedObject.DocStatus.CurrDocStatus = DocStatus.Posted;
@@ -254,6 +287,13 @@ namespace FT_PurchasingPortal.Module.Controllers
             else if (e.GetType() == typeof(PurchaseReturn))
             {
                 PurchaseReturn selectedObject = (PurchaseReturn)e;
+                oid = selectedObject.Oid;
+                doctype = selectedObject.DocType.BoCode;
+                isReqApp = selectedObject.DocType.IsReqApp;
+            }
+            else if (e.GetType() == typeof(PurchaseQuotation))
+            {
+                PurchaseQuotation selectedObject = (PurchaseQuotation)e;
                 oid = selectedObject.Oid;
                 doctype = selectedObject.DocType.BoCode;
                 isReqApp = selectedObject.DocType.IsReqApp;
@@ -537,6 +577,47 @@ namespace FT_PurchasingPortal.Module.Controllers
                     }
                 }
             }
+            else if (e.GetType() == typeof(PurchaseQuotation))
+            {
+                PurchaseQuotation selectedObject = ios.GetObjectByKey<PurchaseQuotation>(((PurchaseQuotation)e).Oid);
+                if (selectedObject.DocStatus.CurrDocStatus == DocStatus.Draft || selectedObject.DocStatus.CurrDocStatus == DocStatus.Rejected)
+                {
+                    if (selectedObject.AppStatus.ApprovalStatus == ApprovalStatus.Not_Applicable)
+                    {
+                        if (isReqApp && selectedObject.DocType.IsNoAppReject)
+                        {
+                            genCon.showMsg("Failed", "Approval Requeired for " + selectedObject.DocType.BoName, InformationType.Error);
+                            selectedObject.DocStatus.AddDocStatus(DocStatus.Submited, "");
+                            selectedObject.DocStatus.AddDocStatus(DocStatus.Rejected, "");
+                            selectedObject.DocStatus.CurrDocStatus = DocStatus.Rejected;
+                        }
+                        else
+                        {
+                            selectedObject.AssignDocNumber();
+                            selectedObject.DocStatus.AddDocStatus(DocStatus.Submited, "");
+                            selectedObject.DocStatus.AddDocStatus(DocStatus.Accepted, "");
+                            selectedObject.DocStatus.CurrDocStatus = DocStatus.Accepted;
+                        }
+                    }
+                    else if (selectedObject.AppStatus.ApprovalStatus == ApprovalStatus.Required_Approval)
+                    {
+                        selectedObject.DocStatus.AddDocStatus(DocStatus.Submited, "");
+                        selectedObject.DocStatus.CurrDocStatus = DocStatus.Submited;
+                        CurrentApprovalOid = selectedObject.AppStatus.GetCurrentApprovalOid();
+                        if (CurrentApprovalOid > 0)
+                        {
+                            selectedObject.AppStatus.CurrApproval = ios.GetObjectByKey<Approval>(CurrentApprovalOid);
+                            if (selectedObject.AppStatus.CurrApproval.ApprovalBy == ApprovalBy.Appointed_User && selectedObject.AppStatus.CurrApproval.AppointedUser != null)
+                            {
+                                selectedObject.AppStatus.CurrAppointedUser = ios.GetObjectByKey<Employee>(selectedObject.AppStatus.CurrApproval.AppointedUser.Oid);
+                            }
+                        }
+                        CurrentAppStageOid = selectedObject.AppStatus.GetCurrentAppStageOid();
+                        if (CurrentAppStageOid > 0)
+                            selectedObject.AppStatus.CurrAppStage = CurrentAppStageOid;
+                    }
+                }
+            }
 
             ios.CommitChanges();
             return true;
@@ -585,6 +666,14 @@ namespace FT_PurchasingPortal.Module.Controllers
             else if (e.GetType() == typeof(PurchaseReturn))
             {
                 PurchaseReturn selectedObject = (PurchaseReturn)e;
+                oid = selectedObject.Oid;
+                doctype = selectedObject.DocType.BoCode;
+                isReqApp = selectedObject.DocType.IsReqApp;
+                CurrentAppStageOid = selectedObject.AppStatus.CurrAppStage;
+            }
+            else if (e.GetType() == typeof(PurchaseQuotation))
+            {
+                PurchaseQuotation selectedObject = (PurchaseQuotation)e;
                 oid = selectedObject.Oid;
                 doctype = selectedObject.DocType.BoCode;
                 isReqApp = selectedObject.DocType.IsReqApp;
@@ -838,6 +927,48 @@ namespace FT_PurchasingPortal.Module.Controllers
                     }
                 }
             }
+            else if (View.ObjectTypeInfo.Type == typeof(PurchaseQuotation))
+            {
+                PurchaseQuotation selectobj = ios.GetObjectByKey<PurchaseQuotation>(((PurchaseQuotation)View.CurrentObject).Oid);
+                CurrentApprovalOid = selectobj.AppStatus.GetCurrentApprovalOid();
+                CurrentAppStageOid = selectobj.AppStatus.GetCurrentAppStageOid();
+                if (appstatus == ApprovalStatus.Rejected)
+                {
+                    selectobj.DocStatus.AddDocStatus(DocStatus.Rejected, "[APP]" + appRemark == null ? "" : appRemark);
+                    selectobj.DocStatus.CurrDocStatus = DocStatus.Rejected;
+                }
+                else
+                {
+                    if (CurrentApprovalOid > 0 && CurrentAppStageOid > 0)
+                    {
+                        if (selectobj.AppStatus.CurrApproval != null && selectobj.AppStatus.CurrApproval.Oid == CurrentApprovalOid)
+                        { }
+                        else
+                        {
+                            selectobj.AppStatus.CurrApproval = ios.GetObjectByKey<Approval>(CurrentApprovalOid);
+                            if (selectobj.AppStatus.CurrApproval.ApprovalBy == ApprovalBy.Appointed_User && selectobj.AppStatus.CurrApproval.AppointedUser != null)
+                            {
+                                selectobj.AppStatus.CurrAppointedUser = ios.GetObjectByKey<Employee>(selectobj.AppStatus.CurrApproval.AppointedUser.Oid);
+                            }
+                        }
+                        if (selectobj.AppStatus.CurrAppStage == CurrentAppStageOid)
+                        { }
+                        else
+                        {
+                            selectobj.AppStatus.CurrAppStage = CurrentAppStageOid;
+                        }
+                    }
+                    else
+                    {
+                        selectobj.AssignDocNumber();
+                        selectobj.DocStatus.AddDocStatus(DocStatus.Accepted, "");
+                        selectobj.DocStatus.CurrDocStatus = DocStatus.Accepted;
+                        selectobj.AppStatus.CurrApproval = null;
+                        selectobj.AppStatus.CurrAppStage = 0;
+                    }
+                }
+            }
+
             ios.CommitChanges();
 
             return true;
@@ -1096,6 +1227,30 @@ namespace FT_PurchasingPortal.Module.Controllers
                 //    ObjectSpace.Delete(xpcol);
                 //}
             }
+            else if (View.ObjectTypeInfo.Type == typeof(PurchaseQuotation))
+            {
+                PurchaseQuotation selectedObject = (PurchaseQuotation)e.CurrentObject;
+                if (!selectedObject.IsCardCodeSelected)
+                {
+                    genCon.showMsg("Error", "Card Code not selected.", InformationType.Error);
+                    return;
+                }
+                docstatus = selectedObject.DocStatus.CurrDocStatus;
+
+                //if (selectedObject.AppStatus.AppStatus.Count > 0)
+                //{
+                //    CriteriaOperator op = CriteriaOperator.Parse("AppStageDoc.Oid=?", selectedObject.AppStatus.Oid);
+                //    XPCollection<PurchaseRequestAppStatus> xpcol = (XPCollection<PurchaseRequestAppStatus>)ObjectSpace.GetObjects<PurchaseRequestAppStatus>(op);
+                //    ObjectSpace.Delete(xpcol);
+                //}
+                //if (selectedObject.AppStatus.AppStage.Count > 0)
+                //{
+                //    CriteriaOperator op = CriteriaOperator.Parse("AppStageDoc.Oid=?", selectedObject.AppStatus.Oid);
+                //    XPCollection<PurchaseRequestAppStage> xpcol = (XPCollection<PurchaseRequestAppStage>)ObjectSpace.GetObjects<PurchaseRequestAppStage>(op);
+                //    ObjectSpace.Delete(xpcol);
+                //}
+            }
+
             if (docstatus == DocStatus.Draft || docstatus == DocStatus.Rejected)
             { }
             else
@@ -1151,6 +1306,11 @@ namespace FT_PurchasingPortal.Module.Controllers
             else if (View.ObjectTypeInfo.Type == typeof(PurchaseReturn))
             {
                 PurchaseReturn selectedObject = (PurchaseReturn)e.CurrentObject;
+                docstatus = selectedObject.DocStatus.CurrDocStatus;
+            }
+            else if (View.ObjectTypeInfo.Type == typeof(PurchaseQuotation))
+            {
+                PurchaseQuotation selectedObject = (PurchaseQuotation)e.CurrentObject;
                 docstatus = selectedObject.DocStatus.CurrDocStatus;
             }
             if (docstatus == DocStatus.Closed)
@@ -1217,6 +1377,11 @@ namespace FT_PurchasingPortal.Module.Controllers
             else if (View.ObjectTypeInfo.Type == typeof(PurchaseReturn))
             {
                 PurchaseReturn selectedObject = (PurchaseReturn)View.CurrentObject;
+                docstatus = selectedObject.DocStatus.CurrDocStatus;
+            }
+            else if (View.ObjectTypeInfo.Type == typeof(PurchaseQuotation))
+            {
+                PurchaseQuotation selectedObject = (PurchaseQuotation)View.CurrentObject;
                 docstatus = selectedObject.DocStatus.CurrDocStatus;
             }
             if (!err)
@@ -1314,6 +1479,15 @@ namespace FT_PurchasingPortal.Module.Controllers
                     copyfound = true;
                 }
             }
+            else if (View.ObjectTypeInfo.Type == typeof(PurchaseQuotation))
+            {
+                PurchaseQuotation selectedObject = (PurchaseQuotation)View.CurrentObject;
+                docstatus = selectedObject.DocStatus.CurrDocStatus;
+                if (selectedObject.PurchaseQuotationDetail.Where(pp => pp.CopyQty > 0 || pp.CopyCreQty > 0).Count() > 0)
+                {
+                    copyfound = true;
+                }
+            }
             if (!err)
             {
                 if (typeof(ClassDocument).IsAssignableFrom(View.ObjectTypeInfo.Type))
@@ -1398,6 +1572,11 @@ namespace FT_PurchasingPortal.Module.Controllers
             else if (View.ObjectTypeInfo.Type == typeof(PurchaseReturn))
             {
                 PurchaseReturn selectedObject = (PurchaseReturn)View.CurrentObject;
+                docstatus = selectedObject.DocStatus.CurrDocStatus;
+            }
+            else if (View.ObjectTypeInfo.Type == typeof(PurchaseQuotation))
+            {
+                PurchaseQuotation selectedObject = (PurchaseQuotation)View.CurrentObject;
                 docstatus = selectedObject.DocStatus.CurrDocStatus;
             }
             if (docstatus == DocStatus.Submited || docstatus == DocStatus.Accepted || docstatus == DocStatus.Closed || docstatus == DocStatus.PostedCancel)
@@ -1653,6 +1832,46 @@ namespace FT_PurchasingPortal.Module.Controllers
                     }
                 }
             }
+            else if (View.ObjectTypeInfo.Type == typeof(PurchaseQuotation))
+            {
+                PurchaseQuotation selectedObject = (PurchaseQuotation)View.CurrentObject;
+                docstatus = selectedObject.DocStatus.CurrDocStatus;
+                apptatus = selectedObject.AppStatus.ApprovalStatus;
+                if (docstatus == DocStatus.Submited && apptatus == ApprovalStatus.Required_Approval)
+                {
+                    if (selectedObject.AppStatus.CurrApproval.ApprovalBy == ApprovalBy.User)
+                    {
+                        if (selectedObject.AppStatus.CurrApproval.ApproveUser.Where(x => x.SystemUser.Oid == user.Oid).Count() > 0)
+                        { }
+                        else
+                        {
+                            err = true;
+                            actionMessage = "Approval not allowed by this user.";
+                        }
+                    }
+                    else if (selectedObject.AppStatus.CurrApproval.ApprovalBy == ApprovalBy.Position)
+                    {
+                        if (user.Employee != null && user.Employee.Position != null && selectedObject.AppStatus.CurrApproval.ApprovePosition.Where(x => x.Oid == user.Employee.Position.Oid).Count() > 0)
+                        { }
+                        else
+                        {
+                            err = true;
+                            actionMessage = "Approval not allowed by this position";
+                        }
+                    }
+                    else if (selectedObject.AppStatus.CurrApproval.ApprovalBy == ApprovalBy.Appointed_User)
+                    {
+                        if (selectedObject.AppStatus.CurrAppointedUser != null && selectedObject.AppStatus.CurrAppointedUser.Oid == user.Employee.Oid)
+                        { }
+                        else
+                        {
+                            err = true;
+                            actionMessage = "Approval not allowed by this appointed user.";
+                        }
+                    }
+                }
+            }
+
             if (docstatus == DocStatus.Submited || apptatus == ApprovalStatus.Required_Approval)
             { }
             else
@@ -1724,6 +1943,17 @@ namespace FT_PurchasingPortal.Module.Controllers
             else if (View.ObjectTypeInfo.Type == typeof(PurchaseReturn))
             {
                 PurchaseReturn selectedObject = (PurchaseReturn)View.CurrentObject;
+                oid = selectedObject.Oid;
+                currentappstage = selectedObject.AppStatus.CurrAppStage;
+                if (selectedObject.AppStatus.AppStatus.Where(x => x.CreateUser.Oid == user.Oid).Count() > 0)
+                {
+                    appstatus = selectedObject.AppStatus.AppStatus.Where(x => x.CreateUser.Oid == user.Oid).OrderBy(c => c.Oid).Last().ApprovalStatus;
+                    userlastappstage = selectedObject.AppStatus.AppStatus.Where(x => x.CreateUser.Oid == user.Oid).OrderBy(c => c.Oid).Last().AppStage;
+                }
+            }
+            else if (View.ObjectTypeInfo.Type == typeof(PurchaseQuotation))
+            {
+                PurchaseQuotation selectedObject = (PurchaseQuotation)View.CurrentObject;
                 oid = selectedObject.Oid;
                 currentappstage = selectedObject.AppStatus.CurrAppStage;
                 if (selectedObject.AppStatus.AppStatus.Where(x => x.CreateUser.Oid == user.Oid).Count() > 0)
@@ -1860,6 +2090,16 @@ namespace FT_PurchasingPortal.Module.Controllers
                     isappointuser = true;
                 }
             }
+            else if (View.ObjectTypeInfo.Type == typeof(PurchaseQuotation))
+            {
+                PurchaseQuotation selectedObject = (PurchaseQuotation)View.CurrentObject;
+                docstatus = selectedObject.DocStatus.CurrDocStatus;
+                apptatus = selectedObject.AppStatus.ApprovalStatus;
+                if (selectedObject.AppStatus.CurrApproval != null && selectedObject.AppStatus.CurrApproval.ApprovalBy == ApprovalBy.Appointed_User)
+                {
+                    isappointuser = true;
+                }
+            }
             if (docstatus == DocStatus.Submited && apptatus == ApprovalStatus.Required_Approval && isappointuser)
             { }
             else
@@ -1923,6 +2163,11 @@ namespace FT_PurchasingPortal.Module.Controllers
                 PurchaseReturn selectedObject = (PurchaseReturn)View.CurrentObject;
                 selectedObject.AppStatus.CurrAppointedUser = View.ObjectSpace.GetObjectByKey<Employee>(user.Oid);
             }
+            else if (View.ObjectTypeInfo.Type == typeof(PurchaseQuotation))
+            {
+                PurchaseQuotation selectedObject = (PurchaseQuotation)View.CurrentObject;
+                selectedObject.AppStatus.CurrAppointedUser = View.ObjectSpace.GetObjectByKey<Employee>(user.Oid);
+            }
             View.ObjectSpace.CommitChanges();
 
             //RefreshController refreshCon = Frame.GetController<RefreshController>();
@@ -1965,6 +2210,11 @@ namespace FT_PurchasingPortal.Module.Controllers
             else if (View.ObjectTypeInfo.Type == typeof(PurchaseReturn))
             {
                 PurchaseReturn selectedObject = (PurchaseReturn)View.CurrentObject;
+                docstatus = selectedObject.DocStatus.CurrDocStatus;
+            }
+            else if (View.ObjectTypeInfo.Type == typeof(PurchaseQuotation))
+            {
+                PurchaseQuotation selectedObject = (PurchaseQuotation)View.CurrentObject;
                 docstatus = selectedObject.DocStatus.CurrDocStatus;
             }
             if (View.ObjectTypeInfo.Type == typeof(PurchaseOrder))
@@ -2047,6 +2297,13 @@ namespace FT_PurchasingPortal.Module.Controllers
             else if (e.GetType() == typeof(PurchaseReturn))
             {
                 PurchaseReturn selectedObject = (PurchaseReturn)e;
+
+                selectedObject.DocStatus.AddDocStatus(DocStatus.Accepted, paramString);
+                selectedObject.DocStatus.CurrDocStatus = DocStatus.Accepted;
+            }
+            else if (e.GetType() == typeof(PurchaseQuotation))
+            {
+                PurchaseQuotation selectedObject = (PurchaseQuotation)e;
 
                 selectedObject.DocStatus.AddDocStatus(DocStatus.Accepted, paramString);
                 selectedObject.DocStatus.CurrDocStatus = DocStatus.Accepted;
