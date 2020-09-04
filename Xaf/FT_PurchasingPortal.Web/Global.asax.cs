@@ -31,6 +31,16 @@ namespace FT_PurchasingPortal.Web {
             SecurityStrategy security = (SecurityStrategy)WebApplication.Instance.Security;
             security.RegisterXPOAdapterProviders();
             DevExpress.ExpressApp.Web.Templates.DefaultVerticalTemplateContentNew.ClearSizeLimit();
+            WebApplication.Instance.Settings.LogonTemplateContentPath =
+               "LogonTemplateContent1.ascx";
+            WebApplication.Instance.Settings.DefaultVerticalTemplateContentPath =
+                "DefaultVerticalTemplateContent1.ascx";
+            WebApplication.Instance.Settings.NestedFrameControlPath =
+                "NestedFrameControl1.ascx";
+            WebApplication.Instance.Settings.DialogTemplateContentPath =
+               "DialogTemplateContent1.ascx";
+            WebApplication.Instance.Settings.FindDialogTemplateContentPath =
+               "FindDialogTemplateContent1.ascx";
             WebApplication.Instance.SwitchToNewStyle();
 
             #region GeneralSettings
